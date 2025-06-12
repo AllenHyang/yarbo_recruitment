@@ -1,0 +1,391 @@
+# 🚀 Yarbo 智能招聘系统
+
+一个基于 Next.js 15 和 Supabase 构建的现代化企业级招聘管理平台，具备完整的角色权限管理、实时数据同步和智能数据可视化功能。
+
+## ✨ 核心特性
+
+### 🔐 基于角色的访问控制 (RBAC)
+
+- **三级权限体系**：候选人、HR 专员、系统管理员
+- **智能页面分发**：根据用户角色自动跳转到对应功能页面
+- **动态导航系统**：基于权限的菜单显示和功能访问
+- **权限友好提示**：无权限访问时的优雅错误处理
+
+### 📊 专业数据可视化
+
+- **实时招聘仪表板**：动态数据概览和关键指标展示
+- **交互式图表**：使用 Recharts 构建的专业数据图表
+- **多维度分析**：申请趋势、部门分布、地区统计等
+- **响应式设计**：完美适配桌面端和移动端
+
+### ⚡ 实时数据同步
+
+- **Supabase 实时订阅**：数据变更即时推送
+- **智能缓存策略**：优化性能和用户体验
+- **离线数据处理**：网络异常时的降级方案
+- **数据一致性保证**：确保多用户环境下的数据准确性
+
+### 🎯 智能招聘管理
+
+- **职位全生命周期管理**：发布、编辑、关闭、归档
+- **候选人管理系统**：简历筛选、面试安排、状态跟踪
+- **面试管理系统**：面试安排、多维度评分、反馈收集
+- **双通道通知系统**：邮件通知 + 站内消息
+- **校园招聘模块**：专门的校园招聘和实习管理
+- **批量操作支持**：提高 HR 工作效率
+
+## 🏗️ 技术架构
+
+### 前端技术栈
+
+- **Next.js 15** - React 全栈框架，支持 App Router
+- **TypeScript** - 类型安全的 JavaScript 超集
+- **Tailwind CSS** - 实用优先的 CSS 框架
+- **shadcn/ui** - 高质量的 React 组件库
+- **Recharts** - 专业的 React 图表库
+- **Lucide React** - 现代化的图标库
+
+### 后端服务
+
+- **Supabase** - 开源的 Firebase 替代方案
+  - PostgreSQL 数据库
+  - 实时订阅功能
+  - 行级安全策略 (RLS)
+  - 用户认证和授权
+- **Supabase Edge Functions** - 服务端逻辑处理
+
+### 开发工具
+
+- **Playwright** - 端到端自动化测试
+- **ESLint** - 代码质量检查
+- **Prettier** - 代码格式化
+- **Git** - 版本控制
+
+## 🚀 快速开始
+
+### 环境要求
+
+- Node.js 18.0 或更高版本
+- npm 或 yarn 包管理器
+- Git 版本控制
+
+### 安装步骤
+
+1. **克隆项目**
+
+```bash
+git clone https://github.com/AllenHyang/Recruitment.git
+cd Recruitment/yarbo-app
+```
+
+2. **安装依赖**
+
+```bash
+npm install
+# 或
+yarn install
+```
+
+3. **环境配置**
+
+```bash
+# 复制环境变量模板
+cp .env.example .env.local
+
+# 编辑环境变量
+# NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+# ***REMOVED***=your_supabase_anon_key
+```
+
+4. **启动开发服务器**
+
+```bash
+npm run dev
+# 或
+yarn dev
+```
+
+5. **访问应用**
+   打开 [http://localhost:3000](http://localhost:3000) 查看应用
+
+## 👥 用户角色和权限
+
+### 🎯 候选人 (Candidate)
+
+- **可访问页面**：首页、职位列表、申请状态、消息中心、个人资料
+- **核心功能**：
+  - 浏览和搜索职位
+  - 在线申请职位
+  - 查看申请状态
+  - 接收面试通知和状态更新
+  - 管理个人资料
+
+### 👨‍💼 HR 专员 (HR)
+
+- **可访问页面**：候选人功能 + HR 管理全套功能
+- **核心功能**：
+  - HR 管理仪表板
+  - 职位发布和管理
+  - 候选人筛选和管理
+  - 面试安排和反馈收集
+  - 邮件通知和站内消息管理
+  - 校园招聘管理
+  - 实习生管理
+  - 数据分析和报告
+
+### 🔧 系统管理员 (Admin)
+
+- **可访问页面**：全系统访问权限
+- **核心功能**：
+  - 用户管理和权限分配
+  - 系统配置和设置
+  - 数据备份和恢复
+  - 系统监控和日志
+  - 部门和组织架构管理
+
+## 🎨 界面预览
+
+### 登录和认证
+
+- 统一的登录界面设计
+- 支持邮箱密码登录
+- 智能角色识别和页面跳转
+- 安全的会话管理
+
+### HR 管理仪表板
+
+- 实时数据概览卡片
+- 交互式招聘数据图表
+- 快捷操作面板
+- 最近活动时间线
+
+### 候选人界面
+
+- 直观的职位浏览体验
+- 简洁的申请流程
+- 清晰的状态跟踪
+- 个性化推荐
+
+## 🧪 测试
+
+### 演示账号
+
+```
+管理员: admin@yarbo.com / password123
+HR专员: hr@yarbo.com / password123
+候选人: test.candidate@gmail.com / password123
+```
+
+### 自动化测试
+
+```bash
+# 运行 Playwright 测试
+npm run test:e2e
+
+# 运行单元测试
+npm run test
+
+# 生成测试报告
+npm run test:report
+```
+
+## 📁 项目结构
+
+```
+yarbo-app/
+├── src/
+│   ├── app/                    # Next.js App Router 页面
+│   │   ├── auth/              # 认证相关页面
+│   │   ├── hr/                # HR管理页面
+│   │   ├── admin/             # 管理员页面
+│   │   ├── jobs/              # 职位相关页面
+│   │   └── layout.tsx         # 根布局组件
+│   ├── components/            # 可复用组件
+│   │   ├── ui/                # 基础UI组件
+│   │   ├── charts/            # 图表组件
+│   │   ├── withProtected.tsx  # 权限保护组件
+│   │   └── RoleBasedNavigation.tsx # 角色导航
+│   ├── contexts/              # React Context
+│   │   └── AuthContext.tsx    # 认证上下文
+│   ├── lib/                   # 工具库和配置
+│   │   ├── supabase.ts        # Supabase 客户端
+│   │   ├── permissions.ts     # 权限配置
+│   │   ├── api.ts             # API 调用
+│   │   └── database.types.ts  # 数据库类型定义
+│   ├── hooks/                 # 自定义 React Hooks
+│   └── middleware.ts          # Next.js 中间件
+├── public/                    # 静态资源
+├── tests/                     # 测试文件
+└── docs/                      # 项目文档
+```
+
+## 🔧 开发指南
+
+### 代码规范
+
+- 使用 TypeScript 进行类型安全开发
+- 遵循 ESLint 和 Prettier 配置
+- 组件采用函数式组件 + Hooks 模式
+- 使用 Tailwind CSS 进行样式开发
+
+### 权限系统开发
+
+```typescript
+// 使用权限保护组件
+export default withRoleBasedAccess(YourComponent);
+
+// 检查功能权限
+const hasAccess = hasFeatureAccess(userRole, "feature_name");
+
+// 获取用户默认页面
+const defaultPage = getDefaultHomePage(userRole);
+```
+
+### 数据库操作
+
+```typescript
+// 获取用户角色
+const userRole = await getUserRole(email);
+
+// 实时数据订阅
+const subscription = supabase
+  .channel("jobs")
+  .on(
+    "postgres_changes",
+    { event: "*", schema: "public", table: "jobs" },
+    (payload) => {
+      // 处理实时数据更新
+    }
+  )
+  .subscribe();
+```
+
+## 🚀 部署
+
+### Vercel 部署 (推荐)
+
+1. 连接 GitHub 仓库到 Vercel
+2. 配置环境变量
+3. 自动部署
+
+### 手动部署
+
+```bash
+# 构建生产版本
+npm run build
+
+# 启动生产服务器
+npm start
+```
+
+### 环境变量配置
+
+```env
+# Supabase 配置
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+***REMOVED***=your_supabase_anon_key
+
+# 可选配置
+NEXT_PUBLIC_APP_URL=https://your-domain.com
+```
+
+## 📈 性能优化
+
+### 已实现的优化
+
+- **代码分割**：基于路由的自动代码分割
+- **图片优化**：Next.js Image 组件优化
+- **字体优化**：自动字体优化和预加载
+- **缓存策略**：智能的数据缓存和更新策略
+
+### 监控和分析
+
+- 使用 Next.js 内置的性能分析工具
+- Supabase 数据库性能监控
+- 用户体验指标跟踪
+
+## 🔒 安全特性
+
+### 认证和授权
+
+- **JWT Token 管理**：安全的用户会话管理
+- **行级安全策略**：数据库层面的权限控制
+- **CSRF 保护**：防止跨站请求伪造攻击
+- **XSS 防护**：输入验证和输出编码
+
+### 数据保护
+
+- **敏感数据加密**：用户密码和敏感信息加密存储
+- **API 安全**：请求频率限制和参数验证
+- **环境变量保护**：敏感配置信息环境隔离
+
+## 🤝 贡献指南
+
+### 开发流程
+
+1. Fork 项目仓库
+2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 创建 Pull Request
+
+### 代码提交规范
+
+```
+feat: 新功能
+fix: 修复bug
+docs: 文档更新
+style: 代码格式调整
+refactor: 代码重构
+test: 测试相关
+chore: 构建过程或辅助工具的变动
+```
+
+## 📞 支持和联系
+
+### 技术支持
+
+- **GitHub Issues**: [提交问题](https://github.com/AllenHyang/Recruitment/issues)
+- **邮箱**: allen.hyang@hotmail.com
+- **文档**: 查看项目 Wiki 获取详细文档
+
+### 更新日志
+
+查看 [CHANGELOG.md](./CHANGELOG.md) 了解版本更新历史
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](./LICENSE) 文件了解详情
+
+---
+
+## 🎯 项目里程碑
+
+### ✅ Phase 1: 数据可视化增强 (已完成)
+
+- 专业的招聘数据图表系统
+- 实时数据展示和交互
+- 响应式图表设计
+- 多维度数据分析
+
+### ✅ Phase 2: 实时数据集成 (已完成)
+
+- Supabase 实时订阅功能
+- 数据变更即时推送
+- 智能缓存和性能优化
+- 离线数据处理机制
+
+### ✅ Phase 3: 基于角色的访问控制 (已完成)
+
+- 完整的 RBAC 权限管理系统
+- 智能登录跳转和页面分发
+- 动态导航和功能控制
+- 权限友好的用户体验
+
+### 🚀 系统状态: 生产就绪
+
+**Yarbo 招聘系统现已具备企业级应用的所有核心功能，可以支持真实的招聘业务场景！**
+
+---
+
+_Built with ❤️ by Allen Huang_

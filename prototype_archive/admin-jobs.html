@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职位管理 - Yarbo 招聘管理系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2><a href="index.html">Yarbo<span class="logo-dot">.</span></a></h2>
+                <p>招聘管理系统</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <span>📊</span> 仪表板
+                </a>
+                <a href="admin-candidates.html" class="nav-item">
+                    <span>👥</span> 候选人管理
+                </a>
+                <a href="admin-jobs.html" class="nav-item active">
+                    <span>💼</span> 职位管理
+                </a>
+                <a href="admin-login.html" class="nav-item logout">
+                    <span>🚪</span> 退出登录
+                </a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>职位管理</h1>
+                <div class="header-actions">
+                    <button class="button primary-button" onclick="createJob()">+ 发布新职位</button>
+                </div>
+            </header>
+
+            <div class="jobs-filters">
+                <div class="filter-group">
+                    <select id="status-filter">
+                        <option value="">所有状态</option>
+                        <option value="active">招聘中</option>
+                        <option value="paused">暂停</option>
+                        <option value="closed">已关闭</option>
+                    </select>
+                    <select id="department-filter">
+                        <option value="">所有部门</option>
+                        <option value="tech">技术部</option>
+                        <option value="product">产品部</option>
+                        <option value="marketing">市场部</option>
+                        <option value="operations">运营部</option>
+                    </select>
+                    <input type="text" placeholder="搜索职位名称..." id="job-search">
+                </div>
+            </div>
+
+            <div class="jobs-grid">
+                <div class="job-management-card">
+                    <div class="job-header">
+                        <h3>高级机器人软件工程师</h3>
+                        <div class="job-status">
+                            <span class="status-badge active">招聘中</span>
+                        </div>
+                    </div>
+                    <div class="job-meta">
+                        <span>技术部 | 北京 | 全职</span>
+                        <span>发布于 2024-12-01</span>
+                    </div>
+                    <div class="job-stats">
+                        <div class="stat">
+                            <strong>25</strong>
+                            <span>申请数</span>
+                        </div>
+                        <div class="stat">
+                            <strong>8</strong>
+                            <span>待处理</span>
+                        </div>
+                        <div class="stat">
+                            <strong>3</strong>
+                            <span>面试中</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn edit-btn" onclick="editJob(1)">编辑</button>
+                        <button class="action-btn pause-btn" onclick="pauseJob(1)">暂停</button>
+                        <button class="action-btn view-btn" onclick="viewJob(1)">查看详情</button>
+                    </div>
+                </div>
+
+                <div class="job-management-card">
+                    <div class="job-header">
+                        <h3>产品经理 (硬件)</h3>
+                        <div class="job-status">
+                            <span class="status-badge active">招聘中</span>
+                        </div>
+                    </div>
+                    <div class="job-meta">
+                        <span>产品部 | 北京 | 全职</span>
+                        <span>发布于 2024-11-28</span>
+                    </div>
+                    <div class="job-stats">
+                        <div class="stat">
+                            <strong>18</strong>
+                            <span>申请数</span>
+                        </div>
+                        <div class="stat">
+                            <strong>3</strong>
+                            <span>待处理</span>
+                        </div>
+                        <div class="stat">
+                            <strong>2</strong>
+                            <span>面试中</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn edit-btn" onclick="editJob(2)">编辑</button>
+                        <button class="action-btn pause-btn" onclick="pauseJob(2)">暂停</button>
+                        <button class="action-btn view-btn" onclick="viewJob(2)">查看详情</button>
+                    </div>
+                </div>
+
+                <div class="job-management-card">
+                    <div class="job-header">
+                        <h3>Web前端开发工程师</h3>
+                        <div class="job-status">
+                            <span class="status-badge paused">暂停</span>
+                        </div>
+                    </div>
+                    <div class="job-meta">
+                        <span>技术部 | 北京 | 全职</span>
+                        <span>发布于 2024-11-25</span>
+                    </div>
+                    <div class="job-stats">
+                        <div class="stat">
+                            <strong>12</strong>
+                            <span>申请数</span>
+                        </div>
+                        <div class="stat">
+                            <strong>1</strong>
+                            <span>待处理</span>
+                        </div>
+                        <div class="stat">
+                            <strong>1</strong>
+                            <span>面试中</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn edit-btn" onclick="editJob(3)">编辑</button>
+                        <button class="action-btn resume-btn" onclick="resumeJob(3)">恢复</button>
+                        <button class="action-btn view-btn" onclick="viewJob(3)">查看详情</button>
+                    </div>
+                </div>
+
+                <div class="job-management-card">
+                    <div class="job-header">
+                        <h3>全球市场推广专员</h3>
+                        <div class="job-status">
+                            <span class="status-badge active">招聘中</span>
+                        </div>
+                    </div>
+                    <div class="job-meta">
+                        <span>市场部 | 北京 | 全职</span>
+                        <span>发布于 2024-11-20</span>
+                    </div>
+                    <div class="job-stats">
+                        <div class="stat">
+                            <strong>9</strong>
+                            <span>申请数</span>
+                        </div>
+                        <div class="stat">
+                            <strong>2</strong>
+                            <span>待处理</span>
+                        </div>
+                        <div class="stat">
+                            <strong>1</strong>
+                            <span>面试中</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="action-btn edit-btn" onclick="editJob(4)">编辑</button>
+                        <button class="action-btn pause-btn" onclick="pauseJob(4)">暂停</button>
+                        <button class="action-btn view-btn" onclick="viewJob(4)">查看详情</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 职位管理功能
+        function createJob() {
+            alert('跳转到职位创建页面...');
+        }
+
+        function editJob(jobId) {
+            alert(`编辑职位 ${jobId}...`);
+        }
+
+        function pauseJob(jobId) {
+            if (confirm(`确定要暂停职位 ${jobId} 的招聘吗？`)) {
+                alert('职位已暂停，不再接收新申请。');
+            }
+        }
+
+        function resumeJob(jobId) {
+            if (confirm(`确定要恢复职位 ${jobId} 的招聘吗？`)) {
+                alert('职位已恢复招聘，将重新接收申请。');
+            }
+        }
+
+        function viewJob(jobId) {
+            window.open('job-detail.html', '_blank');
+        }
+    </script>
+</body>
+</html> 

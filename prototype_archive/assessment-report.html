@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>评估报告 - Yarbo 官方招聘</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for radar chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1><a href="index.html">Yarbo<span class="logo-dot">.</span></a></h1>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="report-container">
+            <div class="report-header">
+                <h2>你的个人潜力报告</h2>
+                <p>Hi Allen, 这份报告基于你的回答生成，旨在发掘你的独特优势。</p>
+            </div>
+
+            <div class="report-content">
+                <div class="report-summary">
+                    <h3>核心特质</h3>
+                    <div class="tags">
+                        <span class="tag">创新驱动</span>
+                        <span class="tag">团队协作</span>
+                        <span class="tag">结果导向</span>
+                    </div>
+                    <p>你是一位热爱探索的<strong>开拓者</strong>，同时具备出色的<strong>团队协作</strong>精神。你享受通过解决实际问题来获得成就感，并倾向于在清晰的目标下高效地完成工作。</p>
+                </div>
+                <div class="report-chart">
+                    <h3>能力雷达图</h3>
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+
+            <div class="report-footer">
+                <p>想要了解更多？下载你的完整版PDF报告。</p>
+                <button class="button" onclick="downloadReport()">下载完整报告</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const ctx = document.getElementById('radarChart').getContext('2d');
+        const radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['分析思维', '创新能力', '执行力', '协作性', '领导力'],
+                datasets: [{
+                    label: '你的能力分布',
+                    data: [85, 90, 75, 95, 70],
+                    backgroundColor: 'rgba(29, 78, 216, 0.2)',
+                    borderColor: 'rgba(29, 78, 216, 1)',
+                    pointBackgroundColor: 'rgba(29, 78, 216, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgba(29, 78, 216, 1)'
+                }]
+            },
+            options: {
+                elements: {
+                    line: {
+                        borderWidth: 3
+                    }
+                },
+                scales: {
+                    r: {
+                        angleLines: {
+                            display: true
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100,
+                        pointLabels: {
+                            font: {
+                                size: 14
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        function downloadReport() {
+            alert('报告下载功能正在开发中，感谢您的耐心等待！');
+        }
+    </script>
+</body>
+</html> 

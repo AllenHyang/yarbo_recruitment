@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>候选人管理 - Yarbo 招聘管理系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="admin-body">
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2><a href="index.html">Yarbo<span class="logo-dot">.</span></a></h2>
+                <p>招聘管理系统</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="admin-dashboard.html" class="nav-item">
+                    <span>📊</span> 仪表板
+                </a>
+                <a href="admin-candidates.html" class="nav-item active">
+                    <span>👥</span> 候选人管理
+                </a>
+                <a href="admin-jobs.html" class="nav-item">
+                    <span>💼</span> 职位管理
+                </a>
+                <a href="admin-login.html" class="nav-item logout">
+                    <span>🚪</span> 退出登录
+                </a>
+            </nav>
+        </aside>
+
+        <main class="admin-main">
+            <header class="admin-header">
+                <h1>候选人管理</h1>
+                <p>管理所有申请者，筛选优秀人才</p>
+            </header>
+
+            <div class="candidates-filters">
+                <div class="filter-group">
+                    <select id="job-filter">
+                        <option value="">所有职位</option>
+                        <option value="robot-engineer">高级机器人软件工程师</option>
+                        <option value="product-manager">产品经理 (硬件)</option>
+                        <option value="frontend-engineer">Web前端开发工程师</option>
+                        <option value="marketing">全球市场推广专员</option>
+                    </select>
+                    <select id="status-filter">
+                        <option value="">所有状态</option>
+                        <option value="pending">待筛选</option>
+                        <option value="reviewing">筛选中</option>
+                        <option value="interview">面试中</option>
+                        <option value="offer">发放Offer</option>
+                        <option value="rejected">已拒绝</option>
+                    </select>
+                    <input type="text" placeholder="搜索候选人姓名..." id="name-search">
+                </div>
+            </div>
+
+            <div class="candidates-table-container">
+                <table class="candidates-table">
+                    <thead>
+                        <tr>
+                            <th>候选人</th>
+                            <th>申请职位</th>
+                            <th>投递时间</th>
+                            <th>状态</th>
+                            <th>评分</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="candidate-info">
+                                    <strong>张伟</strong>
+                                    <div class="candidate-contact">zhangwei@email.com | 138****5678</div>
+                                </div>
+                            </td>
+                            <td>高级机器人软件工程师</td>
+                            <td>2小时前</td>
+                            <td>
+                                <select class="status-select" data-candidate="1">
+                                    <option value="pending" selected>待筛选</option>
+                                    <option value="reviewing">筛选中</option>
+                                    <option value="interview">面试中</option>
+                                    <option value="offer">发放Offer</option>
+                                    <option value="rejected">已拒绝</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="star-rating" data-rating="0">
+                                    <span class="star" data-value="1">☆</span>
+                                    <span class="star" data-value="2">☆</span>
+                                    <span class="star" data-value="3">☆</span>
+                                    <span class="star" data-value="4">☆</span>
+                                    <span class="star" data-value="5">☆</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn view-btn" onclick="viewResume(1)">查看简历</button>
+                                    <button class="action-btn report-btn" onclick="viewAssessment(1)">测评报告</button>
+                                    <button class="action-btn note-btn" onclick="addNote(1)">备注</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="candidate-info">
+                                    <strong>李娜</strong>
+                                    <div class="candidate-contact">lina@email.com | 139****9876</div>
+                                </div>
+                            </td>
+                            <td>产品经理 (硬件)</td>
+                            <td>4小时前</td>
+                            <td>
+                                <select class="status-select" data-candidate="2">
+                                    <option value="pending" selected>待筛选</option>
+                                    <option value="reviewing">筛选中</option>
+                                    <option value="interview">面试中</option>
+                                    <option value="offer">发放Offer</option>
+                                    <option value="rejected">已拒绝</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="star-rating" data-rating="4">
+                                    <span class="star filled" data-value="1">★</span>
+                                    <span class="star filled" data-value="2">★</span>
+                                    <span class="star filled" data-value="3">★</span>
+                                    <span class="star filled" data-value="4">★</span>
+                                    <span class="star" data-value="5">☆</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn view-btn" onclick="viewResume(2)">查看简历</button>
+                                    <button class="action-btn report-btn" onclick="viewAssessment(2)">测评报告</button>
+                                    <button class="action-btn note-btn" onclick="addNote(2)">备注</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="candidate-info">
+                                    <strong>王强</strong>
+                                    <div class="candidate-contact">wangqiang@email.com | 137****1234</div>
+                                </div>
+                            </td>
+                            <td>Web前端开发工程师</td>
+                            <td>6小时前</td>
+                            <td>
+                                <select class="status-select" data-candidate="3">
+                                    <option value="pending">待筛选</option>
+                                    <option value="reviewing">筛选中</option>
+                                    <option value="interview" selected>面试中</option>
+                                    <option value="offer">发放Offer</option>
+                                    <option value="rejected">已拒绝</option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="star-rating" data-rating="5">
+                                    <span class="star filled" data-value="1">★</span>
+                                    <span class="star filled" data-value="2">★</span>
+                                    <span class="star filled" data-value="3">★</span>
+                                    <span class="star filled" data-value="4">★</span>
+                                    <span class="star filled" data-value="5">★</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn view-btn" onclick="viewResume(3)">查看简历</button>
+                                    <button class="action-btn report-btn" onclick="viewAssessment(3)">测评报告</button>
+                                    <button class="action-btn note-btn" onclick="addNote(3)">备注</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 星级评分功能
+        document.querySelectorAll('.star-rating').forEach(rating => {
+            const stars = rating.querySelectorAll('.star');
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const value = parseInt(this.dataset.value);
+                    rating.dataset.rating = value;
+                    
+                    stars.forEach((s, index) => {
+                        if (index < value) {
+                            s.textContent = '★';
+                            s.classList.add('filled');
+                        } else {
+                            s.textContent = '☆';
+                            s.classList.remove('filled');
+                        }
+                    });
+                });
+            });
+        });
+
+        // 状态更新功能
+        document.querySelectorAll('.status-select').forEach(select => {
+            select.addEventListener('change', function() {
+                const candidateId = this.dataset.candidate;
+                const newStatus = this.value;
+                alert(`候选人 ${candidateId} 的状态已更新为：${this.options[this.selectedIndex].text}。系统将自动发送通知给候选人。`);
+            });
+        });
+
+        // 查看简历功能
+        function viewResume(candidateId) {
+            alert(`正在打开候选人 ${candidateId} 的简历...`);
+        }
+
+        // 查看测评报告
+        function viewAssessment(candidateId) {
+            // 在真实项目中，这里会打开一个包含特定候选人报告的链接
+            window.open('assessment-report.html', '_blank');
+        }
+
+        // 添加备注功能
+        function addNote(candidateId) {
+            const note = prompt(`为候选人 ${candidateId} 添加备注：`);
+            if (note) {
+                alert(`备注已保存：${note}`);
+            }
+        }
+    </script>
+</body>
+</html> 
