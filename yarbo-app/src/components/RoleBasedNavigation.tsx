@@ -226,6 +226,20 @@ const devNavigationItems: NavItem[] = [
     icon: Database,
     roles: ['admin'],
     badge: 'DEV'
+  },
+  {
+    label: 'Workers API 测试',
+    href: '/test-workers-api',
+    icon: Database,
+    roles: ['admin', 'hr', 'candidate'],
+    badge: 'API'
+  },
+  {
+    label: '职位 (Workers)',
+    href: '/jobs-workers',
+    icon: Briefcase,
+    roles: ['admin', 'hr', 'candidate'],
+    badge: 'NEW'
   }
 ];
 
