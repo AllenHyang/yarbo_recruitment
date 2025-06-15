@@ -69,10 +69,6 @@ function getJobDisplayData(job: JobWithDepartment) {
     };
 }
 
-// 为静态导出生成参数
-export async function generateStaticParams() {
-  return [];
-}
 export default function JobDetailPage({
     params,
 }: {

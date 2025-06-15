@@ -26,10 +26,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-// 为静态导出生成参数
-export async function generateStaticParams() {
-  return [];
-}
 export default function CandidateDetailsPage() {
   const { id } = useParams();
   

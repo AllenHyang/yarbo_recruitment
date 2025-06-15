@@ -37,12 +37,6 @@ interface CampusJobDetail {
   graduation_year?: string;
 }
 
-// 为静态导出生成参数
-export async function generateStaticParams() {
-  // 返回空数组，这样不会预生成任何页面，但允许动态访问
-  return [];
-}
-
 export default function CampusJobDetailPage() {
   const params = useParams();
   const router = useRouter();

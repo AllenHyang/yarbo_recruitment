@@ -61,11 +61,6 @@ interface InterviewInvitation {
   };
 }
 
-// 为静态导出生成参数
-export async function generateStaticParams() {
-  return [];
-}
-
 export default function CandidateInterviewPage({ params }: { params: { token: string } }) {
   const [invitation, setInvitation] = useState<InterviewInvitation | null>(null);
   const [selectedSlotId, setSelectedSlotId] = useState<string>('');
@@ -424,8 +419,8 @@ export default function CandidateInterviewPage({ params }: { params: { token: st
                             <div
                               key={slot.id}
                               className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedSlotId === slot.id
-                                  ? 'border-blue-500 bg-blue-50'
-                                  : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+                                ? 'border-blue-500 bg-blue-50'
+                                : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
                                 }`}
                               onClick={() => setSelectedSlotId(slot.id)}
                             >
