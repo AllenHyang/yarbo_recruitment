@@ -12,13 +12,9 @@ const nextConfig = {
   images: {
     unoptimized: true, // Cloudflare Pages 不支持 Next.js 图片优化
   },
-  // 静态导出配置
-  output: 'export',
+  // 使用 standalone 模式而不是 export
+  output: 'standalone',
   trailingSlash: true,
-  // 禁用服务端功能以支持静态导出
-  experimental: {
-    appDir: true,
-  },
   turbopack: {
     rules: {
       '*.svg': {
