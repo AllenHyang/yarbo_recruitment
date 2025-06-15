@@ -21,6 +21,8 @@ export interface NotificationData {
   metadata?: Record<string, any>;
   createdAt: string;
   read: boolean;
+  actionUrl?: string;
+  actionType?: 'internal' | 'external';
 }
 
 export type RealtimeCallback<T = any> = (event: RealtimeEvent<T>) => void;
@@ -40,7 +42,7 @@ class RealtimeManager {
     filter?: string
   ): () => void {
     const channelName = `table_${tableName}_${filter || 'all'}`;
-    
+
     if (this.channels.has(channelName)) {
       console.warn(`Already subscribed to ${channelName}`);
       return () => this.unsubscribe(channelName);
@@ -133,7 +135,7 @@ class RealtimeManager {
    */
   subscribeToNotifications(callback: NotificationCallback): () => void {
     this.notificationCallbacks.add(callback);
-    
+
     return () => {
       this.notificationCallbacks.delete(callback);
     };
@@ -210,7 +212,7 @@ class RealtimeManager {
   async reconnect(): Promise<void> {
     console.log('🔄 Reconnecting to realtime...');
     this.unsubscribeAll();
-    
+
     // 重新建立连接的逻辑可以在这里实现
     // 通常需要重新订阅之前的频道
   }
@@ -282,6 +284,13 @@ export async function notifyApplicationStatusChange(
   };
 
   const message = statusMessages[newStatus as keyof typeof statusMessages] || '申请状态已更新';
+  const metadata = {
+    applicationId,
+    newStatus,
+    jobTitle
+  };
+
+  const { url, actionType } = generateNotificationActionUrl('application_status', metadata, 'candidate');
 
   await realtimeManager.sendNotification({
     type: 'application_status',
@@ -289,11 +298,9 @@ export async function notifyApplicationStatusChange(
     message,
     userId: applicantId,
     userRole: 'candidate',
-    metadata: {
-      applicationId,
-      newStatus,
-      jobTitle
-    }
+    metadata,
+    actionUrl: url,
+    actionType
   });
 }
 
@@ -303,17 +310,23 @@ export async function notifyNewApplication(
   jobTitle: string,
   applicationId: string
 ): Promise<void> {
+  const metadata = {
+    applicationId,
+    applicantName,
+    jobTitle
+  };
+
+  const { url, actionType } = generateNotificationActionUrl('new_application', metadata, 'hr');
+
   await realtimeManager.sendNotification({
     type: 'new_application',
     title: '新的求职申请',
     message: `${applicantName} 申请了 ${jobTitle} 职位`,
     userId: hrUserId,
     userRole: 'hr',
-    metadata: {
-      applicationId,
-      applicantName,
-      jobTitle
-    }
+    metadata,
+    actionUrl: url,
+    actionType
   });
 }
 
@@ -323,18 +336,98 @@ export async function notifyInterviewScheduled(
   jobTitle: string,
   interviewId: string
 ): Promise<void> {
+  const metadata = {
+    interviewId,
+    interviewDate,
+    jobTitle
+  };
+
+  const { url, actionType } = generateNotificationActionUrl('interview_scheduled', metadata, 'candidate');
+
   await realtimeManager.sendNotification({
     type: 'interview_scheduled',
     title: '面试安排通知',
     message: `您的 ${jobTitle} 面试已安排在 ${interviewDate}`,
     userId: candidateId,
     userRole: 'candidate',
-    metadata: {
-      interviewId,
-      interviewDate,
-      jobTitle
-    }
+    metadata,
+    actionUrl: url,
+    actionType
   });
+}
+
+// 生成通知跳转URL的工具函数
+export function generateNotificationActionUrl(
+  type: NotificationData['type'],
+  metadata?: Record<string, any>,
+  userRole?: string
+): { url: string; actionType: 'internal' | 'external' } {
+  switch (type) {
+    case 'application_status':
+      if (userRole === 'candidate') {
+        // 候选人查看自己的申请状态
+        return {
+          url: '/status',
+          actionType: 'internal'
+        };
+      } else if (userRole === 'hr' || userRole === 'admin') {
+        // HR查看申请详情
+        const applicationId = metadata?.applicationId;
+        return {
+          url: applicationId ? `/hr/applications/${applicationId}` : '/hr/applications',
+          actionType: 'internal'
+        };
+      }
+      break;
+
+    case 'new_application':
+      if (userRole === 'hr' || userRole === 'admin') {
+        // HR查看新申请
+        const applicationId = metadata?.applicationId;
+        return {
+          url: applicationId ? `/hr/applications/${applicationId}` : '/hr/applications',
+          actionType: 'internal'
+        };
+      }
+      break;
+
+    case 'interview_scheduled':
+      if (userRole === 'candidate') {
+        // 候选人查看面试安排
+        return {
+          url: '/status',
+          actionType: 'internal'
+        };
+      } else if (userRole === 'hr' || userRole === 'admin') {
+        // HR查看面试管理
+        const interviewId = metadata?.interviewId;
+        return {
+          url: interviewId ? `/hr/interviews/${interviewId}` : '/hr/interviews',
+          actionType: 'internal'
+        };
+      }
+      break;
+
+    case 'system_update':
+      // 系统更新通知，跳转到通知中心
+      return {
+        url: userRole === 'hr' || userRole === 'admin' ? '/hr/notifications' : '/dashboard',
+        actionType: 'internal'
+      };
+
+    default:
+      // 默认跳转到仪表板
+      return {
+        url: userRole === 'hr' || userRole === 'admin' ? '/hr/dashboard' : '/dashboard',
+        actionType: 'internal'
+      };
+  }
+
+  // 默认返回
+  return {
+    url: '/dashboard',
+    actionType: 'internal'
+  };
 }
 
 // 清理函数

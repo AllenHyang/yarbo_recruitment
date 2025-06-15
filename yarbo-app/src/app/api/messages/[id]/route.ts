@@ -10,10 +10,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { Message, MessageStatus } from '../route';
-
-// 导入主API的消息数据存储
-import { mockMessages } from '../route';
+import { MessageStatus } from '../route';
+import { supabase } from '@/lib/supabase';
 
 // GET /api/messages/[id] - 获取单个消息详情
 export async function GET(
@@ -23,11 +21,23 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const message = mockMessages.get(id);
-    if (!message) {
+    const { data: message, error } = await supabase
+      .from('messages')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json(
+          { success: false, error: '消息不存在' },
+          { status: 404 }
+        );
+      }
+      console.error('获取消息详情错误:', error);
       return NextResponse.json(
-        { success: false, error: '消息不存在' },
-        { status: 404 }
+        { success: false, error: '获取消息详情失败' },
+        { status: 500 }
       );
     }
 

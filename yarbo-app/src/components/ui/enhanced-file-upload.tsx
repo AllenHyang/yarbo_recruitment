@@ -2,13 +2,13 @@
 
 import React, { useState, useCallback, useRef } from "react";
 import { cn } from "@/lib/utils";
-import { 
-  Upload, 
-  File, 
-  X, 
-  Eye, 
-  Download, 
-  AlertCircle, 
+import {
+  Upload,
+  File,
+  X,
+  Eye,
+  Download,
+  AlertCircle,
   CheckCircle,
   FileText,
   Image as ImageIcon,
@@ -65,11 +65,11 @@ export function EnhancedFileUpload({
     if (file.size > maxSize) {
       return `文件 "${file.name}" 大小超过限制 (${(maxSize / 1024 / 1024).toFixed(1)}MB)`;
     }
-    
+
     if (!acceptedTypes.includes(file.type)) {
       return `文件 "${file.name}" 格式不支持`;
     }
-    
+
     return null;
   };
 
@@ -95,7 +95,7 @@ export function EnhancedFileUpload({
   const handleFiles = useCallback(async (newFiles: FileList | File[]) => {
     const fileArray = Array.from(newFiles);
     const newErrors: string[] = [];
-    
+
     // 检查文件数量限制
     if (files.length + fileArray.length > maxFiles) {
       newErrors.push(`最多只能上传 ${maxFiles} 个文件`);
@@ -130,8 +130,17 @@ export function EnhancedFileUpload({
     setErrors([]);
   }, [files, maxFiles, maxSize, acceptedTypes, multiple, onFilesChange]);
 
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!disabled) {
+      setIsDragOver(true);
+    }
+  }, [disabled]);
+
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     if (!disabled) {
       setIsDragOver(true);
     }
@@ -139,17 +148,28 @@ export function EnhancedFileUpload({
 
   const handleDragLeave = useCallback((e: React.DragEvent) => {
     e.preventDefault();
-    setIsDragOver(false);
+    e.stopPropagation();
+    // 只有当鼠标真正离开拖拽区域时才设置为false
+    // 检查relatedTarget是否在拖拽区域内
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = e.clientX;
+    const y = e.clientY;
+
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) {
+      setIsDragOver(false);
+    }
   }, []);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(false);
-    
+
     if (disabled) return;
-    
+
     const droppedFiles = e.dataTransfer.files;
     if (droppedFiles.length > 0) {
+      console.log('拖拽文件:', Array.from(droppedFiles).map(f => f.name));
       handleFiles(droppedFiles);
     }
   }, [disabled, handleFiles]);
@@ -165,7 +185,7 @@ export function EnhancedFileUpload({
     const updatedFiles = files.filter(file => file.id !== fileId);
     setFiles(updatedFiles);
     onFilesChange(updatedFiles);
-    
+
     // 清理预览URL
     const fileToRemove = files.find(file => file.id === fileId);
     if (fileToRemove?.preview) {
@@ -194,15 +214,17 @@ export function EnhancedFileUpload({
       {/* 拖拽上传区域 */}
       <div
         className={cn(
-          "relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200",
-          isDragOver 
-            ? "border-blue-500 bg-blue-50" 
+          "relative border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 cursor-pointer",
+          isDragOver
+            ? "border-blue-500 bg-blue-50"
             : "border-gray-300 hover:border-gray-400",
           disabled && "opacity-50 cursor-not-allowed"
         )}
+        onDragEnter={handleDragEnter}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
+        onClick={() => !disabled && fileInputRef.current?.click()}
       >
         <input
           ref={fileInputRef}
@@ -210,23 +232,26 @@ export function EnhancedFileUpload({
           multiple={multiple}
           accept={acceptedTypes.join(',')}
           onChange={handleFileInputChange}
-          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          className="hidden"
           disabled={disabled}
         />
-        
-        <div className="space-y-4">
+
+        <div className="space-y-4 pointer-events-none">
           <div className="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center">
             <Upload className="w-8 h-8 text-gray-400" />
           </div>
-          
+
           <div>
             <p className="text-lg font-medium text-gray-900">
               拖拽文件到这里，或者
               <Button
                 type="button"
                 variant="link"
-                className="p-0 h-auto font-medium text-blue-600"
-                onClick={() => fileInputRef.current?.click()}
+                className="p-0 h-auto font-medium text-blue-600 pointer-events-auto"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!disabled) fileInputRef.current?.click();
+                }}
                 disabled={disabled}
               >
                 点击选择文件
@@ -266,14 +291,14 @@ export function EnhancedFileUpload({
             {files.map((file) => {
               const FileIcon = getFileIcon(file.type);
               const progress = uploadProgress[file.id] || 0;
-              
+
               return (
                 <div key={file.id} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
                   {/* 文件图标或预览 */}
                   <div className="flex-shrink-0">
                     {showPreview && file.preview ? (
-                      <img 
-                        src={file.preview} 
+                      <img
+                        src={file.preview}
                         alt={file.name}
                         className="w-10 h-10 object-cover rounded"
                       />
@@ -283,7 +308,7 @@ export function EnhancedFileUpload({
                       </div>
                     )}
                   </div>
-                  
+
                   {/* 文件信息 */}
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
@@ -292,19 +317,19 @@ export function EnhancedFileUpload({
                     <p className="text-xs text-gray-500">
                       {formatFileSize(file.size)}
                     </p>
-                    
+
                     {/* 上传进度 */}
                     {progress > 0 && progress < 100 && (
                       <Progress value={progress} className="mt-1 h-1" />
                     )}
                   </div>
-                  
+
                   {/* 操作按钮 */}
                   <div className="flex items-center space-x-1">
                     {progress === 100 && (
                       <CheckCircle className="w-4 h-4 text-green-500" />
                     )}
-                    
+
                     {showPreview && file.preview && (
                       <Button
                         type="button"
@@ -315,7 +340,7 @@ export function EnhancedFileUpload({
                         <Eye className="w-4 h-4" />
                       </Button>
                     )}
-                    
+
                     <Button
                       type="button"
                       variant="ghost"

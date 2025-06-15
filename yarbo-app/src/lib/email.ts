@@ -62,7 +62,7 @@ class EmailService {
     try {
       // 动态导入 nodemailer 和 handlebars，避免客户端错误
       const nodemailer = await import('nodemailer');
-      
+
       const config: EmailConfig = {
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.SMTP_PORT || '587'),
@@ -131,7 +131,7 @@ class EmailService {
     try {
       // 动态导入 Handlebars
       const Handlebars = await import('handlebars');
-      
+
       const templates = {
         // 申请确认邮件模板
         application_received: `
@@ -235,7 +235,7 @@ export async function sendApplicationReceivedEmail(
     candidateEmail,
     {
       ...data,
-      companyName: 'Yarbo Inc.',
+      companyName: 'Yarbo',
       hrContactEmail: 'hr@yarbo.com',
       hrContactName: 'Yarbo HR团队'
     }

@@ -532,160 +532,161 @@ export async function GET(request: NextRequest) {
         }
       });
 
-    } catch (error) {
-      console.error('获取候选人数据错误:', error);
-      return NextResponse.json(
-        { success: false, error: '获取候选人数据失败' },
-        { status: 500 }
-      );
     }
+  } catch (error) {
+    console.error('获取候选人数据错误:', error);
+    return NextResponse.json(
+      { success: false, error: '获取候选人数据失败' },
+      { status: 500 }
+    );
   }
+}
 
 // POST /api/hr/candidates - 创建新候选人记录
 export async function POST(request: NextRequest) {
-    try {
-      const body = await request.json();
+  try {
+    const body = await request.json();
 
-      // 验证必要字段
-      const requiredFields = ['name', 'email', 'phone'];
-      for (const field of requiredFields) {
-        if (!body[field]) {
-          return NextResponse.json(
-            { success: false, error: `缺少必要字段: ${field}` },
-            { status: 400 }
-          );
-        }
-      }
-
-      // 验证邮箱格式
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(body.email)) {
+    // 验证必要字段
+    const requiredFields = ['name', 'email', 'phone'];
+    for (const field of requiredFields) {
+      if (!body[field]) {
         return NextResponse.json(
-          { success: false, error: '邮箱格式不正确' },
+          { success: false, error: `缺少必要字段: ${field}` },
           { status: 400 }
         );
       }
+    }
 
-      // 检查邮箱是否已存在
-      const existingCandidate = mockCandidatesData.find(c => c.email === body.email);
-      if (existingCandidate) {
-        return NextResponse.json(
-          { success: false, error: '该邮箱已存在候选人记录' },
-          { status: 400 }
-        );
-      }
-
-      // 创建新候选人记录
-      const newCandidate = {
-        id: String(mockCandidatesData.length + 1),
-        name: body.name,
-        email: body.email,
-        phone: body.phone,
-        location: body.location || '',
-        experience: body.experience || '0年',
-        education: body.education || '',
-        skills: body.skills || [],
-        rating: body.rating || 3,
-        status: body.status || 'active',
-        applied_jobs: [],
-        resume_url: body.resume_url || '',
-        notes: [],
-        last_contact: new Date().toISOString().split('T')[0],
-        source: body.source || '手动添加',
-        salary_expectation: body.salary_expectation || '',
-        interview_count: 0,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      };
-
-      // 在实际项目中，这里应该保存到数据库
-      mockCandidatesData.push(newCandidate);
-
-      return NextResponse.json({
-        success: true,
-        data: newCandidate,
-        message: '候选人创建成功'
-      });
-
-    } catch (error) {
-      console.error('创建候选人错误:', error);
+    // 验证邮箱格式
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(body.email)) {
       return NextResponse.json(
-        { success: false, error: '创建候选人失败' },
-        { status: 500 }
+        { success: false, error: '邮箱格式不正确' },
+        { status: 400 }
       );
     }
-  }
 
-  // PUT /api/hr/candidates - 批量更新候选人状态
-  export async function PUT(request: NextRequest) {
-    try {
-      const body = await request.json();
-      const { action, candidate_ids, data } = body;
-
-      if (!action || !candidate_ids || !Array.isArray(candidate_ids)) {
-        return NextResponse.json(
-          { success: false, error: '无效的请求参数' },
-          { status: 400 }
-        );
-      }
-
-      let updatedCount = 0;
-      const updatedCandidates = [];
-
-      for (const candidateId of candidate_ids) {
-        const index = mockCandidatesData.findIndex(candidate => candidate.id === candidateId);
-        if (index !== -1) {
-          const candidate = mockCandidatesData[index];
-
-          switch (action) {
-            case 'update_status':
-              if (data.status) {
-                candidate.status = data.status;
-              }
-              break;
-            case 'update_rating':
-              if (data.rating >= 1 && data.rating <= 5) {
-                candidate.rating = data.rating;
-              }
-              break;
-            case 'add_note':
-              if (data.note) {
-                candidate.notes.push({
-                  id: String(candidate.notes.length + 1),
-                  content: data.note,
-                  created_by: data.created_by || 'Admin',
-                  created_at: new Date().toISOString().split('T')[0]
-                });
-              }
-              break;
-            case 'update_contact':
-              candidate.last_contact = new Date().toISOString().split('T')[0];
-              break;
-            default:
-              continue;
-          }
-
-          candidate.updated_at = new Date().toISOString();
-          updatedCount++;
-          updatedCandidates.push(candidate);
-        }
-      }
-
-      return NextResponse.json({
-        success: true,
-        data: {
-          updated_count: updatedCount,
-          updated_candidates: updatedCandidates
-        },
-        message: `成功更新 ${updatedCount} 个候选人记录`
-      });
-
-    } catch (error) {
-      console.error('批量更新候选人错误:', error);
+    // 检查邮箱是否已存在
+    const existingCandidate = mockCandidatesData.find(c => c.email === body.email);
+    if (existingCandidate) {
       return NextResponse.json(
-        { success: false, error: '批量更新候选人失败' },
-        { status: 500 }
+        { success: false, error: '该邮箱已存在候选人记录' },
+        { status: 400 }
       );
     }
+
+    // 创建新候选人记录
+    const newCandidate = {
+      id: String(mockCandidatesData.length + 1),
+      name: body.name,
+      email: body.email,
+      phone: body.phone,
+      location: body.location || '',
+      experience: body.experience || '0年',
+      education: body.education || '',
+      skills: body.skills || [],
+      rating: body.rating || 3,
+      status: body.status || 'active',
+      applied_jobs: [],
+      resume_url: body.resume_url || '',
+      notes: [],
+      last_contact: new Date().toISOString().split('T')[0],
+      source: body.source || '手动添加',
+      salary_expectation: body.salary_expectation || '',
+      interview_count: 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+
+    // 在实际项目中，这里应该保存到数据库
+    mockCandidatesData.push(newCandidate);
+
+    return NextResponse.json({
+      success: true,
+      data: newCandidate,
+      message: '候选人创建成功'
+    });
+
+  } catch (error) {
+    console.error('创建候选人错误:', error);
+    return NextResponse.json(
+      { success: false, error: '创建候选人失败' },
+      { status: 500 }
+    );
   }
+}
+
+// PUT /api/hr/candidates - 批量更新候选人状态
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { action, candidate_ids, data } = body;
+
+    if (!action || !candidate_ids || !Array.isArray(candidate_ids)) {
+      return NextResponse.json(
+        { success: false, error: '无效的请求参数' },
+        { status: 400 }
+      );
+    }
+
+    let updatedCount = 0;
+    const updatedCandidates = [];
+
+    for (const candidateId of candidate_ids) {
+      const index = mockCandidatesData.findIndex(candidate => candidate.id === candidateId);
+      if (index !== -1) {
+        const candidate = mockCandidatesData[index];
+
+        switch (action) {
+          case 'update_status':
+            if (data.status) {
+              candidate.status = data.status;
+            }
+            break;
+          case 'update_rating':
+            if (data.rating >= 1 && data.rating <= 5) {
+              candidate.rating = data.rating;
+            }
+            break;
+          case 'add_note':
+            if (data.note) {
+              candidate.notes.push({
+                id: String(candidate.notes.length + 1),
+                content: data.note,
+                created_by: data.created_by || 'Admin',
+                created_at: new Date().toISOString().split('T')[0]
+              });
+            }
+            break;
+          case 'update_contact':
+            candidate.last_contact = new Date().toISOString().split('T')[0];
+            break;
+          default:
+            continue;
+        }
+
+        candidate.updated_at = new Date().toISOString();
+        updatedCount++;
+        updatedCandidates.push(candidate);
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        updated_count: updatedCount,
+        updated_candidates: updatedCandidates
+      },
+      message: `成功更新 ${updatedCount} 个候选人记录`
+    });
+
+  } catch (error) {
+    console.error('批量更新候选人错误:', error);
+    return NextResponse.json(
+      { success: false, error: '批量更新候选人失败' },
+      { status: 500 }
+    );
+  }
+}
 

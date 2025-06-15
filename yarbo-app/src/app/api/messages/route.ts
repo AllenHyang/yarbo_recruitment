@@ -10,6 +10,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+import { Message } from '@/lib/database.types';
 
 // 消息类型枚举
 export enum MessageType {
@@ -38,119 +40,10 @@ export enum MessageStatus {
   DELETED = 'deleted'
 }
 
-// 消息接口
-export interface Message {
-  id: string;
-  sender_id: string;
-  sender_name: string;
-  sender_role: string;
-  receiver_id: string;
-  receiver_name: string;
-  receiver_role: string;
-  title: string;
-  content: string;
-  type: MessageType;
-  priority: MessagePriority;
-  status: MessageStatus;
-  created_at: string;
-  read_at?: string;
-  metadata?: {
-    application_id?: string;
-    job_title?: string;
-    status_change?: {
-      from: string;
-      to: string;
-    };
-    [key: string]: any;
-  };
-}
+// 消息接口 - 现在使用数据库类型
+// export interface Message - 已在 database.types.ts 中定义
 
-// 模拟消息数据存储
-export const mockMessages = new Map<string, Message>([
-  ['1', {
-    id: '1',
-    sender_id: 'system',
-    sender_name: '系统',
-    sender_role: 'system',
-    receiver_id: 'zhangsan@example.com',
-    receiver_name: '张三',
-    receiver_role: 'candidate',
-    title: '申请状态更新 - 资深全栈工程师',
-    content: '您的申请状态已更新为"已录用"。恭喜！经过全面评估，您的技能和经验完全符合我们的要求。欢迎加入Yarbo团队！',
-    type: MessageType.STATUS_UPDATE,
-    priority: MessagePriority.HIGH,
-    status: MessageStatus.UNREAD,
-    created_at: '2025-06-10 06:04:49',
-    metadata: {
-      application_id: '1',
-      job_title: '资深全栈工程师',
-      status_change: {
-        from: '审核中',
-        to: '已录用'
-      }
-    }
-  }],
-  // 为演示账户添加测试消息
-  ['demo1', {
-    id: 'demo1',
-    sender_id: 'system',
-    sender_name: '系统',
-    sender_role: 'system',
-    receiver_id: 'test.candidate@gmail.com',
-    receiver_name: '演示候选人',
-    receiver_role: 'candidate',
-    title: '欢迎使用Yarbo招聘系统',
-    content: '欢迎您使用Yarbo智能招聘系统！这是一条演示消息，展示站内消息功能。您可以在这里查看申请状态更新、面试通知等重要信息。',
-    type: MessageType.SYSTEM,
-    priority: MessagePriority.NORMAL,
-    status: MessageStatus.UNREAD,
-    created_at: '2025-06-10 06:00:00',
-    metadata: {
-      welcome_message: true
-    }
-  }],
-  ['2', {
-    id: '2',
-    sender_id: 'hr@yarbo.com',
-    sender_name: 'HR团队',
-    sender_role: 'hr',
-    receiver_id: 'zhangsan@example.com',
-    receiver_name: '张三',
-    receiver_role: 'candidate',
-    title: '欢迎加入Yarbo！入职准备事项',
-    content: '恭喜您成功加入Yarbo团队！请准备以下入职材料：1. 身份证复印件 2. 学历证明 3. 银行卡信息 4. 体检报告。我们将在明天与您联系确认入职时间。',
-    type: MessageType.HR_MESSAGE,
-    priority: MessagePriority.HIGH,
-    status: MessageStatus.UNREAD,
-    created_at: '2025-06-10 06:10:00',
-    metadata: {
-      application_id: '1',
-      job_title: '资深全栈工程师'
-    }
-  }],
-  ['3', {
-    id: '3',
-    sender_id: 'system',
-    sender_name: '系统',
-    sender_role: 'system',
-    receiver_id: 'lisi@example.com',
-    receiver_name: '李四',
-    receiver_role: 'candidate',
-    title: '面试邀请 - 前端工程师',
-    content: '您好！我们很高兴通知您，您的申请已通过初步筛选。我们诚邀您参加技术面试，面试时间：2025年6月12日 下午2:00，地点：Yarbo办公室会议室A。',
-    type: MessageType.INTERVIEW_SCHEDULED,
-    priority: MessagePriority.NORMAL,
-    status: MessageStatus.READ,
-    created_at: '2025-06-09 14:30:00',
-    read_at: '2025-06-09 15:45:00',
-    metadata: {
-      application_id: '2',
-      job_title: '前端工程师',
-      interview_date: '2025-06-12 14:00:00',
-      location: 'Yarbo办公室会议室A'
-    }
-  }]
-]);
+// 消息数据现在存储在数据库中，不再使用mock数据
 
 // GET /api/messages - 获取用户消息列表
 export async function GET(request: NextRequest) {
@@ -169,44 +62,55 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 筛选用户消息
-    let userMessages = Array.from(mockMessages.values()).filter(
-      message => message.receiver_id === userId
-    );
+    // 构建查询
+    let query = supabase
+      .from('messages')
+      .select('*')
+      .eq('receiver_id', userId);
 
     // 按状态筛选
     if (status) {
-      userMessages = userMessages.filter(message => message.status === status);
+      query = query.eq('status', status);
     }
 
     // 按类型筛选
     if (type) {
-      userMessages = userMessages.filter(message => message.type === type);
+      query = query.eq('type', type);
     }
 
-    // 按时间倒序排列
-    userMessages.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    // 排序和分页
+    query = query
+      .order('created_at', { ascending: false })
+      .range((page - 1) * limit, page * limit - 1);
 
-    // 分页处理
-    const total = userMessages.length;
-    const startIndex = (page - 1) * limit;
-    const endIndex = startIndex + limit;
-    const paginatedMessages = userMessages.slice(startIndex, endIndex);
+    const { data: messages, error, count } = await query;
 
-    // 统计未读消息数量
-    const unreadCount = userMessages.filter(message => message.status === MessageStatus.UNREAD).length;
+    if (error) {
+      console.error('获取消息列表错误:', error);
+      return NextResponse.json(
+        { success: false, error: '获取消息列表失败' },
+        { status: 500 }
+      );
+    }
+
+    // 获取未读消息数量
+    const { count: unreadCount } = await supabase
+      .from('messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('receiver_id', userId)
+      .eq('status', 'unread');
 
     return NextResponse.json({
       success: true,
       data: {
-        messages: paginatedMessages,
+        messages: messages || [],
         pagination: {
           page,
           limit,
-          total,
-          totalPages: Math.ceil(total / limit)
+          total: count || 0,
+          totalPages: Math.ceil((count || 0) / limit)
         },
-        unreadCount
+        unreadCount: unreadCount || 0
       }
     });
 
@@ -251,32 +155,36 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 生成新消息ID
-    const messageId = (mockMessages.size + 1).toString();
-
     // 创建新消息
-    const newMessage: Message = {
-      id: messageId,
-      sender_id,
-      sender_name: sender_name || '未知发送者',
-      sender_role: sender_role || 'user',
-      receiver_id,
-      receiver_name: receiver_name || '未知接收者',
-      receiver_role: receiver_role || 'candidate',
-      title,
-      content,
-      type,
-      priority,
-      status: MessageStatus.UNREAD,
-      created_at: new Date().toISOString().replace('T', ' ').substring(0, 19),
-      metadata
-    };
+    const { data: newMessage, error } = await supabase
+      .from('messages')
+      .insert({
+        sender_id,
+        sender_name: sender_name || '未知发送者',
+        sender_role: sender_role || 'user',
+        receiver_id,
+        receiver_name: receiver_name || '未知接收者',
+        receiver_role: receiver_role || 'candidate',
+        title,
+        content,
+        type,
+        priority,
+        status: 'unread',
+        metadata
+      })
+      .select()
+      .single();
 
-    // 保存消息
-    mockMessages.set(messageId, newMessage);
+    if (error) {
+      console.error('创建消息错误:', error);
+      return NextResponse.json(
+        { success: false, error: '消息发送失败' },
+        { status: 500 }
+      );
+    }
 
     console.log('📨 新消息已创建:', {
-      id: messageId,
+      id: newMessage.id,
       from: `${sender_name} (${sender_role})`,
       to: `${receiver_name} (${receiver_role})`,
       title,

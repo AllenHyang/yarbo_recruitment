@@ -13,18 +13,25 @@ export const PERMISSIONS = {
       '/auth/register',
       '/auth/forgot-password',
       '/about',
-      '/contact'
+      '/contact',
+      '/campus-recruitment',
+      '/internship-recruitment'
     ],
-    
+
     // 候选人页面
     CANDIDATE: [
       '/profile',
       '/applications',
       '/applications/[id]',
       '/status',
-      '/apply/[id]'
+      '/apply',
+      '/apply/[id]',
+      '/offers',
+      '/offers/[id]',
+      '/campus-recruitment',
+      '/internship-recruitment'
     ],
-    
+
     // HR页面
     HR: [
       '/hr/dashboard',
@@ -39,12 +46,16 @@ export const PERMISSIONS = {
       '/hr/interviews',
       '/hr/interviews/create',
       '/hr/interviews/[id]',
+      '/hr/departments',
+      '/hr/departments/[id]',
       '/hr/reports',
       '/hr/analytics',
       '/hr/campus',
-      '/hr/internship'
+      '/hr/internship',
+      '/hr/offers',
+      '/hr/offers/[id]'
     ],
-    
+
     // 管理员页面
     ADMIN: [
       '/admin/dashboard',
@@ -55,9 +66,11 @@ export const PERMISSIONS = {
       '/admin/settings',
       '/admin/system',
       '/admin/logs',
-      '/admin/backup'
+      '/admin/backup',
+      '/admin/offers',
+      '/admin/offers/[id]'
     ],
-    
+
     // 测试页面 - 仅开发环境
     TEST: [
       '/test/realtime',
@@ -65,7 +78,7 @@ export const PERMISSIONS = {
       '/test/api'
     ]
   },
-  
+
   // 功能权限
   FEATURES: {
     // 候选人权限
@@ -77,7 +90,7 @@ export const PERMISSIONS = {
       'upload_resume',
       'view_application_status'
     ],
-    
+
     // HR权限
     HR: [
       'view_all_jobs',
@@ -89,12 +102,17 @@ export const PERMISSIONS = {
       'schedule_interviews',
       'view_candidates',
       'contact_candidates',
+      'manage_departments',
+      'view_departments',
+      'create_departments',
+      'edit_departments',
+      'delete_departments',
       'generate_reports',
       'view_analytics',
       'manage_campus_recruitment',
       'manage_internships'
     ],
-    
+
     // 管理员权限
     ADMIN: [
       'manage_users',
@@ -152,20 +170,20 @@ export const ROLE_PERMISSIONS: Record<UserRole, {
 export function hasPageAccess(userRole: UserRole | null, pathname: string): boolean {
   // 未登录用户只能访问公开页面
   if (!userRole) {
-    return PERMISSIONS.PAGES.PUBLIC.some(page => 
+    return PERMISSIONS.PAGES.PUBLIC.some(page =>
       matchRoute(page, pathname)
     );
   }
-  
+
   const rolePermissions = ROLE_PERMISSIONS[userRole];
-  return rolePermissions.pages.some(page => 
+  return rolePermissions.pages.some(page =>
     matchRoute(page, pathname)
   );
 }
 
 export function hasFeatureAccess(userRole: UserRole | null, feature: string): boolean {
   if (!userRole) return false;
-  
+
   const rolePermissions = ROLE_PERMISSIONS[userRole];
   return rolePermissions.features.includes(feature);
 }
@@ -174,13 +192,13 @@ export function hasFeatureAccess(userRole: UserRole | null, feature: string): bo
 function matchRoute(pattern: string, pathname: string): boolean {
   // 精确匹配
   if (pattern === pathname) return true;
-  
+
   // 动态路由匹配 [id]
   const patternParts = pattern.split('/');
   const pathnameParts = pathname.split('/');
-  
+
   if (patternParts.length !== pathnameParts.length) return false;
-  
+
   return patternParts.every((part, index) => {
     if (part.startsWith('[') && part.endsWith(']')) {
       // 动态路由段，匹配任何值
@@ -226,7 +244,7 @@ export function getRoleColorTheme(role: UserRole): string {
 
 // 检查是否为受保护的路由
 export function isProtectedRoute(pathname: string): boolean {
-  const protectedPrefixes = ['/hr/', '/admin/', '/profile', '/applications'];
+  const protectedPrefixes = ['/hr/', '/admin/', '/profile', '/applications', '/offers'];
   return protectedPrefixes.some(prefix => pathname.startsWith(prefix));
 }
 
@@ -242,6 +260,6 @@ export function isHRRoute(pathname: string): boolean {
 
 // 检查是否为候选人路由
 export function isCandidateRoute(pathname: string): boolean {
-  const candidateRoutes = ['/profile', '/applications', '/status', '/apply'];
+  const candidateRoutes = ['/profile', '/applications', '/status', '/apply', '/offers'];
   return candidateRoutes.some(route => pathname.startsWith(route));
 }
