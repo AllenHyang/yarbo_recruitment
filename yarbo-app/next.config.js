@@ -15,6 +15,16 @@ const nextConfig = {
   // 使用 standalone 模式而不是 export
   output: 'standalone',
   trailingSlash: true,
+  // 禁用构建缓存以避免大文件
+  experimental: {
+    webpackBuildWorker: false,
+  },
+  // Webpack 配置优化
+  webpack: (config, { isServer }) => {
+    // 禁用缓存以避免大文件
+    config.cache = false;
+    return config;
+  },
   turbopack: {
     rules: {
       '*.svg': {

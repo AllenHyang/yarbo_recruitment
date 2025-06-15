@@ -16,6 +16,10 @@
 # next.js
 /.next/
 /out/
+# 排除大的缓存文件
+/.next/cache/
+/cache/
+*.pack
 
 # production
 /build
