@@ -93,7 +93,12 @@ export async function getNotifications(params: GetNotificationsParams): Promise<
       searchParams.append('type', params.type);
     }
 
-    const response = await fetch(`/api/notifications?${searchParams.toString()}`);
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/notifications?${searchParams.toString()}`);
     const result: ApiResponse<NotificationsResponse> = await response.json();
 
     if (!response.ok) {
@@ -150,7 +155,12 @@ export async function createNotification(params: CreateNotificationParams): Prom
   error?: string;
 }> {
   try {
-    const response = await fetch('/api/notifications', {
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/notifications`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -204,7 +214,12 @@ export async function markNotificationAsRead(notificationId: string, userId: str
   error?: string;
 }> {
   try {
-    const response = await fetch(`/api/notifications/${notificationId}`, {
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/notifications/${notificationId}/read`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -243,7 +258,12 @@ export async function markAllNotificationsAsRead(userId: string): Promise<{
   error?: string;
 }> {
   try {
-    const response = await fetch('/api/notifications', {
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/notifications/mark-all-read`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

@@ -10,6 +10,7 @@ import { handleTestAPI } from './routes/test.js';
 import { handleAuthAPI } from './routes/auth.js';
 import { handleUploadAPI } from './routes/upload.js';
 import { handleNotificationsAPI } from './routes/notifications.js';
+import { handleMessagesAPI } from './routes/messages.js';
 
 // CORS 配置
 const corsHeaders = {
@@ -55,6 +56,10 @@ export default {
         return await handleNotificationsAPI(request, env, path, method);
       }
 
+      if (path.startsWith('/api/messages')) {
+        return await handleMessagesAPI(request, env, path, method);
+      }
+
       if (path.startsWith('/api/test')) {
         return await handleTestAPI(request, env, path, method);
       }
@@ -77,7 +82,9 @@ export default {
             'POST /api/upload/resume - 上传简历',
             'POST /api/upload/avatar - 上传头像',
             'GET /api/notifications - 获取通知列表',
-            'PATCH /api/notifications/{id}/read - 标记通知已读'
+            'PATCH /api/notifications/{id}/read - 标记通知已读',
+            'GET /api/messages - 获取消息列表',
+            'POST /api/messages - 创建消息'
           ]
         }), {
           status: 200,

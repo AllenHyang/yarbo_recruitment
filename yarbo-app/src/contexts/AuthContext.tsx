@@ -63,11 +63,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.access_token) {
           // 解析 JWT token 获取 app_role
-          const payload = JSON.parse(atob(session.access_token.split('.')[1]));
-          const jwtRole = payload.app_role;
+          const parts = session.access_token.split('.');
+          if (parts.length === 3) {
+            // 添加必要的 padding
+            let payload = parts[1];
+            while (payload.length % 4) {
+              payload += '=';
+            }
+            const decodedPayload = JSON.parse(atob(payload));
+            const jwtRole = decodedPayload.app_role || decodedPayload.user_metadata?.role;
 
-          if (jwtRole && ['candidate', 'hr', 'admin'].includes(jwtRole)) {
-            role = jwtRole as UserRole;
+            if (jwtRole && ['candidate', 'hr', 'admin'].includes(jwtRole)) {
+              role = jwtRole as UserRole;
+            }
           }
         }
       } catch (jwtError) {
@@ -104,11 +112,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
         if (session?.access_token) {
-          const payload = JSON.parse(atob(session.access_token.split('.')[1]));
-          const jwtRole = payload.app_role;
+          const parts = session.access_token.split('.');
+          if (parts.length === 3) {
+            // 添加必要的 padding
+            let payload = parts[1];
+            while (payload.length % 4) {
+              payload += '=';
+            }
+            const decodedPayload = JSON.parse(atob(payload));
+            const jwtRole = decodedPayload.app_role || decodedPayload.user_metadata?.role;
 
-          if (jwtRole && ['candidate', 'hr', 'admin'].includes(jwtRole)) {
-            role = jwtRole as UserRole;
+            if (jwtRole && ['candidate', 'hr', 'admin'].includes(jwtRole)) {
+              role = jwtRole as UserRole;
+            }
           }
         }
       } catch (jwtError) {

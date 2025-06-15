@@ -935,7 +935,12 @@ export async function getMessages(
       ...(options?.limit && { limit: options.limit.toString() })
     });
 
-    const response = await fetch(`/api/messages?${params}`);
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/messages?${params}`);
     const data = await response.json();
 
     if (!response.ok) {
@@ -967,7 +972,12 @@ export async function sendMessage(messageData: {
   metadata?: any;
 }): Promise<{ success: boolean; data?: any; error?: string }> {
   try {
-    const response = await fetch('/api/messages', {
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -998,7 +1008,12 @@ export async function updateMessageStatus(
   userId: string
 ): Promise<{ success: boolean; data?: any; error?: string }> {
   try {
-    const response = await fetch(`/api/messages/${messageId}`, {
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/messages/${messageId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -1028,7 +1043,12 @@ export async function deleteMessage(
   userId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const response = await fetch(`/api/messages/${messageId}?userId=${userId}`, {
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/messages/${messageId}?userId=${userId}`, {
       method: 'DELETE',
     });
 
