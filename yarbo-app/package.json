@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "pages:build": "npx @cloudflare/next-on-pages",
+    "pages:dev": "npm run pages:build && wrangler pages dev .vercel/output/static --compatibility-date=2024-07-29 --compatibility-flags=nodejs_compat",
     "preview": "npm run pages:build && wrangler pages dev",
     "deploy": "npm run pages:build && wrangler pages deploy",
     "test:e2e": "playwright test",
