@@ -40,6 +40,10 @@ interface InternshipJobDetail {
   is_remote: boolean;
 }
 
+// 为静态导出生成参数
+export async function generateStaticParams() {
+  return [];
+}
 export default function InternshipJobDetailPage() {
   const params = useParams();
   const router = useRouter();

@@ -12,8 +12,8 @@ const nextConfig = {
   images: {
     unoptimized: true, // Cloudflare Pages 不支持 Next.js 图片优化
   },
-  // 使用 standalone 模式而不是 export
-  output: 'standalone',
+  // 使用静态导出模式
+  output: 'export',
   trailingSlash: true,
   // 禁用构建缓存以避免大文件
   experimental: {

@@ -336,4 +336,8 @@ function DepartmentDetailPage() {
 }
 
 // 使用权限保护，只允许HR和管理员访问
+// 为静态导出生成参数
+export async function generateStaticParams() {
+  return [];
+}
 export default withProtected(DepartmentDetailPage, ['hr', 'admin']);

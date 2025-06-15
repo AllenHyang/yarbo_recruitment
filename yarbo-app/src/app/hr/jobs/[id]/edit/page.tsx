@@ -11,6 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
 
+// 为静态导出生成参数
+export async function generateStaticParams() {
+  return [];
+}
 export default function EditJobPage() {
   const { id } = useParams();
   const router = useRouter();

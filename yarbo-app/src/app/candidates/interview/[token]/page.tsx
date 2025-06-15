@@ -17,7 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { 
+import {
   Calendar,
   Clock,
   MapPin,
@@ -59,6 +59,11 @@ interface InterviewInvitation {
     contact_phone: string;
     contact_email: string;
   };
+}
+
+// 为静态导出生成参数
+export async function generateStaticParams() {
+  return [];
 }
 
 export default function CandidateInterviewPage({ params }: { params: { token: string } }) {
@@ -307,7 +312,7 @@ export default function CandidateInterviewPage({ params }: { params: { token: st
                     <p className="text-sm text-gray-600 mb-3">
                       {invitation.interview_details.description}
                     </p>
-                    
+
                     <h4 className="font-medium mb-2">准备事项</h4>
                     <ul className="text-sm text-gray-600 space-y-1">
                       {invitation.interview_details.preparation_notes.map((note, index) => (
@@ -418,11 +423,10 @@ export default function CandidateInterviewPage({ params }: { params: { token: st
                           {invitation.available_slots.map((slot) => (
                             <div
                               key={slot.id}
-                              className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                                selectedSlotId === slot.id
+                              className={`p-4 border rounded-lg cursor-pointer transition-all ${selectedSlotId === slot.id
                                   ? 'border-blue-500 bg-blue-50'
                                   : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                              }`}
+                                }`}
                               onClick={() => setSelectedSlotId(slot.id)}
                             >
                               <div className="flex items-center justify-between">
@@ -435,7 +439,7 @@ export default function CandidateInterviewPage({ params }: { params: { token: st
                                       {slot.start_time} - {slot.end_time}
                                     </div>
                                   </div>
-                                  
+
                                   <div className="space-y-1">
                                     <div className="flex items-center space-x-2 text-sm">
                                       <User className="w-4 h-4 text-gray-500" />
@@ -449,7 +453,7 @@ export default function CandidateInterviewPage({ params }: { params: { token: st
                                     )}
                                   </div>
                                 </div>
-                                
+
                                 {selectedSlotId === slot.id && (
                                   <CheckCircle className="w-5 h-5 text-blue-600" />
                                 )}

@@ -226,4 +226,8 @@ function JobApplicationsPage() {
 }
 
 // 使用权限保护包装组件，只允许HR和管理员访问
+// 为静态导出生成参数
+export async function generateStaticParams() {
+  return [];
+}
 export default withRoleBasedAccess(JobApplicationsPage, ['hr', 'admin']);

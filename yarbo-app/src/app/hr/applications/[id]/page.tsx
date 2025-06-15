@@ -23,6 +23,10 @@ import Link from "next/link";
 import { ResumePreviewButton } from "@/components/ResumeViewer";
 import { StatusUpdateDialog } from "@/components/StatusUpdateDialog";
 
+// 为静态导出生成参数
+export async function generateStaticParams() {
+  return [];
+}
 export default function ApplicationDetailsPage() {
   const { id } = useParams();
   const [status, setStatus] = useState('reviewing');
