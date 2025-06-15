@@ -20,12 +20,12 @@ import { Badge } from "@/components/ui/badge";
 import { JobCard } from "@/components/JobCard";
 import type { Job } from "@/components/JobCard";
 import type { JobWithDepartment } from "@/lib/database.types";
-import { 
-  Search, 
-  Filter, 
-  MapPin, 
-  Building2, 
-  DollarSign, 
+import {
+  Search,
+  Filter,
+  MapPin,
+  Building2,
+  DollarSign,
   X,
   TrendingUp,
   Clock,
@@ -33,7 +33,7 @@ import {
 } from "lucide-react";
 
 interface JobSearchProps {
-  jobs: (JobWithDepartment | Job)[];
+  jobs: JobWithDepartment[];
   isLoading?: boolean;
 }
 
@@ -51,7 +51,7 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
     department: "",
     salaryRange: ""
   });
-  
+
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -63,18 +63,9 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
 
     jobs.forEach(job => {
       if (job.location) locationSet.add(job.location);
-      
-      if ('departments' in job && job.departments?.name) {
-        departmentSet.add(job.departments.name);
-      } else if ('department' in job && job.department) {
-        departmentSet.add(job.department);
-      }
-      
-      if ('salary_display' in job && job.salary_display) {
-        salarySet.add(job.salary_display);
-      } else if ('salary' in job && job.salary) {
-        salarySet.add(job.salary);
-      }
+
+      const department = job.departments?.name || job.department;
+      if (department) departmentSet.add(department);
     });
 
     return {
@@ -87,10 +78,10 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
   // 搜索建议
   const searchSuggestions = useMemo(() => {
     if (!filters.keyword || filters.keyword.length < 2) return [];
-    
+
     const suggestions: string[] = [];
     const keyword = filters.keyword.toLowerCase();
-    
+
     // 基于职位标题的建议
     jobs.forEach(job => {
       if (job.title.toLowerCase().includes(keyword)) {
@@ -115,9 +106,9 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
       if (filters.keyword) {
         const keyword = filters.keyword.toLowerCase();
         const titleMatch = job.title.toLowerCase().includes(keyword);
-        const departmentMatch = ('departments' in job && job.departments?.name?.toLowerCase().includes(keyword)) ||
-                               ('department' in job && job.department?.toLowerCase().includes(keyword));
-        
+        const department = job.departments?.name || job.department || '';
+        const departmentMatch = department.toLowerCase().includes(keyword);
+
         if (!titleMatch && !departmentMatch) return false;
       }
 
@@ -128,8 +119,7 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
 
       // 部门筛选
       if (filters.department) {
-        const jobDepartment = ('departments' in job && job.departments?.name) || 
-                             ('department' in job && job.department);
+        const jobDepartment = job.departments?.name || job.department;
         if (jobDepartment !== filters.department) {
           return false;
         }
@@ -147,12 +137,12 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
 
   const handleSearch = (keyword: string) => {
     setFilters(prev => ({ ...prev, keyword }));
-    
+
     // 添加到搜索历史
     if (keyword && !searchHistory.includes(keyword)) {
       setSearchHistory(prev => [keyword, ...prev.slice(0, 4)]);
     }
-    
+
     setShowSuggestions(false);
   };
 
@@ -246,7 +236,7 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
             {/* 筛选器 */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               {/* 地点筛选 */}
-              <Select value={filters.location} onValueChange={(value) => 
+              <Select value={filters.location} onValueChange={(value) =>
                 setFilters(prev => ({ ...prev, location: value === "all" ? "" : value }))
               }>
                 <SelectTrigger className="h-10">
@@ -264,7 +254,7 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
               </Select>
 
               {/* 部门筛选 */}
-              <Select value={filters.department} onValueChange={(value) => 
+              <Select value={filters.department} onValueChange={(value) =>
                 setFilters(prev => ({ ...prev, department: value === "all" ? "" : value }))
               }>
                 <SelectTrigger className="h-10">
@@ -282,7 +272,7 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
               </Select>
 
               {/* 薪资范围 */}
-              <Select value={filters.salaryRange} onValueChange={(value) => 
+              <Select value={filters.salaryRange} onValueChange={(value) =>
                 setFilters(prev => ({ ...prev, salaryRange: value === "all" ? "" : value }))
               }>
                 <SelectTrigger className="h-10">
@@ -301,17 +291,17 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
 
               {/* 搜索/清除按钮 */}
               <div className="flex space-x-2">
-                <Button 
+                <Button
                   onClick={() => handleSearch(filters.keyword)}
                   className="flex-1 h-10"
                 >
                   <Search className="h-4 w-4 mr-2" />
                   搜索
                 </Button>
-                
+
                 {hasActiveFilters && (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={clearFilters}
                     className="h-10 px-3"
                   >
@@ -330,7 +320,7 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
           <span className="text-gray-600">
             找到 <span className="font-semibold text-gray-900">{filteredJobs.length}</span> 个职位
           </span>
-          
+
           {hasActiveFilters && (
             <div className="flex items-center space-x-2">
               <Filter className="h-4 w-4 text-blue-600" />
@@ -386,8 +376,8 @@ export function JobSearch({ jobs, isLoading = false }: JobSearchProps) {
 
       {/* 点击外部关闭建议 */}
       {showSuggestions && (
-        <div 
-          className="fixed inset-0 z-40" 
+        <div
+          className="fixed inset-0 z-40"
           onClick={() => setShowSuggestions(false)}
         />
       )}

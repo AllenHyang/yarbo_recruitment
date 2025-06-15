@@ -28,9 +28,51 @@ export default function Home() {
   const [isUsingFallbackData, setIsUsingFallbackData] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // 获取动态统计数据
+  // 获取动态统计数据 (优化版 - 添加缓存)
   useEffect(() => {
     async function fetchStats() {
+      // 先显示静态数据，提升感知性能
+      const fallbackStats = [
+        {
+          icon: Briefcase,
+          label: "开放职位",
+          value: "37+",
+          desc: "涵盖多个领域",
+          color: "text-blue-600",
+          bgColor: "bg-blue-50"
+        },
+        {
+          icon: Building2,
+          label: "活跃部门",
+          value: "12",
+          desc: "多样化团队",
+          color: "text-green-600",
+          bgColor: "bg-green-50"
+        },
+        {
+          icon: MapPin,
+          label: "办公地点",
+          value: "1",
+          desc: "深圳总部",
+          color: "text-purple-600",
+          bgColor: "bg-purple-50"
+        },
+        {
+          icon: ThumbsUp,
+          label: "员工满意度",
+          value: "95%",
+          desc: "优质工作环境",
+          color: "text-orange-600",
+          bgColor: "bg-orange-50"
+        }
+      ];
+
+      // 立即显示静态数据
+      setStats(fallbackStats);
+      setIsLoading(false);
+      setIsUsingFallbackData(true);
+
+      // 后台获取真实数据
       try {
         const jobStats = await getJobStats();
         const statsData = [
@@ -71,46 +113,7 @@ export default function Home() {
         setIsUsingFallbackData(false);
       } catch (error) {
         console.error('获取统计数据失败:', error);
-        setIsUsingFallbackData(true);
-
-        // 降级到静态数据
-        const fallbackStats = [
-          {
-            icon: Briefcase,
-            label: "开放职位",
-            value: "15+",
-            desc: "涵盖多个领域",
-            color: "text-blue-600",
-            bgColor: "bg-blue-50"
-          },
-          {
-            icon: Building2,
-            label: "活跃部门",
-            value: "5",
-            desc: "多样化团队",
-            color: "text-green-600",
-            bgColor: "bg-green-50"
-          },
-          {
-            icon: MapPin,
-            label: "办公地点",
-            value: "3+",
-            desc: "全球化布局",
-            color: "text-purple-600",
-            bgColor: "bg-purple-50"
-          },
-          {
-            icon: ThumbsUp,
-            label: "员工满意度",
-            value: "95%",
-            desc: "优质工作环境",
-            color: "text-orange-600",
-            bgColor: "bg-orange-50"
-          }
-        ];
-        setStats(fallbackStats);
-      } finally {
-        setIsLoading(false);
+        // 保持静态数据，不再重新设置
       }
     }
 
@@ -155,12 +158,12 @@ export default function Home() {
 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+    <div className="bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
-            🚀 加入 Yarbo 团队
+            🚀 加入 Yarbo International 团队
           </h1>
           <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
             寻找优秀的人才，与我们一起构建未来。在这里，您将与最优秀的团队合作，
@@ -330,7 +333,7 @@ export default function Home() {
                 准备好加入我们了吗？
               </h3>
               <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
-                浏览我们的开放职位，找到最适合您的机会。我们期待优秀的您加入 Yarbo 大家庭！
+                浏览我们的开放职位，找到最适合您的机会。我们期待优秀的您加入 Yarbo International 大家庭！
               </p>
               <Link href="/jobs">
                 <Button size="lg" variant="secondary" className="bg-white text-blue-600 hover:bg-blue-50">

@@ -17,10 +17,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BulkActionToolbar } from "@/components/hr/BulkActionToolbar";
 import { DataExport } from "@/components/hr/DataExport";
-import { 
-  CheckSquare, 
-  Download, 
-  FileText, 
+import {
+  CheckSquare,
+  Download,
+  FileText,
   Users,
   TestTube
 } from "lucide-react";
@@ -40,7 +40,7 @@ export default function TestBulkExportPage() {
   const handleBulkAction = async (action: string, data?: any) => {
     setIsLoading(true);
     console.log('🧪 测试批量操作:', { action, selectedItems, data });
-    
+
     try {
       // 模拟API调用
       await new Promise(resolve => setTimeout(resolve, 2000));
@@ -59,8 +59,8 @@ export default function TestBulkExportPage() {
   };
 
   const toggleSelection = (itemId: string) => {
-    setSelectedItems(prev => 
-      prev.includes(itemId) 
+    setSelectedItems(prev =>
+      prev.includes(itemId)
         ? prev.filter(id => id !== itemId)
         : [...prev, itemId]
     );
@@ -101,38 +101,35 @@ export default function TestBulkExportPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <DataExport 
-                    type="applications"
-                    onExportComplete={handleExportComplete}
-                    trigger={
-                      <Button className="w-full">
-                        <FileText className="w-4 h-4 mr-2" />
-                        导出申请数据
-                      </Button>
-                    }
+                  <DataExport
+                    dataType="applications"
+                    availableFields={[
+                      { key: 'name', label: '申请人姓名', required: true },
+                      { key: 'position', label: '申请职位', required: true },
+                      { key: 'status', label: '申请状态', required: false },
+                      { key: 'date', label: '申请日期', required: false }
+                    ]}
+                    onExport={async (config) => {
+                      console.log('导出申请数据:', config);
+                      handleExportComplete({ data: { filename: 'applications.xlsx', stats: { total_records: 10 } } });
+                    }}
                   />
-                  
-                  <DataExport 
-                    type="candidates"
-                    onExportComplete={handleExportComplete}
-                    trigger={
-                      <Button variant="outline" className="w-full">
-                        <Users className="w-4 h-4 mr-2" />
-                        导出候选人数据
-                      </Button>
-                    }
-                  />
-                  
-                  <DataExport 
-                    type="reports"
-                    onExportComplete={handleExportComplete}
-                    trigger={
-                      <Button variant="outline" className="w-full">
-                        <CheckSquare className="w-4 h-4 mr-2" />
-                        导出招聘报告
-                      </Button>
-                    }
-                  />
+
+                  <div className="mt-4">
+                    <DataExport
+                      dataType="candidates"
+                      availableFields={[
+                        { key: 'name', label: '候选人姓名', required: true },
+                        { key: 'email', label: '邮箱', required: true },
+                        { key: 'phone', label: '电话', required: false },
+                        { key: 'skills', label: '技能', required: false }
+                      ]}
+                      onExport={async (config) => {
+                        console.log('导出候选人数据:', config);
+                        handleExportComplete({ data: { filename: 'candidates.xlsx', stats: { total_records: 25 } } });
+                      }}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -154,11 +151,11 @@ export default function TestBulkExportPage() {
                     清空
                   </Button>
                 </div>
-                
+
                 <div className="text-sm text-gray-600">
                   已选择: {selectedItems.length} / {mockItems.length} 项
                 </div>
-                
+
                 {selectedItems.length > 0 && (
                   <div className="space-y-2">
                     <Badge variant="secondary">
@@ -172,10 +169,15 @@ export default function TestBulkExportPage() {
 
           {/* 批量操作工具栏 */}
           <BulkActionToolbar
-            selectedItems={selectedItems}
+            selectedCount={selectedItems.length}
             onClearSelection={clearSelection}
-            onBulkAction={handleBulkAction}
-            isLoading={isLoading}
+            onExport={() => handleBulkAction('export')}
+            onSendEmail={() => handleBulkAction('email')}
+            onApprove={() => handleBulkAction('approve')}
+            onReject={() => handleBulkAction('reject')}
+            onArchive={() => handleBulkAction('archive')}
+            onDelete={() => handleBulkAction('delete')}
+            disabled={isLoading}
           />
 
           {/* 模拟数据列表 */}
@@ -186,13 +188,12 @@ export default function TestBulkExportPage() {
             <CardContent>
               <div className="space-y-2">
                 {mockItems.map(item => (
-                  <div 
+                  <div
                     key={item.id}
-                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                      selectedItems.includes(item.id) 
-                        ? 'bg-blue-50 border-blue-200' 
-                        : 'bg-white hover:bg-gray-50'
-                    }`}
+                    className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedItems.includes(item.id)
+                      ? 'bg-blue-50 border-blue-200'
+                      : 'bg-white hover:bg-gray-50'
+                      }`}
                     onClick={() => toggleSelection(item.id)}
                   >
                     <div className="flex items-center justify-between">

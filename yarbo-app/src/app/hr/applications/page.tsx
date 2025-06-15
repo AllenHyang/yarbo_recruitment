@@ -22,8 +22,7 @@ import {
   Download
 } from "lucide-react";
 import Link from "next/link";
-import { BulkActionToolbar } from "@/components/hr/BulkActionToolbar";
-import { DataExport } from "@/components/hr/DataExport";
+import { withProtected } from "@/components/withProtected";
 
 interface Application {
   id: string;
@@ -36,7 +35,7 @@ interface Application {
   resume_url: string;
 }
 
-export default function ApplicationsPage() {
+function ApplicationsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [selectedApplications, setSelectedApplications] = useState<string[]>([]);
@@ -175,15 +174,10 @@ export default function ApplicationsPage() {
             </div>
 
             <div className="flex items-center space-x-2">
-              <DataExport
-                type="applications"
-                trigger={
-                  <Button variant="outline">
-                    <Download className="w-4 h-4 mr-2" />
-                    导出数据
-                  </Button>
-                }
-              />
+              <Button variant="outline">
+                <Download className="w-4 h-4 mr-2" />
+                导出数据
+              </Button>
               <Button variant="outline">
                 <RefreshCw className="w-4 h-4 mr-2" />
                 刷新
@@ -286,12 +280,28 @@ export default function ApplicationsPage() {
           </Card>
 
           {/* 批量操作工具栏 */}
-          <BulkActionToolbar
-            selectedItems={selectedApplications}
-            onClearSelection={() => setSelectedApplications([])}
-            onBulkAction={handleBulkAction}
-            isLoading={isLoading}
-          />
+          {selectedApplications.length > 0 && (
+            <Card className="mb-6">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-gray-600">
+                    已选择 {selectedApplications.length} 个申请
+                  </span>
+                  <div className="flex items-center space-x-2">
+                    <Button variant="outline" size="sm" onClick={() => setSelectedApplications([])}>
+                      取消选择
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      批量审核
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      批量拒绝
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* 申请列表 */}
           <Card>
@@ -389,4 +399,7 @@ export default function ApplicationsPage() {
       </div>
     </div>
   );
-} 
+}
+
+// 使用权限保护，只允许HR和管理员访问
+export default withProtected(ApplicationsPage, ['hr', 'admin']);

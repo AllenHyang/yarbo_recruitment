@@ -41,9 +41,9 @@ export function NavigationBar() {
     <header className="px-4 lg:px-6 h-14 flex items-center bg-background border-b">
       <Link href="/" className="flex items-center justify-center">
         <MountainIcon className="h-6 w-6" />
-        <span className="sr-only">Yarbo Inc.</span>
+        <span className="sr-only">Yarbo</span>
       </Link>
-      
+
       <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
         <Link
           href="/"
@@ -69,7 +69,7 @@ export function NavigationBar() {
         >
           HR管理
         </Link>
-        
+
         {/* 认证相关导航 */}
         {loading ? (
           <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
@@ -97,7 +97,7 @@ export function NavigationBar() {
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              
+
               {/* 根据角色显示不同的菜单项 */}
               {userRole === "admin" && (
                 <DropdownMenuItem asChild>
@@ -107,7 +107,7 @@ export function NavigationBar() {
                   </Link>
                 </DropdownMenuItem>
               )}
-              
+
               {userRole === "hr" && (
                 <DropdownMenuItem asChild>
                   <Link href="/hr/dashboard" className="cursor-pointer">
@@ -116,14 +116,14 @@ export function NavigationBar() {
                   </Link>
                 </DropdownMenuItem>
               )}
-              
+
               <DropdownMenuItem asChild>
                 <Link href="/profile" className="cursor-pointer">
                   <User className="mr-2 h-4 w-4" />
                   <span>个人资料</span>
                 </Link>
               </DropdownMenuItem>
-              
+
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer text-red-600 focus:text-red-600"

@@ -31,6 +31,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { SmartInterviewScheduler } from "@/components/hr/SmartInterviewScheduler";
+import { withProtected } from "@/components/withProtected";
 
 interface Interview {
   id: string;
@@ -204,7 +205,7 @@ function CalendarView({ interviews, onEditInterview }: {
   );
 }
 
-export default function InterviewsPage() {
+function InterviewsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
@@ -914,4 +915,7 @@ export default function InterviewsPage() {
       </div>
     </div>
   );
-} 
+}
+
+// 使用权限保护，只允许HR和管理员访问
+export default withProtected(InterviewsPage, ['hr', 'admin']);

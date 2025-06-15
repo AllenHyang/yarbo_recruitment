@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/lib/supabase';
-import type { 
-  JobWithDepartment, 
-  Application, 
-  Applicant, 
+import type {
+  JobWithDepartment,
+  Application,
+  Applicant,
   Department,
-  ApplicationWithDetails 
+  ApplicationWithDetails
 } from '@/lib/database.types';
 
 // 招聘统计数据类型
@@ -108,15 +108,15 @@ export function useRealtimeRecruitmentData() {
 
       const { data: applications } = await supabase
         .from('applications')
-        .select('created_at, status')
-        .gte('created_at', sixMonthsAgo.toISOString());
+        .select('applied_at, status')
+        .gte('applied_at', sixMonthsAgo.toISOString());
 
       if (applications) {
         // 按月分组统计
         const monthlyData: { [key: string]: TrendData } = {};
-        
+
         applications.forEach(app => {
-          const date = new Date(app.created_at!);
+          const date = new Date(app.applied_at!);
           const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
           const monthName = `${date.getMonth() + 1}月`;
 
@@ -131,7 +131,7 @@ export function useRealtimeRecruitmentData() {
           }
 
           monthlyData[monthKey].applications++;
-          
+
           if (['interview_scheduled', 'interviewed'].includes(app.status)) {
             monthlyData[monthKey].interviews++;
           }
@@ -151,51 +151,54 @@ export function useRealtimeRecruitmentData() {
     }
   }, []);
 
-  // 获取部门统计
+  // 获取部门统计 (优化版 - 减少查询次数)
   const fetchDepartmentStats = useCallback(async () => {
     try {
-      // 获取所有部门
-      const { data: departments } = await supabase
-        .from('departments')
-        .select('*');
+      // 一次性获取所有需要的数据
+      const [departmentsResult, jobsResult, applicationsResult] = await Promise.all([
+        supabase.from('departments').select('*'),
+        supabase.from('jobs').select('department, status').eq('status', 'active'),
+        supabase.from('applications').select(`
+          status,
+          jobs!inner(department)
+        `).eq('status', 'hired')
+      ]);
+
+      const { data: departments } = departmentsResult;
+      const { data: activeJobs } = jobsResult;
+      const { data: hiredApplications } = applicationsResult;
 
       if (departments) {
-        const departmentStatsData: DepartmentStats[] = [];
+        // 统计每个部门的职位数
+        const jobCountByDept = (activeJobs || []).reduce((acc, job) => {
+          acc[job.department] = (acc[job.department] || 0) + 1;
+          return acc;
+        }, {} as Record<string, number>);
 
-        for (const dept of departments) {
-          // 获取该部门的职位数
-          const { count: openPositions } = await supabase
-            .from('jobs')
-            .select('*', { count: 'exact', head: true })
-            .eq('department_id', dept.id)
-            .eq('status', 'active');
+        // 统计每个部门的录用数
+        const hireCountByDept = (hiredApplications || []).reduce((acc, app) => {
+          const dept = app.jobs?.department;
+          if (dept) {
+            acc[dept] = (acc[dept] || 0) + 1;
+          }
+          return acc;
+        }, {} as Record<string, number>);
 
-          // 获取该部门的录用数
-          const { data: hiredApplications } = await supabase
-            .from('applications')
-            .select(`
-              *,
-              jobs!inner(department_id)
-            `)
-            .eq('jobs.department_id', dept.id)
-            .eq('status', 'hired');
+        const colorMap: { [key: string]: string } = {
+          'blue': '#3B82F6',
+          'green': '#10B981',
+          'purple': '#8B5CF6',
+          'orange': '#F59E0B',
+          'red': '#EF4444'
+        };
 
-          const colorMap: { [key: string]: string } = {
-            'blue': '#3B82F6',
-            'green': '#10B981',
-            'purple': '#8B5CF6',
-            'orange': '#F59E0B',
-            'red': '#EF4444'
-          };
-
-          departmentStatsData.push({
-            department: dept.name,
-            count: hiredApplications?.length || 0,
-            color: colorMap[dept.color_theme] || '#3B82F6',
-            openPositions: openPositions || 0,
-            avgTimeToHire: Math.floor(Math.random() * 15) + 20 // 模拟数据，实际需要复杂计算
-          });
-        }
+        const departmentStatsData: DepartmentStats[] = departments.map(dept => ({
+          department: dept.name,
+          count: hireCountByDept[dept.name] || 0,
+          color: colorMap[dept.color_theme] || '#3B82F6',
+          openPositions: jobCountByDept[dept.name] || 0,
+          avgTimeToHire: Math.floor(Math.random() * 15) + 20 // 模拟数据，实际需要复杂计算
+        }));
 
         setDepartmentStats(departmentStatsData);
       }
@@ -209,7 +212,7 @@ export function useRealtimeRecruitmentData() {
   const refreshData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       await Promise.all([
         fetchRecruitmentStats(),
@@ -233,7 +236,7 @@ export function useRealtimeRecruitmentData() {
     // 订阅申请表变化
     const applicationsSubscription = supabase
       .channel('applications_changes')
-      .on('postgres_changes', 
+      .on('postgres_changes',
         { event: '*', schema: 'public', table: 'applications' },
         () => {
           // 当申请数据变化时，重新获取统计数据
@@ -271,51 +274,119 @@ export function useRealtimeRecruitmentData() {
   };
 }
 
-// 实时职位数据Hook
+// 缓存管理
+const jobsCache = new Map<string, { data: JobWithDepartment[], timestamp: number }>();
+const CACHE_DURATION = 5 * 60 * 1000; // 5分钟缓存
+
+// 实时职位数据Hook (优化版)
 export function useRealtimeJobs() {
   const [jobs, setJobs] = useState<JobWithDepartment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
-  const fetchJobs = useCallback(async () => {
+  const fetchJobs = useCallback(async (forceRefresh = false) => {
+    const cacheKey = 'active_jobs';
+    const now = Date.now();
+
+    // 检查缓存
+    if (!forceRefresh) {
+      const cached = jobsCache.get(cacheKey);
+      if (cached && (now - cached.timestamp) < CACHE_DURATION) {
+        console.log('使用缓存的职位数据');
+        setJobs(cached.data);
+        setIsLoading(false);
+        setInitialLoadComplete(true);
+        return;
+      }
+    }
+
+    console.log('开始获取职位数据...');
     try {
+      setError(null);
+      if (!initialLoadComplete) setIsLoading(true); // 只在首次加载时显示loading
+
       const { data, error } = await supabase
         .from('jobs')
         .select(`
-          *,
-          departments (*)
+          id,
+          title,
+          department,
+          location,
+          salary_min,
+          salary_max,
+          salary_display,
+          employment_type,
+          experience_level,
+          description,
+          requirements,
+          status,
+          created_at,
+          expires_at,
+          job_category,
+          graduation_year,
+          is_featured,
+          campus_specific,
+          internship_duration,
+          internship_type,
+          start_date,
+          stipend_amount,
+          skills_gained,
+          is_remote_internship
         `)
         .eq('status', 'active')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setJobs(data || []);
+      if (error) {
+        console.error('Supabase 查询错误:', error);
+        throw error;
+      }
+
+      // 转换数据格式以匹配 JobWithDepartment 类型
+      const jobsWithDepartment = (data || []).map(job => ({
+        ...job,
+        departments: job.department ? { name: job.department } : null
+      }));
+
+      // 更新缓存
+      jobsCache.set(cacheKey, { data: jobsWithDepartment as JobWithDepartment[], timestamp: now });
+
+      console.log(`获取到 ${jobsWithDepartment.length} 个职位`);
+      setJobs(jobsWithDepartment as JobWithDepartment[]);
+      setInitialLoadComplete(true);
     } catch (err) {
       console.error('获取职位数据失败:', err);
-      setError('获取职位数据失败');
+      setError(err instanceof Error ? err.message : '获取职位数据失败');
+      setInitialLoadComplete(true);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [jobs.length]);
 
   useEffect(() => {
     fetchJobs();
 
-    // 实时订阅职位变化
+    // 优化的实时订阅 - 使用防抖
+    let debounceTimer: NodeJS.Timeout;
     const subscription = supabase
       .channel('jobs_realtime')
       .on('postgres_changes',
         { event: '*', schema: 'public', table: 'jobs' },
         () => {
-          fetchJobs();
+          // 防抖处理，避免频繁刷新
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => {
+            fetchJobs(true); // 强制刷新缓存
+          }, 1000);
         }
       )
       .subscribe();
 
     return () => {
+      clearTimeout(debounceTimer);
       subscription.unsubscribe();
     };
   }, [fetchJobs]);
 
-  return { jobs, isLoading, error, refreshJobs: fetchJobs };
+  return { jobs, isLoading, error, refreshJobs: (force = false) => fetchJobs(force) };
 }

@@ -22,42 +22,33 @@ export type Job = {
 };
 
 interface JobCardProps {
-  job: JobWithDepartment | Job;
-}
-
-// 类型守卫：检查是否为数据库类型
-function isJobWithDepartment(job: JobWithDepartment | Job): job is JobWithDepartment {
-  return 'departments' in job && 'salary_display' in job;
+  job: JobWithDepartment;
 }
 
 // 获取职位显示数据
-function getJobDisplayData(job: JobWithDepartment | Job) {
-  if (isJobWithDepartment(job)) {
-    return {
-      id: job.id,
-      title: job.title,
-      department: job.departments?.name || '未知部门',
-      departmentColorTheme: job.departments?.color_theme || 'blue',
-      location: job.location,
-      salary: job.salary_display || '面议',
-    };
-  } else {
-    // 静态数据格式
-    return {
-      id: job.id,
-      title: job.title,
-      department: job.department,
-      departmentColorTheme: 'blue', // 默认颜色
-      location: job.location,
-      salary: job.salary,
-    };
-  }
+function getJobDisplayData(job: JobWithDepartment) {
+  // 格式化薪资显示
+  const formatSalary = (min?: number, max?: number) => {
+    if (min && max) {
+      return `${(min / 1000).toFixed(0)}k-${(max / 1000).toFixed(0)}k`;
+    }
+    return '面议';
+  };
+
+  return {
+    id: job.id,
+    title: job.title,
+    department: job.departments?.name || job.department || '未知部门',
+    departmentColorTheme: job.departments?.color_theme || 'blue',
+    location: job.location || '待定',
+    salary: formatSalary(job.salary_min, job.salary_max),
+  };
 }
 
 export function JobCard({ job }: JobCardProps) {
   const { title, department, departmentColorTheme, location, salary } = getJobDisplayData(job);
   const colors = getDepartmentColor(departmentColorTheme);
-  
+
   return (
     <Card className="flex flex-col h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-0 shadow-md">
       <CardHeader className="relative">

@@ -11,7 +11,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,10 +22,13 @@ import { ArrowLeft, LogIn, Mail, Lock, AlertCircle, CheckCircle } from "lucide-r
 import { supabase } from "@/lib/supabase";
 import { getUserRole } from "@/lib/api";
 import { getDefaultHomePage } from "@/lib/permissions";
+import { AdvancedCaptcha } from "@/components/ui/advanced-captcha";
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+  const [captchaSessionToken, setCaptchaSessionToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -39,7 +42,33 @@ export default function LoginPage() {
     setError(null);
     setMessage(null);
 
+    // 验证验证码
+    if (!isCaptchaValid || !captchaSessionToken) {
+      setError("请输入正确的验证码");
+      setIsLoading(false);
+      return;
+    }
+
     try {
+      // 先验证验证码是否仍然有效
+      const captchaResponse = await fetch('/api/captcha/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sessionToken: captchaSessionToken,
+          captchaCode: 'VERIFY_ONLY' // 特殊标记，只验证会话是否有效
+        }),
+      });
+
+      if (!captchaResponse.ok) {
+        setError("验证码已失效，请重新验证");
+        setIsCaptchaValid(false);
+        setCaptchaSessionToken(null);
+        return;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -184,6 +213,15 @@ export default function LoginPage() {
                   />
                 </div>
 
+                {/* 安全验证 */}
+                <AdvancedCaptcha
+                  onValidationChange={(isValid, sessionToken) => {
+                    setIsCaptchaValid(isValid);
+                    setCaptchaSessionToken(sessionToken || null);
+                  }}
+                  disabled={isLoading}
+                />
+
                 <Button
                   type="submit"
                   disabled={isLoading}
@@ -238,5 +276,20 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">加载中...</p>
+        </div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

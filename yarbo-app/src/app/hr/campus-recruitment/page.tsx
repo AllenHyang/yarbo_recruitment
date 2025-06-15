@@ -10,8 +10,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, GraduationCap, School, Users, Calendar, CheckCircle, UserCheck, BookOpen, MapPin, TrendingUp, Star, Award, Target, Clock, Download, Mail, X, FileText, Edit, Eye } from "lucide-react";
+import { withProtected } from "@/components/withProtected";
 
-export default function CampusRecruitmentPage() {
+function CampusRecruitmentPage() {
   const [stats, setStats] = useState({
     totalJobs: 12,
     activeJobs: 8,
@@ -132,32 +133,32 @@ export default function CampusRecruitmentPage() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Button 
-                  className="h-20 flex flex-col items-center justify-center space-y-2" 
+                <Button
+                  className="h-20 flex flex-col items-center justify-center space-y-2"
                   variant="outline"
                   onClick={() => setShowJobDialog(true)}
                 >
                   <Plus className="w-6 h-6" />
                   <span className="text-sm">发布新职位</span>
                 </Button>
-                <Button 
-                  className="h-20 flex flex-col items-center justify-center space-y-2" 
+                <Button
+                  className="h-20 flex flex-col items-center justify-center space-y-2"
                   variant="outline"
                   onClick={() => setShowEventDialog(true)}
                 >
                   <Calendar className="w-6 h-6" />
                   <span className="text-sm">安排宣讲会</span>
                 </Button>
-                <Button 
-                  className="h-20 flex flex-col items-center justify-center space-y-2" 
+                <Button
+                  className="h-20 flex flex-col items-center justify-center space-y-2"
                   variant="outline"
                   onClick={() => alert('邮件功能开发中，将向所有候选人发送最新招聘信息！')}
                 >
                   <Mail className="w-6 h-6" />
                   <span className="text-sm">群发邮件</span>
                 </Button>
-                <Button 
-                  className="h-20 flex flex-col items-center justify-center space-y-2" 
+                <Button
+                  className="h-20 flex flex-col items-center justify-center space-y-2"
                   variant="outline"
                   onClick={() => alert('简历评估功能开发中，将使用AI智能筛选简历！')}
                 >
@@ -272,12 +273,12 @@ export default function CampusRecruitmentPage() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                                      {topUniversities.map((university, index) => (
-                      <Card 
-                        key={index} 
-                        className="border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
-                        onClick={() => setSelectedUniversity(university)}
-                      >
+                  {topUniversities.map((university, index) => (
+                    <Card
+                      key={index}
+                      className="border border-gray-100 hover:shadow-md transition-shadow cursor-pointer"
+                      onClick={() => setSelectedUniversity(university)}
+                    >
                       <CardContent className="p-4 text-center">
                         <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-100 to-purple-100 flex items-center justify-center mx-auto mb-3">
                           <School className="w-6 h-6 text-blue-600" />
@@ -285,9 +286,9 @@ export default function CampusRecruitmentPage() {
                         <h3 className="font-semibold text-sm mb-2">{university.name}</h3>
                         <div className="flex justify-center mb-2">
                           {[...Array(5)].map((_, i) => (
-                            <Star 
-                              key={i} 
-                              className={`w-3 h-3 ${i < university.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                            <Star
+                              key={i}
+                              className={`w-3 h-3 ${i < university.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
                             />
                           ))}
                         </div>
@@ -495,9 +496,9 @@ export default function CampusRecruitmentPage() {
                     <div className="text-center p-4 bg-yellow-50 rounded-lg">
                       <div className="flex justify-center mb-2">
                         {[...Array(5)].map((_, i) => (
-                          <Star 
-                            key={i} 
-                            className={`w-4 h-4 ${i < selectedUniversity.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`} 
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${i < selectedUniversity.rating ? 'text-yellow-400 fill-current' : 'text-gray-300'}`}
                           />
                         ))}
                       </div>
@@ -571,3 +572,6 @@ export default function CampusRecruitmentPage() {
     </div>
   );
 }
+
+// 使用权限保护，只允许HR和管理员访问
+export default withProtected(CampusRecruitmentPage, ['hr', 'admin']);

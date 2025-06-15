@@ -25,7 +25,8 @@ import {
   BookOpen,
   Brain,
   RefreshCw,
-  Loader2
+  Loader2,
+  MapPin
 } from "lucide-react";
 import { getHRDashboardStats } from "@/lib/api";
 import { useToastActions } from "@/components/ui/toast";
@@ -80,6 +81,78 @@ function HRDashboardPage() {
   useEffect(() => {
     fetchDashboardStats();
   }, [user?.id]);
+
+  // 导出报告处理函数
+  const handleExportReport = async () => {
+    try {
+      toast.info("正在生成报告...");
+
+      // 准备导出数据
+      const reportData = {
+        title: "HR管理中心数据报告",
+        generatedAt: new Date().toLocaleString('zh-CN'),
+        generatedBy: userProfile?.user_profiles?.first_name || user?.email,
+        statistics: dashboardStats ? {
+          pendingApplications: dashboardStats.pendingApplications,
+          monthlyApplications: dashboardStats.monthlyApplications,
+          interviewsPassed: dashboardStats.interviewsPassed,
+          monthlyHires: dashboardStats.monthlyHires,
+          averageProcessingTime: dashboardStats.averageProcessingTime
+        } : {
+          pendingApplications: 0,
+          monthlyApplications: 0,
+          interviewsPassed: 0,
+          monthlyHires: 0,
+          averageProcessingTime: 0
+        },
+        trends: {
+          applicationGrowth: "+23%",
+          interviewPassRate: "67%",
+          averageProcessingDays: dashboardStats?.averageProcessingTime || 2.3
+        },
+        summary: {
+          totalCandidates: (dashboardStats?.monthlyApplications || 0) + (dashboardStats?.pendingApplications || 0),
+          activeRecruitment: dashboardStats?.pendingApplications || 0,
+          successfulHires: dashboardStats?.monthlyHires || 0
+        }
+      };
+
+      // 生成CSV格式的数据
+      const csvData = [
+        ['指标', '数值', '说明'],
+        ['待处理申请', reportData.statistics.pendingApplications, '需要审核的申请数量'],
+        ['本月收到申请', reportData.statistics.monthlyApplications, '本月新收到的申请'],
+        ['已通过面试', reportData.statistics.interviewsPassed, '面试通过待决定'],
+        ['本月录用', reportData.statistics.monthlyHires, '本月成功录用人数'],
+        ['平均处理时间', `${reportData.statistics.averageProcessingTime}天`, '申请处理平均用时'],
+        ['申请增长率', reportData.trends.applicationGrowth, '相比上月的增长'],
+        ['面试通过率', reportData.trends.interviewPassRate, '面试成功率'],
+        ['', '', ''],
+        ['报告生成时间', reportData.generatedAt, ''],
+        ['报告生成人', reportData.generatedBy, '']
+      ];
+
+      const csvContent = csvData.map(row => row.join(',')).join('\n');
+
+      // 创建并下载CSV文件
+      const blob = new Blob(['\ufeff' + csvContent], {
+        type: 'text/csv;charset=utf-8;'
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `HR管理中心报告_${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast.success("报告导出成功！已保存为CSV格式");
+    } catch (error) {
+      console.error('导出报告失败:', error);
+      toast.error("导出报告失败，请重试");
+    }
+  };
 
   // 构建统计卡片数据
   const stats = dashboardStats ? [
@@ -159,6 +232,22 @@ function HRDashboardPage() {
       href: "/hr/candidates"
     },
     {
+      title: "部门管理",
+      description: "管理组织架构和部门信息",
+      icon: Building2,
+      color: "text-gray-600",
+      bgColor: "bg-gray-50",
+      href: "/hr/departments"
+    },
+    {
+      title: "办公地点",
+      description: "管理公司办公地点和工作场所",
+      icon: MapPin,
+      color: "text-teal-600",
+      bgColor: "bg-teal-50",
+      href: "/hr/office-locations"
+    },
+    {
       title: "面试安排",
       description: "管理面试时间和面试官",
       icon: Calendar,
@@ -213,7 +302,12 @@ function HRDashboardPage() {
                   )}
                   <span>刷新数据</span>
                 </Button>
-                <Button variant="outline" size="sm" className="space-x-2 btn-hover">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="space-x-2 btn-hover"
+                  onClick={handleExportReport}
+                >
                   <Download className="w-4 h-4" />
                   <span>导出报告</span>
                 </Button>
@@ -303,9 +397,14 @@ function HRDashboardPage() {
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold text-gray-900">最近活动</h2>
               <div className="flex space-x-2">
-                <Button variant="outline" size="sm">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="opacity-75 hover:opacity-100"
+                  onClick={() => toast.info("此功能正在开发中，敬请期待！")}
+                >
                   <Mail className="w-4 h-4 mr-2" />
-                  发送批量邮件
+                  发送批量邮件 (TODO)
                 </Button>
                 <Button variant="outline" size="sm">
                   <Settings className="w-4 h-4 mr-2" />
@@ -382,8 +481,5 @@ function HRDashboardPage() {
   );
 }
 
-// 暂时移除权限保护，方便演示和测试
-export default HRDashboardPage;
-
-// 如果需要权限保护，请取消注释下面这行：
-// export default withProtected(HRDashboardPage, ["hr", "admin"]); 
+// 使用权限保护，只允许HR和管理员访问
+export default withProtected(HRDashboardPage, ["hr", "admin"]);

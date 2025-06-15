@@ -61,24 +61,24 @@ export const ApplicationTrendChart: React.FC<ApplicationTrendProps> = ({ data })
             <YAxis />
             <Tooltip />
             <Legend />
-            <Line 
-              type="monotone" 
-              dataKey="applications" 
-              stroke={COLORS.primary} 
+            <Line
+              type="monotone"
+              dataKey="applications"
+              stroke={COLORS.primary}
               strokeWidth={2}
               name="申请数量"
             />
-            <Line 
-              type="monotone" 
-              dataKey="interviews" 
-              stroke={COLORS.secondary} 
+            <Line
+              type="monotone"
+              dataKey="interviews"
+              stroke={COLORS.secondary}
               strokeWidth={2}
               name="面试数量"
             />
-            <Line 
-              type="monotone" 
-              dataKey="offers" 
-              stroke={COLORS.accent} 
+            <Line
+              type="monotone"
+              dataKey="offers"
+              stroke={COLORS.accent}
               strokeWidth={2}
               name="录用数量"
             />
@@ -285,12 +285,4 @@ export const EfficiencyDashboard: React.FC<EfficiencyDashboardProps> = ({ metric
   );
 };
 
-// 导出所有组件
-export {
-  ApplicationTrendChart,
-  DepartmentDistributionChart,
-  ConversionFunnelChart,
-  SkillRadarChart,
-  MonthlyStatsChart,
-  EfficiencyDashboard
-};
+// 组件已经在上面单独导出，不需要重复导出

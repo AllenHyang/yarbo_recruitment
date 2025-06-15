@@ -22,6 +22,7 @@ import {
   Filter,
   Building2
 } from "lucide-react";
+import { withProtected } from "@/components/withProtected";
 
 interface ReportData {
   period: string;
@@ -41,7 +42,7 @@ interface DepartmentStats {
   color: string;
 }
 
-export default function ReportsPage() {
+function ReportsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('this-month');
   const [selectedReport, setSelectedReport] = useState('overview');
 
@@ -466,4 +467,7 @@ export default function ReportsPage() {
       </div>
     </div>
   );
-} 
+}
+
+// 使用权限保护，只允许HR和管理员访问
+export default withProtected(ReportsPage, ['hr', 'admin']);

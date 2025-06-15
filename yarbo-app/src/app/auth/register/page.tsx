@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, UserPlus, Mail, Lock, User, AlertCircle, CheckCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { AdvancedCaptcha } from "@/components/ui/advanced-captcha";
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -19,6 +20,8 @@ export default function RegisterPage() {
     name: "",
     role: "candidate" as "candidate" | "hr"
   });
+  const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+  const [captchaSessionToken, setCaptchaSessionToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
@@ -34,6 +37,13 @@ export default function RegisterPage() {
     setError(null);
     setMessage(null);
 
+    // 验证验证码
+    if (!isCaptchaValid || !captchaSessionToken) {
+      setError("请输入正确的验证码");
+      setIsLoading(false);
+      return;
+    }
+
     // 表单验证
     if (formData.password !== formData.confirmPassword) {
       setError("两次输入的密码不一致");
@@ -48,6 +58,25 @@ export default function RegisterPage() {
     }
 
     try {
+      // 先验证验证码是否仍然有效
+      const captchaResponse = await fetch('/api/captcha/verify', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sessionToken: captchaSessionToken,
+          captchaCode: 'VERIFY_ONLY' // 特殊标记，只验证会话是否有效
+        }),
+      });
+
+      if (!captchaResponse.ok) {
+        setError("验证码已失效，请重新验证");
+        setIsCaptchaValid(false);
+        setCaptchaSessionToken(null);
+        return;
+      }
+
       // 1. 注册用户
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
@@ -67,7 +96,7 @@ export default function RegisterPage() {
 
       if (data.user) {
         setMessage("注册成功！请检查您的邮箱以验证账号。");
-        
+
         // 延迟跳转到登录页面
         setTimeout(() => {
           router.push("/auth/login");
@@ -86,8 +115,8 @@ export default function RegisterPage() {
       <div className="container mx-auto px-4 py-12">
         {/* 返回导航 */}
         <div className="mb-8">
-          <Link 
-            href="/auth/login" 
+          <Link
+            href="/auth/login"
             className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 group"
           >
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-200" />
@@ -162,7 +191,7 @@ export default function RegisterPage() {
 
                 <div className="space-y-2">
                   <Label className="text-gray-700 font-medium">角色</Label>
-                                     <Select value={formData.role} onValueChange={(value: string) => handleInputChange("role", value)}>
+                  <Select value={formData.role} onValueChange={(value: string) => handleInputChange("role", value)}>
                     <SelectTrigger className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500">
                       <SelectValue placeholder="选择您的角色" />
                     </SelectTrigger>
@@ -205,8 +234,17 @@ export default function RegisterPage() {
                   />
                 </div>
 
-                <Button 
-                  type="submit" 
+                {/* 安全验证 */}
+                <AdvancedCaptcha
+                  onValidationChange={(isValid, sessionToken) => {
+                    setIsCaptchaValid(isValid);
+                    setCaptchaSessionToken(sessionToken || null);
+                  }}
+                  disabled={isLoading}
+                />
+
+                <Button
+                  type="submit"
                   disabled={isLoading}
                   className="w-full h-12 bg-green-600 hover:bg-green-700 text-white transition-all duration-300"
                 >
@@ -226,8 +264,8 @@ export default function RegisterPage() {
 
               {/* 链接区域 */}
               <div className="mt-6 text-center">
-                <Link 
-                  href="/auth/login" 
+                <Link
+                  href="/auth/login"
                   className="text-sm text-blue-600 hover:text-blue-800 transition-colors duration-200"
                 >
                   已有账号？立即登录

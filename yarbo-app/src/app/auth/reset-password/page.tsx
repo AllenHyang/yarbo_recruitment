@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Lock, AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +25,7 @@ export default function ResetPasswordPage() {
     // 检查URL中是否有访问令牌
     const accessToken = searchParams.get('access_token');
     const refreshToken = searchParams.get('refresh_token');
-    
+
     if (accessToken && refreshToken) {
       // 设置会话
       supabase.auth.setSession({
@@ -110,7 +110,7 @@ export default function ResetPasswordPage() {
                 </p>
               </div>
 
-              <Button 
+              <Button
                 onClick={() => router.push("/auth/login")}
                 className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white"
               >
@@ -136,7 +136,7 @@ export default function ResetPasswordPage() {
               请设置一个安全的新密码来保护您的账户
             </p>
           </div>
-          
+
           <div className="space-y-4">
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
               <h3 className="font-medium text-blue-900 mb-2">密码安全要求</h3>
@@ -227,8 +227,8 @@ export default function ResetPasswordPage() {
                   </div>
                 </div>
 
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   disabled={isLoading || !password || !confirmPassword}
                   className="w-full h-12 bg-gray-900 hover:bg-gray-800 text-white transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg"
                 >
@@ -247,7 +247,7 @@ export default function ResetPasswordPage() {
               </form>
 
               <div className="text-center">
-                <Link 
+                <Link
                   href="/auth/login"
                   className="text-blue-600 hover:text-blue-700 text-sm font-medium transition-colors"
                 >
@@ -259,5 +259,20 @@ export default function ResetPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">加载中...</p>
+        </div>
+      </div>
+    }>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }

@@ -9,82 +9,178 @@
  * Copyright (c) 2025 by Yarbo Inc., All Rights Reserved.
  */
 
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { ArrowLeft, Building2, MapPin, Briefcase, Clock, Users, Send, CheckCircle, Star } from "lucide-react";
+import { ArrowLeft, Building2, MapPin, Briefcase, Clock, Users, Send, CheckCircle, Star, Shield, FileText, Eye } from "lucide-react";
 import { getJobById } from "@/lib/api";
 import { getDepartmentColor } from "@/lib/supabase";
 import type { JobWithDepartment } from "@/lib/database.types";
-import { mockJobs } from "../page";
 import type { Job } from "@/components/JobCard";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEffect, useState } from "react";
 
 // 获取职位显示数据的辅助函数
-function getJobDisplayData(job: JobWithDepartment | Job) {
-    if ('departments' in job && 'salary_display' in job) {
-        // 数据库类型
-        return {
-            id: job.id,
-            title: job.title,
-            department: job.departments?.name || '未知部门',
-            departmentColorTheme: job.departments?.color_theme || 'blue',
-            location: job.location,
-            salary: job.salary_display || '面议',
-            description: job.description || '暂无描述',
-            responsibilities: job.responsibilities || [],
-            requirements: job.requirements || [],
-            status: job.status,
-            created_at: job.created_at,
-        };
-    } else {
-        // 静态数据格式
-        return {
-            id: job.id,
-            title: job.title,
-            department: job.department,
-            departmentColorTheme: 'blue',
-            location: job.location,
-            salary: job.salary,
-            description: '我们正在寻找优秀的人才加入我们的团队。这是一个充满挑战和机遇的职位，您将有机会参与创新项目，与优秀的团队合作，实现职业发展的新突破。',
-            responsibilities: [
-                '参与产品功能的设计和开发',
-                '与团队成员协作完成项目目标',
-                '持续学习新技术，提升技术能力',
-                '参与代码审查和技术分享'
-            ],
-            requirements: [
-                '相关专业本科及以上学历',
-                '具备良好的沟通能力和团队合作精神',
-                '对技术有热情，学习能力强',
-                '有相关工作经验者优先'
-            ],
-            status: 'active',
-            created_at: new Date().toISOString(),
-        };
-    }
+function getJobDisplayData(job: JobWithDepartment) {
+    // 格式化薪资显示
+    const formatSalary = (min?: number, max?: number) => {
+        if (min && max) {
+            return `${(min / 1000).toFixed(0)}k-${(max / 1000).toFixed(0)}k`;
+        }
+        return '面议';
+    };
+
+    // 解析 requirements 字段（如果是字符串格式）
+    const parseRequirements = (requirements?: string | string[]) => {
+        if (Array.isArray(requirements)) {
+            return requirements;
+        }
+        if (typeof requirements === 'string') {
+            return requirements.split('\n').filter(req => req.trim().length > 0);
+        }
+        return [
+            '相关专业本科及以上学历',
+            '具备良好的沟通能力和团队合作精神',
+            '对技术有热情，学习能力强',
+            '有相关工作经验者优先'
+        ];
+    };
+
+    return {
+        id: job.id,
+        title: job.title,
+        department: job.departments?.name || job.department || '未知部门',
+        departmentColorTheme: job.departments?.color_theme || 'blue',
+        location: job.location || '待定',
+        salary: formatSalary(job.salary_min, job.salary_max),
+        description: job.description || '我们正在寻找优秀的人才加入我们的团队。这是一个充满挑战和机遇的职位，您将有机会参与创新项目，与优秀的团队合作，实现职业发展的新突破。',
+        responsibilities: job.responsibilities || [
+            '参与产品功能的设计和开发',
+            '与团队成员协作完成项目目标',
+            '持续学习新技术，提升技术能力',
+            '参与代码审查和技术分享'
+        ],
+        requirements: parseRequirements(job.requirements),
+        status: job.status,
+        created_at: job.created_at,
+    };
 }
 
-export default async function JobDetailPage({
+export default function JobDetailPage({
     params,
 }: {
     params: { id: string };
 }) {
-    const { id } = await params;
-    let job: JobWithDepartment | Job | null = null;
-    let isUsingMockData = false;
+    const { user, userRole, session } = useAuth();
+    const [job, setJob] = useState<JobWithDepartment | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [id, setId] = useState<string>('');
+    const [applicationStats, setApplicationStats] = useState<{
+        total: number;
+        submitted: number;
+        reviewing: number;
+        interview: number;
+        hired: number;
+        rejected: number;
+    } | null>(null);
 
-    // 尝试从数据库获取职位信息
-    try {
-        job = await getJobById(id);
-    } catch (error) {
-        console.error('获取职位信息失败:', error);
-    }
+    useEffect(() => {
+        const getParams = async () => {
+            const resolvedParams = await params;
+            setId(resolvedParams.id);
+        };
+        getParams();
+    }, [params]);
 
-    // 如果数据库中没有找到，尝试使用静态数据
-    if (!job) {
-        job = mockJobs.find((j: Job) => j.id === id) || null;
-        isUsingMockData = true;
+    useEffect(() => {
+        if (!id) return;
+
+        // 从数据库获取职位信息
+        const fetchJob = async () => {
+            try {
+                const jobData = await getJobById(id);
+                setJob(jobData);
+            } catch (error) {
+                console.error('获取职位信息失败:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchJob();
+    }, [id]);
+
+    // 获取申请统计（仅HR和管理员）
+    useEffect(() => {
+        if (!id || !user || (userRole !== 'hr' && userRole !== 'admin')) return;
+
+        const fetchApplicationStats = async () => {
+            try {
+                console.log('开始获取申请统计，职位ID:', id);
+                console.log('用户信息:', { userRole, hasToken: !!user?.access_token });
+
+                const response = await fetch(`/api/jobs/${id}/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${session?.access_token || ''}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('API响应状态:', response.status);
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('API返回数据:', data);
+                    setApplicationStats(data.stats);
+                } else {
+                    const errorData = await response.json();
+                    console.error('API错误响应:', errorData);
+                    // 如果是认证错误，设置空的统计数据
+                    if (response.status === 401 || response.status === 403) {
+                        setApplicationStats({
+                            total: 0,
+                            submitted: 0,
+                            reviewing: 0,
+                            interview: 0,
+                            hired: 0,
+                            rejected: 0
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('获取申请统计失败:', error);
+                // 设置默认的空统计数据
+                setApplicationStats({
+                    total: 0,
+                    submitted: 0,
+                    reviewing: 0,
+                    interview: 0,
+                    hired: 0,
+                    rejected: 0
+                });
+            }
+        };
+
+        fetchApplicationStats();
+    }, [id, user, userRole, session]);
+
+    // 加载状态
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+                <div className="container mx-auto px-4 py-12">
+                    <div className="max-w-2xl mx-auto text-center">
+                        <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+                            <Building2 className="h-12 w-12 text-gray-400" />
+                        </div>
+                        <p className="text-gray-600">加载中...</p>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
     // 如果仍然没有找到职位
@@ -132,16 +228,7 @@ export default async function JobDetailPage({
                 </div>
 
                 <div className="max-w-6xl mx-auto">
-                    {/* 数据来源提示 */}
-                    {isUsingMockData && (
-                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-8">
-                            <div className="flex items-center">
-                                <div className="text-yellow-600 text-sm">
-                                    ⚠️ 正在显示演示数据，实际职位信息请联系HR
-                                </div>
-                            </div>
-                        </div>
-                    )}
+
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* 主要内容区域 */}
@@ -241,23 +328,92 @@ export default async function JobDetailPage({
                             <Card className="border-0 shadow-lg sticky top-8">
                                 <CardHeader>
                                     <CardTitle className="text-center text-xl">
-                                        立即申请
+                                        {userRole === 'candidate' ? '立即申请' : '职位信息'}
                                     </CardTitle>
                                     <CardDescription className="text-center">
-                                        加入我们，开启职业新篇章
+                                        {userRole === 'candidate'
+                                            ? '加入我们，开启职业新篇章'
+                                            : userRole === 'hr' || userRole === 'admin'
+                                                ? '您是HR/管理员，无法申请职位'
+                                                : '请登录候选人账号申请职位'
+                                        }
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
-                                    <Link href={`/apply?jobId=${jobData.id}`}>
-                                        <Button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
-                                            <Send className="w-4 h-4 mr-2" />
-                                            申请此职位
-                                        </Button>
-                                    </Link>
+                                    {userRole === 'candidate' ? (
+                                        <>
+                                            <Link href={`/apply?jobId=${jobData.id}`}>
+                                                <Button className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white transition-all duration-300 hover:scale-105 shadow-md hover:shadow-lg">
+                                                    <Send className="w-4 h-4 mr-2" />
+                                                    申请此职位
+                                                </Button>
+                                            </Link>
+                                            <div className="text-center text-sm text-gray-500">
+                                                <p>申请后我们会尽快与您联系</p>
+                                            </div>
+                                        </>
+                                    ) : userRole === 'hr' || userRole === 'admin' ? (
+                                        <div className="space-y-4">
+                                            <div className="text-center">
+                                                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                    <FileText className="w-6 h-6 text-blue-600" />
+                                                </div>
+                                                <p className="text-sm text-gray-600 mb-4">
+                                                    作为{userRole === 'hr' ? 'HR专员' : '管理员'}，您可以管理此职位
+                                                </p>
+                                            </div>
 
-                                    <div className="text-center text-sm text-gray-500">
-                                        <p>申请后我们会尽快与您联系</p>
-                                    </div>
+                                            {/* 申请统计 */}
+                                            {applicationStats && (
+                                                <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                                                    <h4 className="font-medium text-gray-900 text-center">申请统计</h4>
+                                                    <div className="grid grid-cols-2 gap-3 text-sm">
+                                                        <div className="text-center">
+                                                            <div className="font-semibold text-blue-600">{applicationStats.total}</div>
+                                                            <div className="text-gray-600">总申请</div>
+                                                        </div>
+                                                        <div className="text-center">
+                                                            <div className="font-semibold text-green-600">{applicationStats.submitted}</div>
+                                                            <div className="text-gray-600">待审核</div>
+                                                        </div>
+                                                        <div className="text-center">
+                                                            <div className="font-semibold text-orange-600">{applicationStats.reviewing}</div>
+                                                            <div className="text-gray-600">审核中</div>
+                                                        </div>
+                                                        <div className="text-center">
+                                                            <div className="font-semibold text-purple-600">{applicationStats.interview}</div>
+                                                            <div className="text-gray-600">面试中</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="space-y-2">
+                                                <Link href={`/hr/jobs/${id}/applications`}>
+                                                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                                                        <Eye className="w-4 h-4 mr-2" />
+                                                        查看申请 {applicationStats ? `(${applicationStats.total})` : ''}
+                                                    </Button>
+                                                </Link>
+                                                <Link href="/hr/jobs">
+                                                    <Button variant="outline" className="w-full">
+                                                        管理所有职位
+                                                    </Button>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="text-center space-y-3">
+                                            <p className="text-sm text-gray-600">
+                                                请使用候选人账号登录以申请此职位
+                                            </p>
+                                            <Link href="/auth/login">
+                                                <Button variant="outline" className="w-full">
+                                                    登录申请
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
 

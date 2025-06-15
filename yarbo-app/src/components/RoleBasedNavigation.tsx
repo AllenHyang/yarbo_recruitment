@@ -32,9 +32,10 @@ import {
   UserCheck,
   Shield,
   Database,
-  MessageSquare
+  MessageSquare,
+  MapPin,
+  Award
 } from 'lucide-react';
-import { UnreadMessageBadge } from './UnreadMessageBadge';
 import { NotificationCenter } from './NotificationCenter';
 import type { UserRole } from '@/lib/database.types';
 
@@ -65,6 +66,24 @@ const navigationItems: NavItem[] = [
     label: '申请状态',
     href: '/status',
     icon: FileText,
+    roles: ['candidate']
+  },
+  {
+    label: '我的Offer',
+    href: '/offers',
+    icon: Award,
+    roles: ['candidate']
+  },
+  {
+    label: '校园招聘',
+    href: '/campus-recruitment',
+    icon: GraduationCap,
+    roles: ['candidate']
+  },
+  {
+    label: '实习招聘',
+    href: '/internship-recruitment',
+    icon: UserCheck,
     roles: ['candidate']
   },
   {
@@ -104,6 +123,18 @@ const navigationItems: NavItem[] = [
         roles: ['admin', 'hr']
       },
       {
+        label: '部门管理',
+        href: '/hr/departments',
+        icon: Building2,
+        roles: ['admin', 'hr']
+      },
+      {
+        label: '办公地点',
+        href: '/hr/office-locations',
+        icon: MapPin,
+        roles: ['admin', 'hr']
+      },
+      {
         label: '面试管理',
         href: '/hr/interviews',
         icon: Calendar,
@@ -131,6 +162,12 @@ const navigationItems: NavItem[] = [
         label: '实习管理',
         href: '/hr/internship',
         icon: UserCheck,
+        roles: ['admin', 'hr']
+      },
+      {
+        label: 'Offer管理',
+        href: '/hr/offers',
+        icon: Award,
         roles: ['admin', 'hr']
       }
     ]
@@ -170,6 +207,12 @@ const navigationItems: NavItem[] = [
         href: '/admin/logs',
         icon: FileText,
         roles: ['admin']
+      },
+      {
+        label: 'Offer管理',
+        href: '/admin/offers',
+        icon: Award,
+        roles: ['admin']
       }
     ]
   }
@@ -194,7 +237,10 @@ export function RoleBasedNavigation() {
   // 过滤用户可访问的导航项
   const getAccessibleNavItems = (items: NavItem[]): NavItem[] => {
     return items.filter(item => {
-      if (!userRole) return false;
+      // 对于未登录用户，只显示公开页面的导航项
+      if (!userRole) {
+        return hasPageAccess(null, item.href);
+      }
       return item.roles.includes(userRole) && hasPageAccess(userRole, item.href);
     }).map(item => ({
       ...item,
@@ -229,7 +275,7 @@ export function RoleBasedNavigation() {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">Y</span>
               </div>
-              <span className="font-bold text-xl text-gray-900">Yarbo Inc.</span>
+              <span className="font-bold text-xl text-gray-900">Yarbo 汉阳科技</span>
             </Link>
           </div>
 
@@ -312,7 +358,6 @@ export function RoleBasedNavigation() {
             {user && (
               <>
                 <NotificationCenter />
-                <UnreadMessageBadge userId={user.email} />
               </>
             )}
             {user ? (

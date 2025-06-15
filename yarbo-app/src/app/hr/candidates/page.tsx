@@ -33,6 +33,7 @@ import {
   Plus,
   MoreHorizontal
 } from "lucide-react";
+import { withProtected } from "@/components/withProtected";
 
 interface Candidate {
   id: string;
@@ -57,7 +58,7 @@ interface Candidate {
   salaryExpectation?: string;
 }
 
-export default function CandidatesPage() {
+function CandidatesPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [experienceFilter, setExperienceFilter] = useState('all');
@@ -301,15 +302,40 @@ export default function CandidatesPage() {
             </div>
 
             <div className="flex items-center space-x-3">
-              <DataExport
-                type="candidates"
-                trigger={
+              <Dialog>
+                <DialogTrigger asChild>
                   <Button variant="outline">
                     <Download className="w-4 h-4 mr-2" />
                     导出数据
                   </Button>
-                }
-              />
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl">
+                  <DialogHeader>
+                    <DialogTitle>导出候选人数据</DialogTitle>
+                  </DialogHeader>
+                  <DataExport
+                    dataType="candidates"
+                    availableFields={[
+                      { key: 'name', label: '姓名', required: true, category: '基本信息' },
+                      { key: 'email', label: '邮箱', required: true, category: '基本信息' },
+                      { key: 'phone', label: '电话', required: false, category: '基本信息' },
+                      { key: 'location', label: '地点', required: false, category: '基本信息' },
+                      { key: 'experience', label: '工作经验', required: false, category: '职业信息' },
+                      { key: 'education', label: '教育背景', required: false, category: '职业信息' },
+                      { key: 'skills', label: '技能', required: false, category: '职业信息' },
+                      { key: 'rating', label: '评分', required: false, category: '评估信息' },
+                      { key: 'status', label: '状态', required: false, category: '评估信息' },
+                      { key: 'lastContact', label: '最后联系', required: false, category: '跟进信息' },
+                      { key: 'source', label: '来源', required: false, category: '跟进信息' }
+                    ]}
+                    onExport={async (config) => {
+                      console.log('导出配置:', config);
+                      // 这里应该调用实际的导出API
+                      alert('导出功能开发中...');
+                    }}
+                  />
+                </DialogContent>
+              </Dialog>
               <Button>
                 <Plus className="w-4 h-4 mr-2" />
                 添加候选人
@@ -458,11 +484,15 @@ export default function CandidatesPage() {
 
           {/* 批量操作工具栏 */}
           <BulkActionToolbar
-            selectedItems={selectedCandidates}
+            selectedCount={selectedCandidates.length}
             onClearSelection={() => setSelectedCandidates([])}
-            onBulkAction={handleBulkAction}
-            availableActions={['update_status', 'add_tags', 'remove_tags', 'update_rating', 'add_note', 'move_to_pool', 'delete']}
-            isLoading={isLoading}
+            onExport={() => handleBulkAction('export')}
+            onSendEmail={() => handleBulkAction('email')}
+            onApprove={() => handleBulkAction('approve')}
+            onReject={() => handleBulkAction('reject')}
+            onArchive={() => handleBulkAction('archive')}
+            onDelete={() => handleBulkAction('delete')}
+            disabled={isLoading}
           />
 
           {/* 候选人列表 */}
@@ -757,4 +787,7 @@ export default function CandidatesPage() {
       </div>
     </div>
   );
-} 
+}
+
+// 使用权限保护，只允许HR和管理员访问
+export default withProtected(CandidatesPage, ['hr', 'admin']);

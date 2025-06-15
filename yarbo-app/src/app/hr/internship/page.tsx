@@ -11,9 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import { Textarea } from "@/components/ui/textarea";
-import { 
-  Search, 
-  Plus, 
+import {
+  Search,
+  Plus,
   Calendar,
   Clock,
   BookOpen,
@@ -31,6 +31,7 @@ import {
   MessageSquare,
   BarChart3
 } from "lucide-react";
+import { withProtected } from "@/components/withProtected";
 
 interface InternPosition {
   id: string;
@@ -216,7 +217,7 @@ export default function InternshipPage() {
 
   const filteredPositions = internPositions.filter(position => {
     const matchesSearch = position.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         position.department.toLowerCase().includes(searchQuery.toLowerCase());
+      position.department.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === 'all' || position.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
@@ -240,10 +241,10 @@ export default function InternshipPage() {
               </h1>
               <p className="text-gray-600 mt-1">管理实习职位发布、实习生招募和在职实习生</p>
             </div>
-            
+
             <div className="flex space-x-3">
               <Button variant="outline" onClick={() => {
-                const data = { 
+                const data = {
                   实习职位: internPositions.length,
                   在职实习生: internStudents.filter(s => s.status === 'active').length,
                   申请总数: internPositions.reduce((sum, pos) => sum + pos.applicants, 0),
@@ -437,11 +438,10 @@ export default function InternshipPage() {
                     { name: '小李', position: '数据分析', score: 87, school: '上海交大' }
                   ].map((student, index) => (
                     <div key={student.name} className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                        index === 0 ? 'bg-yellow-100 text-yellow-800' :
-                        index === 1 ? 'bg-gray-100 text-gray-800' :
-                        'bg-orange-100 text-orange-800'
-                      }`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${index === 0 ? 'bg-yellow-100 text-yellow-800' :
+                          index === 1 ? 'bg-gray-100 text-gray-800' :
+                            'bg-orange-100 text-orange-800'
+                        }`}>
                         {index + 1}
                       </div>
                       <div className="flex-1">
@@ -480,7 +480,7 @@ export default function InternshipPage() {
                     评估安排
                   </Button>
                   <Button variant="outline" className="h-12" onClick={() => {
-                    const data = { 
+                    const data = {
                       实习职位: internPositions.length,
                       在职实习生: internStudents.filter(s => s.status === 'active').length,
                       申请总数: internPositions.reduce((sum, pos) => sum + pos.applicants, 0),

@@ -1,12 +1,40 @@
+'use client';
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApplyForm } from "./_components/ApplyForm";
-import { mockJobs } from "../jobs/page";
 import { Job } from "@/components/JobCard";
 import { getJobById } from "@/lib/api";
 import { getDepartmentColor } from "@/lib/supabase";
 import type { JobWithDepartment } from "@/lib/database.types";
 import Link from "next/link";
 import { ArrowLeft, Building2, CheckCircle, FileText, Send, User } from "lucide-react";
+import { withRoleBasedAccess } from "@/components/withProtected";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+
+// 本地mock数据作为后备
+const mockJobs: Job[] = [
+  {
+    id: "1",
+    title: "资深全栈工程师",
+    department: "技术部",
+    location: "上海",
+    salary: "25-35K",
+    description: "负责前后端开发工作",
+    requirements: ["5年以上开发经验", "熟悉React/Node.js"],
+    responsibilities: ["开发新功能", "维护现有系统"]
+  },
+  {
+    id: "2",
+    title: "产品经理",
+    department: "产品部",
+    location: "北京",
+    salary: "20-30K",
+    description: "负责产品规划和设计",
+    requirements: ["3年以上产品经验", "熟悉用户研究"],
+    responsibilities: ["产品规划", "需求分析"]
+  }
+];
 
 // 获取职位显示数据的工具函数
 function getJobDisplayData(job: JobWithDepartment | Job) {
@@ -33,40 +61,65 @@ function getJobDisplayData(job: JobWithDepartment | Job) {
   }
 }
 
-export default async function ApplyPage({
-  searchParams,
-}: {
-  searchParams: { jobId?: string };
-}) {
-  const { jobId } = await searchParams;
-  let job: JobWithDepartment | Job | null = null;
-  let isUsingMockData = false;
+function ApplyPage() {
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get('jobId');
+  const [job, setJob] = useState<JobWithDepartment | Job | null>(null);
+  const [isUsingMockData, setIsUsingMockData] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // 尝试从数据库获取职位信息
-  if (jobId) {
-    try {
-      job = await getJobById(jobId);
-    } catch (error) {
-      console.error('获取职位信息失败:', error);
-    }
-    
-    // 如果数据库中没有找到，尝试使用静态数据
-    if (!job) {
-      job = mockJobs.find((j: Job) => j.id === jobId) || null;
-      isUsingMockData = true;
-    }
-  }
+  useEffect(() => {
+    const fetchJob = async () => {
+      if (!jobId) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        // 尝试从数据库获取职位信息
+        const jobData = await getJobById(jobId);
+        setJob(jobData);
+        setIsUsingMockData(false);
+      } catch (error) {
+        console.error('获取职位信息失败:', error);
+
+        // 如果数据库中没有找到，尝试使用静态数据
+        const mockJob = mockJobs.find((j: Job) => j.id === jobId) || null;
+        setJob(mockJob);
+        setIsUsingMockData(!!mockJob);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJob();
+  }, [jobId]);
 
   const jobData = job ? getJobDisplayData(job) : null;
   const colors = jobData ? getDepartmentColor(jobData.departmentColorTheme) : getDepartmentColor('blue');
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
+        <main className="container mx-auto px-4 py-12 md:py-16">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
+              <Building2 className="h-12 w-12 text-gray-400" />
+            </div>
+            <p className="text-gray-600">加载中...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
       <main className="container mx-auto px-4 py-12 md:py-16">
         {/* 返回导航 */}
         <div className="mb-8">
-          <Link 
-            href={job ? `/jobs/${job.id}` : "/jobs"} 
+          <Link
+            href={job ? `/jobs/${job.id}` : "/jobs"}
             className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 group"
           >
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-200" />
@@ -128,8 +181,9 @@ export default async function ApplyPage({
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <ApplyForm 
-                    positionTitle={jobData?.title} 
+                  <ApplyForm
+                    positionTitle={jobData?.title}
+                    positionDepartment={jobData?.department}
                     jobId={jobId}
                   />
                 </CardContent>
@@ -220,4 +274,7 @@ export default async function ApplyPage({
       </main>
     </div>
   );
-} 
+}
+
+// 使用基于角色的权限保护包装组件
+export default withRoleBasedAccess(ApplyPage);

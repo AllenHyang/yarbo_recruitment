@@ -16,10 +16,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { Job } from "@/components/JobCard";
 import type { JobWithDepartment } from "@/lib/database.types";
-import { 
-  Briefcase, 
-  MapPin, 
-  Building2, 
+import {
+  Briefcase,
+  MapPin,
+  Building2,
   TrendingUp,
   Users,
   Target,
@@ -28,56 +28,50 @@ import {
 } from "lucide-react";
 
 interface RecruitmentStatsProps {
-  jobs: (JobWithDepartment | Job)[];
+  jobs: JobWithDepartment[];
 }
 
 export function RecruitmentStats({ jobs }: RecruitmentStatsProps) {
   const stats = useMemo(() => {
     // 基础统计
     const totalJobs = jobs.length;
-    
+
     // 地点统计
     const locationCounts = new Map<string, number>();
     // 部门统计
     const departmentCounts = new Map<string, number>();
     // 薪资级别统计
     const salaryLevels = new Map<string, number>();
-    
+
     jobs.forEach(job => {
       // 统计地点
       if (job.location) {
         locationCounts.set(job.location, (locationCounts.get(job.location) || 0) + 1);
       }
-      
+
       // 统计部门
-      const department = ('departments' in job && job.departments?.name) || 
-                        ('department' in job && job.department) || 
-                        '未知部门';
+      const department = job.departments?.name || job.department || '未知部门';
       departmentCounts.set(department, (departmentCounts.get(department) || 0) + 1);
-      
-      // 统计薪资级别
-      const salary = ('salary_display' in job && job.salary_display) || 
-                    ('salary' in job && job.salary) || 
-                    '';
-      
-      if (salary.includes('k')) {
-        const salaryNum = parseInt(salary.split('-')[0] || '0');
+
+      // 统计薪资级别 - 基于 salary_min
+      if (job.salary_min) {
+        const salaryNum = job.salary_min / 1000; // 转换为k
         let level = '0-20k';
         if (salaryNum >= 50) level = '50k+';
         else if (salaryNum >= 30) level = '30-50k';
         else if (salaryNum >= 20) level = '20-30k';
-        
+
         salaryLevels.set(level, (salaryLevels.get(level) || 0) + 1);
       }
     });
 
     // 排序并获取前5
     const topLocations = Array.from(locationCounts.entries())
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5);
-      
+
     const topDepartments = Array.from(departmentCounts.entries())
-      .sort(([,a], [,b]) => b - a)
+      .sort(([, a], [, b]) => b - a)
       .slice(0, 5);
 
     return {
@@ -169,24 +163,22 @@ export function RecruitmentStats({ jobs }: RecruitmentStatsProps) {
             {stats.topLocations.map(([location, count], index) => (
               <div key={location} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-2 h-2 rounded-full ${
-                    index === 0 ? 'bg-blue-500' :
+                  <div className={`w-2 h-2 rounded-full ${index === 0 ? 'bg-blue-500' :
                     index === 1 ? 'bg-green-500' :
-                    index === 2 ? 'bg-yellow-500' :
-                    'bg-gray-400'
-                  }`} />
+                      index === 2 ? 'bg-yellow-500' :
+                        'bg-gray-400'
+                    }`} />
                   <span className="font-medium text-gray-900">{location}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Badge variant="secondary">{count} 个职位</Badge>
                   <div className="w-20 bg-gray-200 rounded-full h-2">
-                    <div 
-                      className={`h-2 rounded-full ${
-                        index === 0 ? 'bg-blue-500' :
+                    <div
+                      className={`h-2 rounded-full ${index === 0 ? 'bg-blue-500' :
                         index === 1 ? 'bg-green-500' :
-                        index === 2 ? 'bg-yellow-500' :
-                        'bg-gray-400'
-                      }`}
+                          index === 2 ? 'bg-yellow-500' :
+                            'bg-gray-400'
+                        }`}
                       style={{ width: `${(count / stats.totalJobs) * 100}%` }}
                     />
                   </div>
@@ -210,18 +202,16 @@ export function RecruitmentStats({ jobs }: RecruitmentStatsProps) {
             {stats.topDepartments.map(([department, count], index) => (
               <div key={department} className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
-                    index === 0 ? 'bg-purple-100' :
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${index === 0 ? 'bg-purple-100' :
                     index === 1 ? 'bg-blue-100' :
-                    index === 2 ? 'bg-green-100' :
-                    'bg-gray-100'
-                  }`}>
-                    <Users className={`h-4 w-4 ${
-                      index === 0 ? 'text-purple-600' :
+                      index === 2 ? 'bg-green-100' :
+                        'bg-gray-100'
+                    }`}>
+                    <Users className={`h-4 w-4 ${index === 0 ? 'text-purple-600' :
                       index === 1 ? 'text-blue-600' :
-                      index === 2 ? 'text-green-600' :
-                      'text-gray-600'
-                    }`} />
+                        index === 2 ? 'text-green-600' :
+                          'text-gray-600'
+                      }`} />
                   </div>
                   <div>
                     <div className="font-medium text-gray-900">{department}</div>

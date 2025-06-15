@@ -18,14 +18,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
-import { 
-  ArrowLeft, 
-  Search, 
-  CheckCircle, 
-  Clock, 
-  Calendar, 
-  User, 
+import {
+  ArrowLeft,
+  Search,
+  CheckCircle,
+  Clock,
+  Calendar,
+  User,
   Briefcase,
   Mail,
   Phone,
@@ -40,7 +41,9 @@ import {
   Video,
   Users,
   Target,
-  BookOpen
+  BookOpen,
+  X,
+  XCircle
 } from "lucide-react";
 
 // 模拟申请数据
@@ -48,7 +51,7 @@ const mockApplications = [
   {
     id: "1",
     jobTitle: "高级前端工程师",
-    department: "产品研发部", 
+    department: "产品研发部",
     location: "上海",
     salary: "25K-35K",
     appliedDate: "2025-06-08",
@@ -60,41 +63,41 @@ const mockApplications = [
     interviewDate: null,
     feedback: null,
     timeline: [
-      { 
-        status: "submitted", 
-        title: "投递成功", 
+      {
+        status: "submitted",
+        title: "投递成功",
         description: "我们已收到您的简历，Yarbo之旅，即刻启程！",
         date: "2025-06-08",
-        completed: true 
+        completed: true
       },
-      { 
-        status: "reviewing", 
-        title: "简历评估中", 
+      {
+        status: "reviewing",
+        title: "简历评估中",
         description: "我们的HR正在仔细阅读您的简历，请耐心等待，预计需要3-5个工作日。",
         date: null,
         completed: false,
         current: true
       },
-      { 
-        status: "interview", 
-        title: "面试安排", 
+      {
+        status: "interview",
+        title: "面试安排",
         description: "若通过评估，我们的招聘专员将与您联系安排面试事宜。",
         date: null,
-        completed: false 
+        completed: false
       },
-      { 
-        status: "decision", 
-        title: "最终决定", 
+      {
+        status: "decision",
+        title: "最终决定",
         description: "面试结束后，我们会在5个工作日内给出最终回复。",
         date: null,
-        completed: false 
+        completed: false
       }
     ]
   },
   {
     id: "2",
     jobTitle: "产品经理",
-    department: "产品部", 
+    department: "产品部",
     location: "北京",
     salary: "30K-40K",
     appliedDate: "2025-06-05",
@@ -106,34 +109,34 @@ const mockApplications = [
     interviewDate: "2025-06-12",
     feedback: "您的简历非常优秀，我们安排了下周的面试。",
     timeline: [
-      { 
-        status: "submitted", 
-        title: "投递成功", 
+      {
+        status: "submitted",
+        title: "投递成功",
         description: "我们已收到您的简历。",
         date: "2025-06-05",
-        completed: true 
+        completed: true
       },
-      { 
-        status: "reviewing", 
-        title: "简历评估", 
+      {
+        status: "reviewing",
+        title: "简历评估",
         description: "简历评估通过。",
         date: "2025-06-07",
         completed: true
       },
-      { 
-        status: "interview", 
-        title: "面试安排", 
+      {
+        status: "interview",
+        title: "面试安排",
         description: "已安排面试时间：6月12日 14:00，请准时参加。",
         date: "2025-06-09",
         completed: false,
         current: true
       },
-      { 
-        status: "decision", 
-        title: "最终决定", 
+      {
+        status: "decision",
+        title: "最终决定",
         description: "面试结束后，我们会给出最终回复。",
         date: null,
-        completed: false 
+        completed: false
       }
     ]
   }
@@ -150,7 +153,7 @@ const mockNotifications = [
     read: false
   },
   {
-    id: "2", 
+    id: "2",
     type: "update",
     title: "申请状态更新",
     message: "您的高级前端工程师申请已进入简历评估阶段",
@@ -160,7 +163,7 @@ const mockNotifications = [
   {
     id: "3",
     type: "reminder",
-    title: "简历更新提醒", 
+    title: "简历更新提醒",
     message: "建议更新您的简历以匹配更多职位",
     date: "2025-06-07",
     read: true
@@ -179,11 +182,11 @@ const mockRecommendedJobs = [
     tags: ["React", "TypeScript", "Node.js"]
   },
   {
-    id: "4", 
+    id: "4",
     title: "前端架构师",
     department: "技术部",
     location: "上海",
-    salary: "35K-50K", 
+    salary: "35K-50K",
     match: 88,
     tags: ["Vue.js", "微前端", "团队管理"]
   }
@@ -201,17 +204,16 @@ const mockStats = {
 
 export default function ApplicationStatusPage() {
   const { user, userProfile } = useAuth();
-  const [searchEmail, setSearchEmail] = useState("");
   const [applications, setApplications] = useState<any[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [notifications, setNotifications] = useState(mockNotifications);
   const [recommendedJobs, setRecommendedJobs] = useState(mockRecommendedJobs);
   const [stats, setStats] = useState(mockStats);
   const [activeTab, setActiveTab] = useState<'overview' | 'applications' | 'notifications' | 'recommendations'>('overview');
+  const [cancellingApplicationId, setCancellingApplicationId] = useState<string | null>(null);
 
   const markNotificationAsRead = (notificationId: string) => {
-    setNotifications(notifications.map(notif => 
+    setNotifications(notifications.map(notif =>
       notif.id === notificationId ? { ...notif, read: true } : notif
     ));
   };
@@ -219,45 +221,111 @@ export default function ApplicationStatusPage() {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   useEffect(() => {
-    // 如果用户已登录，自动填充邮箱并搜索
+    // 如果用户已登录，自动加载用户的申请
     if (user?.email) {
-      setSearchEmail(user.email);
-      // 自动执行搜索
-      setTimeout(() => {
-        if (user.email) {
-          handleSearchForUser(user.email);
-        }
-      }, 500);
+      loadUserApplications();
     }
   }, [user]);
 
-  const handleSearchForUser = async (email: string) => {
-    setIsSearching(true);
-    setHasSearched(true);
+  const loadUserApplications = async () => {
+    if (!user?.email) return;
+
+    setIsLoading(true);
     try {
-      // TODO: 实际的API调用
-      // const userApplications = await getUserApplications(email);
-      
-      // 模拟搜索延迟
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // 使用模拟数据 - 根据用户邮箱显示相应申请
-      if (email === user?.email) {
-        setApplications(mockApplications);
+      // 获取用户认证token
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        console.error('用户未认证');
+        return;
+      }
+
+      // 调用真实的API获取用户申请，只能获取当前登录用户的申请
+      const response = await fetch('/api/applications/user', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          const apps = result.data || [];
+          setApplications(apps);
+
+          // 计算真实统计数据
+          const realStats = {
+            totalApplications: apps.length,
+            inProgress: apps.filter((app: any) => ['submitted', 'reviewing'].includes(app.status)).length,
+            interviews: apps.filter((app: any) => app.status === 'interview').length,
+            offers: apps.filter((app: any) => app.status === 'hired').length,
+            responseRate: apps.length > 0 ? `${Math.round((apps.filter((app: any) => app.status !== 'submitted').length / apps.length) * 100)}%` : "0%",
+            avgResponseTime: "3天" // TODO: 从数据库计算实际响应时间
+          };
+          setStats(realStats);
+        } else {
+          console.error("获取申请失败:", result.error);
+          setApplications([]);
+        }
       } else {
+        console.error("API调用失败:", response.status);
         setApplications([]);
       }
     } catch (error) {
-      console.error("搜索申请失败:", error);
+      console.error("加载申请失败:", error);
       setApplications([]);
     } finally {
-      setIsSearching(false);
+      setIsLoading(false);
     }
   };
 
-  const handleSearch = async () => {
-    if (!searchEmail.trim()) return;
-    await handleSearchForUser(searchEmail);
+  // 取消申请
+  const handleCancelApplication = async (applicationId: string) => {
+    if (!user?.id) return;
+
+    const confirmed = confirm('确定要取消这个申请吗？此操作不可撤销。');
+    if (!confirmed) return;
+
+    try {
+      setCancellingApplicationId(applicationId);
+
+      const response = await fetch(`/api/applications/${applicationId}/cancel`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          reason: '候选人主动取消'
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || '取消申请失败');
+      }
+
+      const result = await response.json();
+      if (result.success) {
+        // 重新加载申请列表
+        await loadUserApplications();
+        alert('申请已成功取消');
+      } else {
+        throw new Error(result.error || '取消申请失败');
+      }
+    } catch (error) {
+      console.error('取消申请失败:', error);
+      alert(error instanceof Error ? error.message : '取消申请失败');
+    } finally {
+      setCancellingApplicationId(null);
+    }
+  };
+
+  // 检查申请是否可以取消
+  const canCancelApplication = (status: string) => {
+    const cancellableStatuses = ['submitted', 'reviewing', 'interview_scheduled'];
+    return cancellableStatuses.includes(status);
   };
 
   // 如果用户未登录，显示登录提示界面
@@ -267,8 +335,8 @@ export default function ApplicationStatusPage() {
         <div className="container mx-auto px-4 py-12">
           {/* 返回导航 */}
           <div className="mb-8">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 group"
             >
               <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-200" />
@@ -297,7 +365,7 @@ export default function ApplicationStatusPage() {
                   请先登录您的账户
                 </CardTitle>
                 <CardDescription className="text-gray-600">
-                  登录后可以查看您的所有申请记录和实时状态更新
+                  登录后可以安全地查看您的所有申请记录和实时状态更新
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -313,7 +381,7 @@ export default function ApplicationStatusPage() {
                     </Button>
                   </Link>
                 </div>
-                
+
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <h3 className="font-medium text-gray-900 mb-3">登录后您可以：</h3>
                   <div className="space-y-2 text-sm text-gray-600">
@@ -393,8 +461,8 @@ export default function ApplicationStatusPage() {
       <div className="container mx-auto px-4 py-12">
         {/* 返回导航 */}
         <div className="mb-8">
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="inline-flex items-center space-x-2 text-sm text-gray-600 hover:text-gray-900 transition-colors duration-200 group"
           >
             <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform duration-200" />
@@ -409,62 +477,47 @@ export default function ApplicationStatusPage() {
               申请状态查询
             </h1>
             <p className="text-lg text-gray-600">
-              查看您在 Yarbo 的申请进度和状态更新
+              安全查看您在 Yarbo 的申请进度和状态更新
             </p>
           </div>
 
-          {/* 搜索区域 */}
+          {/* 用户信息区域 */}
           <Card className="mb-8 border-0 shadow-md">
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
-                <Search className="h-5 w-5 text-blue-600" />
-                <span>查询申请状态</span>
+                <User className="h-5 w-5 text-blue-600" />
+                <span>我的申请状态</span>
               </CardTitle>
               <CardDescription>
-                请输入您申请时使用的邮箱地址来查看申请进度
+                查看您在 Yarbo 的所有申请记录和进度
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex space-x-4">
-                <div className="flex-1">
-                  <Label htmlFor="email" className="text-sm font-medium text-gray-700">
-                    邮箱地址
-                  </Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={searchEmail}
-                    onChange={(e) => setSearchEmail(e.target.value)}
-                    placeholder="请输入您的邮箱地址"
-                    className="mt-1"
-                    onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                  />
+              <div className="flex items-center space-x-4 p-4 bg-blue-50 rounded-lg">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <User className="h-6 w-6 text-blue-600" />
                 </div>
-                <div className="flex items-end">
-                  <Button 
-                    onClick={handleSearch}
-                    disabled={isSearching || !searchEmail.trim()}
-                    className="bg-blue-600 hover:bg-blue-700"
-                  >
-                    {isSearching ? (
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>查询中...</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center space-x-2">
-                        <Search className="h-4 w-4" />
-                        <span>查询申请</span>
-                      </div>
-                    )}
-                  </Button>
+                <div>
+                  <div className="font-medium text-gray-900">
+                    {userProfile?.user_profiles?.first_name && userProfile?.user_profiles?.last_name
+                      ? `${userProfile.user_profiles.first_name} ${userProfile.user_profiles.last_name}`
+                      : '用户'
+                    }
+                  </div>
+                  <div className="text-sm text-gray-600">{user?.email}</div>
                 </div>
+                {isLoading && (
+                  <div className="ml-auto flex items-center space-x-2 text-blue-600">
+                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm">加载中...</span>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
 
           {/* 申请列表 */}
-          {applications.length > 0 && (
+          {applications.length > 0 ? (
             <div className="space-y-6">
               {/* 统计概览 */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
@@ -512,7 +565,7 @@ export default function ApplicationStatusPage() {
               <h2 className="text-2xl font-bold text-gray-900">
                 您的申请记录 ({applications.length})
               </h2>
-              
+
               {applications.map((application) => (
                 <Card key={application.id} className="border-0 shadow-md hover:shadow-lg transition-shadow duration-300">
                   <CardHeader>
@@ -547,8 +600,8 @@ export default function ApplicationStatusPage() {
                         {application.progress && (
                           <div className="flex items-center space-x-2 text-sm text-gray-600">
                             <div className="w-20 bg-gray-200 rounded-full h-2">
-                              <div 
-                                className="bg-blue-600 h-2 rounded-full" 
+                              <div
+                                className="bg-blue-600 h-2 rounded-full"
                                 style={{ width: `${application.progress}%` }}
                               ></div>
                             </div>
@@ -558,7 +611,7 @@ export default function ApplicationStatusPage() {
                       </div>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent>
                     {/* HR反馈和面试信息 */}
                     {application.feedback && (
@@ -596,19 +649,18 @@ export default function ApplicationStatusPage() {
                     {/* 申请进度时间线 */}
                     <div className="space-y-4">
                       <h3 className="font-semibold text-gray-900 mb-4">申请进度</h3>
-                      
+
                       <div className="relative">
                         {application.timeline.map((step: any, index: number) => (
                           <div key={step.status} className="flex items-start space-x-4 pb-6 last:pb-0">
                             {/* 状态图标 */}
                             <div className="relative flex-shrink-0">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                                step.completed 
-                                  ? "bg-green-500" 
-                                  : step.current 
-                                    ? getStatusColor(step.status)
-                                    : "bg-gray-300"
-                              }`}>
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step.completed
+                                ? "bg-green-500"
+                                : step.current
+                                  ? getStatusColor(step.status)
+                                  : "bg-gray-300"
+                                }`}>
                                 {step.completed ? (
                                   <CheckCircle className="h-4 w-4 text-white" />
                                 ) : step.current ? (
@@ -617,30 +669,27 @@ export default function ApplicationStatusPage() {
                                   <div className="w-2 h-2 bg-white rounded-full" />
                                 )}
                               </div>
-                              
+
                               {/* 连接线 */}
                               {index < application.timeline.length - 1 && (
-                                <div className={`absolute top-8 left-4 w-0.5 h-6 ${
-                                  step.completed ? "bg-green-500" : "bg-gray-300"
-                                } transform -translate-x-1/2`} />
+                                <div className={`absolute top-8 left-4 w-0.5 h-6 ${step.completed ? "bg-green-500" : "bg-gray-300"
+                                  } transform -translate-x-1/2`} />
                               )}
                             </div>
-                            
+
                             {/* 状态内容 */}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center justify-between">
-                                <h4 className={`font-medium ${
-                                  step.completed || step.current ? "text-gray-900" : "text-gray-500"
-                                }`}>
+                                <h4 className={`font-medium ${step.completed || step.current ? "text-gray-900" : "text-gray-500"
+                                  }`}>
                                   {step.title}
                                 </h4>
                                 {step.date && (
                                   <span className="text-sm text-gray-500">{step.date}</span>
                                 )}
                               </div>
-                              <p className={`text-sm mt-1 ${
-                                step.completed || step.current ? "text-gray-600" : "text-gray-400"
-                              }`}>
+                              <p className={`text-sm mt-1 ${step.completed || step.current ? "text-gray-600" : "text-gray-400"
+                                }`}>
                                 {step.description}
                               </p>
                             </div>
@@ -648,11 +697,72 @@ export default function ApplicationStatusPage() {
                         ))}
                       </div>
                     </div>
+
+                    {/* 操作按钮 */}
+                    {canCancelApplication(application.status) && (
+                      <div className="mt-6 pt-4 border-t border-gray-200">
+                        <div className="flex justify-end">
+                          <Button
+                            onClick={() => handleCancelApplication(application.id)}
+                            disabled={cancellingApplicationId === application.id}
+                            variant="outline"
+                            size="sm"
+                            className="border-red-300 text-red-600 hover:bg-red-50"
+                          >
+                            {cancellingApplicationId === application.id ? (
+                              <div className="flex items-center space-x-2">
+                                <div className="w-3 h-3 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
+                                <span>取消中...</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center space-x-2">
+                                <XCircle className="h-4 w-4" />
+                                <span>取消申请</span>
+                              </div>
+                            )}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
             </div>
-          )}
+          ) : !isLoading ? (
+            /* 无申请状态 */
+            <Card className="border-0 shadow-md">
+              <CardContent className="py-12 text-center">
+                <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Briefcase className="h-12 w-12 text-gray-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  暂无申请记录
+                </h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                  您还没有提交任何职位申请。浏览我们的开放职位，找到适合您的机会！
+                </p>
+                <div className="space-y-3">
+                  <Link href="/jobs">
+                    <Button className="bg-blue-600 hover:bg-blue-700">
+                      <Search className="h-4 w-4 mr-2" />
+                      浏览职位
+                    </Button>
+                  </Link>
+                  <div className="text-sm text-gray-500">
+                    或者查看我们的
+                    <Link href="/campus-recruitment" className="text-blue-600 hover:underline mx-1">
+                      校园招聘
+                    </Link>
+                    和
+                    <Link href="/internship-recruitment" className="text-blue-600 hover:underline mx-1">
+                      实习招聘
+                    </Link>
+                    机会
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ) : null}
 
           {/* 联系信息 */}
           <Card className="mt-8 border-0 shadow-md bg-gray-50">

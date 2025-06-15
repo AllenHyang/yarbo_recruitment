@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
+import {
   Settings,
   User,
   Users,
@@ -77,7 +77,7 @@ export default function SettingsPage() {
 
   // 系统配置
   const [config, setConfig] = useState<SystemConfig>({
-    companyName: 'Yarbo 科技',
+    companyName: 'Yarbo 汉阳科技',
     companyLogo: '/logo.png',
     timezone: 'Asia/Shanghai',
     language: 'zh-CN',
@@ -257,17 +257,17 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <Label htmlFor="companyName">公司名称</Label>
-                      <Input 
+                      <Input
                         id="companyName"
                         value={config.companyName}
                         onChange={(e) => setConfig(prev => ({ ...prev, companyName: e.target.value }))}
                         className="border-gray-300 focus:border-blue-500"
                       />
                     </div>
-                    
+
                     <div>
                       <Label htmlFor="emailDomain">邮箱域名</Label>
-                      <Input 
+                      <Input
                         id="emailDomain"
                         value={config.emailDomain}
                         onChange={(e) => setConfig(prev => ({ ...prev, emailDomain: e.target.value }))}
@@ -306,7 +306,7 @@ export default function SettingsPage() {
 
                     <div>
                       <Label htmlFor="maxFileSize">最大文件大小 (MB)</Label>
-                      <Input 
+                      <Input
                         id="maxFileSize"
                         type="number"
                         value={config.maxFileSize}
@@ -317,7 +317,7 @@ export default function SettingsPage() {
 
                     <div>
                       <Label htmlFor="sessionTimeout">会话超时 (分钟)</Label>
-                      <Input 
+                      <Input
                         id="sessionTimeout"
                         type="number"
                         value={config.sessionTimeout}
@@ -366,7 +366,7 @@ export default function SettingsPage() {
                               {user.name.charAt(0)}
                             </AvatarFallback>
                           </Avatar>
-                          
+
                           <div>
                             <div className="flex items-center space-x-3 mb-1">
                               <h4 className="font-medium text-gray-900">{user.name}</h4>
@@ -392,9 +392,9 @@ export default function SettingsPage() {
                             <Edit className="w-3 h-3 mr-1" />
                             编辑
                           </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm" 
+                          <Button
+                            variant="outline"
+                            size="sm"
                             onClick={() => handleDeleteUser(user)}
                             className="border-red-300 hover:border-red-400 text-red-600 hover:text-red-700"
                           >
@@ -434,7 +434,7 @@ export default function SettingsPage() {
                           </div>
                         ))}
                       </div>
-                      
+
                       <div className="mt-6">
                         <Button variant="outline" size="sm" className="border-gray-300 hover:border-blue-300">
                           <Edit className="w-3 h-3 mr-1" />
@@ -461,7 +461,7 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-6">
                       <h4 className="font-medium text-gray-900">通知方式</h4>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
                           <Mail className="w-5 h-5 text-blue-600" />
@@ -470,9 +470,9 @@ export default function SettingsPage() {
                             <p className="text-sm text-gray-600">接收邮件提醒</p>
                           </div>
                         </div>
-                        <Switch 
+                        <Switch
                           checked={notificationSettings.emailNotifications}
-                          onCheckedChange={(checked) => 
+                          onCheckedChange={(checked) =>
                             setNotificationSettings(prev => ({ ...prev, emailNotifications: checked }))
                           }
                         />
@@ -486,9 +486,9 @@ export default function SettingsPage() {
                             <p className="text-sm text-gray-600">浏览器推送提醒</p>
                           </div>
                         </div>
-                        <Switch 
+                        <Switch
                           checked={notificationSettings.pushNotifications}
-                          onCheckedChange={(checked) => 
+                          onCheckedChange={(checked) =>
                             setNotificationSettings(prev => ({ ...prev, pushNotifications: checked }))
                           }
                         />
@@ -502,9 +502,9 @@ export default function SettingsPage() {
                             <p className="text-sm text-gray-600">紧急事项短信提醒</p>
                           </div>
                         </div>
-                        <Switch 
+                        <Switch
                           checked={notificationSettings.smsNotifications}
-                          onCheckedChange={(checked) => 
+                          onCheckedChange={(checked) =>
                             setNotificationSettings(prev => ({ ...prev, smsNotifications: checked }))
                           }
                         />
@@ -513,15 +513,15 @@ export default function SettingsPage() {
 
                     <div className="space-y-6">
                       <h4 className="font-medium text-gray-900">通知内容</h4>
-                      
+
                       <div className="flex items-center justify-between">
                         <div>
                           <span className="font-medium">申请提醒</span>
                           <p className="text-sm text-gray-600">新申请通知</p>
                         </div>
-                        <Switch 
+                        <Switch
                           checked={notificationSettings.applicationAlerts}
-                          onCheckedChange={(checked) => 
+                          onCheckedChange={(checked) =>
                             setNotificationSettings(prev => ({ ...prev, applicationAlerts: checked }))
                           }
                         />
@@ -532,9 +532,9 @@ export default function SettingsPage() {
                           <span className="font-medium">面试提醒</span>
                           <p className="text-sm text-gray-600">面试安排通知</p>
                         </div>
-                        <Switch 
+                        <Switch
                           checked={notificationSettings.interviewReminders}
-                          onCheckedChange={(checked) => 
+                          onCheckedChange={(checked) =>
                             setNotificationSettings(prev => ({ ...prev, interviewReminders: checked }))
                           }
                         />
@@ -545,9 +545,9 @@ export default function SettingsPage() {
                           <span className="font-medium">系统更新</span>
                           <p className="text-sm text-gray-600">系统维护通知</p>
                         </div>
-                        <Switch 
+                        <Switch
                           checked={notificationSettings.systemUpdates}
-                          onCheckedChange={(checked) => 
+                          onCheckedChange={(checked) =>
                             setNotificationSettings(prev => ({ ...prev, systemUpdates: checked }))
                           }
                         />
@@ -558,9 +558,9 @@ export default function SettingsPage() {
                           <span className="font-medium">周报</span>
                           <p className="text-sm text-gray-600">每周数据报告</p>
                         </div>
-                        <Switch 
+                        <Switch
                           checked={notificationSettings.weeklyReports}
-                          onCheckedChange={(checked) => 
+                          onCheckedChange={(checked) =>
                             setNotificationSettings(prev => ({ ...prev, weeklyReports: checked }))
                           }
                         />
@@ -702,7 +702,7 @@ export default function SettingsPage() {
                     <Input placeholder="user@yarbo.com" className="border-gray-300 focus:border-blue-500" />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label>角色</Label>
@@ -733,7 +733,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex justify-end space-x-2">
                 <Button variant="outline" onClick={() => setShowAddUser(false)}>
                   取消
@@ -760,7 +760,7 @@ export default function SettingsPage() {
                   此操作不可撤销。
                 </p>
               </div>
-              
+
               <div className="flex justify-end space-x-2">
                 <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
                   取消
