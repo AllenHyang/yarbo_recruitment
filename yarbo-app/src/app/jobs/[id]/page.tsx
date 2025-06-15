@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { ArrowLeft, Building2, MapPin, Briefcase, Clock, Users, Send, CheckCircle, Star, Shield, FileText, Eye } from "lucide-react";
 import { getJobById } from "@/lib/api";
-import { getDepartmentColor } from "@/lib/supabase";
+import { getDepartmentColor, supabase } from "@/lib/supabase";
 import type { JobWithDepartment } from "@/lib/database.types";
 import type { Job } from "@/components/JobCard";
 import { useAuth } from "@/contexts/AuthContext";
@@ -119,16 +119,52 @@ export default function JobDetailPage({
     useEffect(() => {
         if (!id || !user || (userRole !== 'hr' && userRole !== 'admin')) return;
 
-        // 暂时设置默认的统计数据，避免API调用
-        // TODO: 后续可以通过 Supabase 直接查询获取统计数据
-        setApplicationStats({
-            total: 0,
-            submitted: 0,
-            reviewing: 0,
-            interview: 0,
-            hired: 0,
-            rejected: 0
-        });
+        const fetchApplicationStats = async () => {
+            try {
+                // 直接使用 Supabase 查询申请统计
+                const { data: applications, error } = await supabase
+                    .from('applications')
+                    .select('status')
+                    .eq('job_id', id);
+
+                if (error) {
+                    console.error('查询申请统计失败:', error);
+                    setApplicationStats({
+                        total: 0,
+                        submitted: 0,
+                        reviewing: 0,
+                        interview: 0,
+                        hired: 0,
+                        rejected: 0
+                    });
+                    return;
+                }
+
+                // 统计各状态的申请数量
+                const stats = {
+                    total: applications.length,
+                    submitted: applications.filter(app => app.status === 'submitted').length,
+                    reviewing: applications.filter(app => app.status === 'reviewing').length,
+                    interview: applications.filter(app => app.status === 'interview').length,
+                    hired: applications.filter(app => app.status === 'hired').length,
+                    rejected: applications.filter(app => app.status === 'rejected').length,
+                };
+
+                setApplicationStats(stats);
+            } catch (error) {
+                console.error('获取申请统计失败:', error);
+                setApplicationStats({
+                    total: 0,
+                    submitted: 0,
+                    reviewing: 0,
+                    interview: 0,
+                    hired: 0,
+                    rejected: 0
+                });
+            }
+        };
+
+        fetchApplicationStats();
     }, [id, user, userRole, session]);
 
     // 加载状态
