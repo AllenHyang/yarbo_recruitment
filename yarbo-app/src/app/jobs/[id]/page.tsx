@@ -119,54 +119,16 @@ export default function JobDetailPage({
     useEffect(() => {
         if (!id || !user || (userRole !== 'hr' && userRole !== 'admin')) return;
 
-        const fetchApplicationStats = async () => {
-            try {
-                console.log('开始获取申请统计，职位ID:', id);
-                console.log('用户信息:', { userRole, hasToken: !!user?.access_token });
-
-                const response = await fetch(`/api/jobs/${id}/stats`, {
-                    headers: {
-                        'Authorization': `Bearer ${session?.access_token || ''}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                console.log('API响应状态:', response.status);
-
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('API返回数据:', data);
-                    setApplicationStats(data.stats);
-                } else {
-                    const errorData = await response.json();
-                    console.error('API错误响应:', errorData);
-                    // 如果是认证错误，设置空的统计数据
-                    if (response.status === 401 || response.status === 403) {
-                        setApplicationStats({
-                            total: 0,
-                            submitted: 0,
-                            reviewing: 0,
-                            interview: 0,
-                            hired: 0,
-                            rejected: 0
-                        });
-                    }
-                }
-            } catch (error) {
-                console.error('获取申请统计失败:', error);
-                // 设置默认的空统计数据
-                setApplicationStats({
-                    total: 0,
-                    submitted: 0,
-                    reviewing: 0,
-                    interview: 0,
-                    hired: 0,
-                    rejected: 0
-                });
-            }
-        };
-
-        fetchApplicationStats();
+        // 暂时设置默认的统计数据，避免API调用
+        // TODO: 后续可以通过 Supabase 直接查询获取统计数据
+        setApplicationStats({
+            total: 0,
+            submitted: 0,
+            reviewing: 0,
+            interview: 0,
+            hired: 0,
+            rejected: 0
+        });
     }, [id, user, userRole, session]);
 
     // 加载状态

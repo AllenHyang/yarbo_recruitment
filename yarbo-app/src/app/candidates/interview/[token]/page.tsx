@@ -80,16 +80,9 @@ export default function CandidateInterviewPage({ params }: { params: { token: st
   const fetchInterviewInvitation = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch(`/api/candidates/interview-slots/${params.token}`);
-      const result = await response.json();
-
-      if (result.success) {
-        setInvitation(result.data.invitation);
-        setExpiresInHours(result.data.expires_in_hours);
-        setSelectedSlotId(result.data.invitation.selected_slot_id || '');
-      } else {
-        setError(result.error || '获取面试信息失败');
-      }
+      // 暂时显示示例数据，避免API调用
+      // TODO: 后续通过 Supabase 直接查询获取面试信息
+      setError('面试功能暂时不可用，请联系HR安排面试时间');
     } catch (error) {
       console.error('获取面试信息失败:', error);
       setError('网络错误，请稍后重试');
