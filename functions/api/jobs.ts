@@ -7,7 +7,7 @@ export async function onRequestGet(context: any) {
 
     // 使用环境变量
     const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = env.***REMOVED***;
+    const supabaseKey = env.SUPABASE_SERVICE_ROLE_KEY;
 
     if (!supabaseUrl || !supabaseKey) {
       return new Response(JSON.stringify({

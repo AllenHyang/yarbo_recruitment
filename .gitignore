@@ -217,3 +217,17 @@ storybook-static
 # Temporary folders
 tmp/
 temp/
+
+# 🚨 安全：防止敏感信息泄露
+# 包含编译后的密钥的文件
+**/static/_next/static/chunks/**/*.js
+yarbo-app/.vercel/
+# 备份文件可能包含敏感信息
+*.backup
+*.bak
+# 临时配置文件
+*.tmp.toml
+*.temp.toml
+# Cloudflare Workers 敏感文件
+.wrangler/
+wrangler.toml.backup

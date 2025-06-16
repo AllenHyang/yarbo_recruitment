@@ -75,8 +75,8 @@ npm install
 复制 `.dev.vars.example` 到 `.dev.vars` 并填入配置：
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
-***REMOVED***=your-anon-key
-***REMOVED***=your-service-role-key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
 ### 3. 启动开发服务器
@@ -167,7 +167,7 @@ npm run deploy
 ### 设置生产环境变量
 ```bash
 wrangler secret put NEXT_PUBLIC_SUPABASE_URL
-wrangler secret put ***REMOVED***
+wrangler secret put SUPABASE_SERVICE_ROLE_KEY
 # ... 其他环境变量
 ```
 

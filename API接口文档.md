@@ -489,8 +489,8 @@ curl -X GET http://localhost:3002/api/jobs
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-***REMOVED***=your_anon_key
-***REMOVED***=your_service_key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_key
 ```
 
 ### 数据库表结构

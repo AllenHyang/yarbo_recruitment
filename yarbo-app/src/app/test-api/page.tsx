@@ -14,7 +14,7 @@ export default function TestAPIPage() {
         setLoading(true);
         console.log('开始测试 Supabase 连接...');
         console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
-        console.log('Supabase Anon Key:', process.env.***REMOVED***?.substring(0, 20) + '...');
+        console.log('Supabase Anon Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.substring(0, 20) + '...');
 
         const jobsData = await getJobs();
         console.log('获取到的职位数据:', jobsData);

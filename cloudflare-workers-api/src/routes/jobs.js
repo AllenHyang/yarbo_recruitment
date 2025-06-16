@@ -17,7 +17,7 @@ export async function handleJobsAPI(request, env, path, method) {
       const offset = url.searchParams.get('offset') || '0';
 
       // 验证环境变量
-      if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.***REMOVED***) {
+      if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
         return new Response(JSON.stringify({
           success: false,
           error: '环境变量配置错误',
@@ -43,8 +43,8 @@ export async function handleJobsAPI(request, env, path, method) {
       // 调用 Supabase REST API
       const response = await fetch(`${supabaseUrl}?${queryParams}`, {
         headers: {
-          'apikey': env.***REMOVED***,
-          'Authorization': `Bearer ${env.***REMOVED***}`,
+          'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+          'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
           'Content-Type': 'application/json'
         }
       });

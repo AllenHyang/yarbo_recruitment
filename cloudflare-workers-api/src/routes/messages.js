@@ -55,7 +55,7 @@ async function verifyAuth(request, env) {
   try {
     const userResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/user`, {
       headers: {
-        'apikey': env.***REMOVED***,
+        'apikey': env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${token}`
       }
     });
@@ -110,8 +110,8 @@ async function handleGetMessages(request, env) {
     // 查询消息
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/messages?${queryParams}`, {
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       }
     });
@@ -135,8 +135,8 @@ async function handleGetMessages(request, env) {
     // 查询未读消息数量
     const unreadResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/messages?receiver_id=eq.${userId}&status=eq.unread&select=count`, {
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
         'Prefer': 'count=exact'
       }
@@ -217,8 +217,8 @@ async function handleCreateMessage(request, env) {
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/messages`, {
       method: 'POST',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
         'Prefer': 'return=representation'
       },
@@ -306,8 +306,8 @@ async function handleUpdateMessage(request, env, messageId) {
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/messages?id=eq.${messageId}&receiver_id=eq.${userId || user.id}`, {
       method: 'PATCH',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -383,8 +383,8 @@ async function handleDeleteMessage(request, env, messageId) {
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/messages?id=eq.${messageId}&receiver_id=eq.${userId}`, {
       method: 'DELETE',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`
       }
     });
 

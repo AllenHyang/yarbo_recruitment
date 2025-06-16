@@ -69,7 +69,7 @@ async function handleLogin(request, env) {
     const authResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/token?grant_type=password`, {
       method: 'POST',
       headers: {
-        'apikey': env.***REMOVED***,
+        'apikey': env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -151,7 +151,7 @@ async function handleRegister(request, env) {
     const authResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/signup`, {
       method: 'POST',
       headers: {
-        'apikey': env.***REMOVED***,
+        'apikey': env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -234,7 +234,7 @@ async function handleGetUser(request, env) {
     // 调用 Supabase Auth API 获取用户信息
     const userResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/user`, {
       headers: {
-        'apikey': env.***REMOVED***,
+        'apikey': env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${token}`
       }
     });
@@ -305,7 +305,7 @@ async function handleRefreshToken(request, env) {
     const refreshResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/token?grant_type=refresh_token`, {
       method: 'POST',
       headers: {
-        'apikey': env.***REMOVED***,
+        'apikey': env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -385,7 +385,7 @@ async function handleLogout(request, env) {
     const logoutResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/logout`, {
       method: 'POST',
       headers: {
-        'apikey': env.***REMOVED***,
+        'apikey': env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${token}`
       }
     });

@@ -261,8 +261,8 @@ test.describe("招聘系统完整功能测试", () => {
 ```env
 # Supabase配置
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-***REMOVED***=your_anon_key
-***REMOVED***=your_service_role_key
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
 # 邮件配置
 SMTP_HOST=smtp.gmail.com

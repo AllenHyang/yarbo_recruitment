@@ -32,7 +32,7 @@ export async function handleApplicationsAPI(request, env, path, method) {
       }
 
       // 验证环境变量
-      if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.***REMOVED***) {
+      if (!env.NEXT_PUBLIC_SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) {
         return new Response(JSON.stringify({
           success: false,
           error: '环境变量配置错误'
@@ -49,8 +49,8 @@ export async function handleApplicationsAPI(request, env, path, method) {
       const checkUrl = `${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/applications?job_id=eq.${jobId}&candidate_id=eq.${candidateId}&select=id`;
       const checkResponse = await fetch(checkUrl, {
         headers: {
-          'apikey': env.***REMOVED***,
-          'Authorization': `Bearer ${env.***REMOVED***}`,
+          'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+          'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
           'Content-Type': 'application/json'
         }
       });
@@ -76,8 +76,8 @@ export async function handleApplicationsAPI(request, env, path, method) {
       const insertResponse = await fetch(insertUrl, {
         method: 'POST',
         headers: {
-          'apikey': env.***REMOVED***,
-          'Authorization': `Bearer ${env.***REMOVED***}`,
+          'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+          'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
           'Content-Type': 'application/json',
           'Prefer': 'return=representation'
         },

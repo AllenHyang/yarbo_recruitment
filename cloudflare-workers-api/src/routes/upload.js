@@ -54,7 +54,7 @@ async function verifyAuth(request, env) {
   try {
     const userResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/user`, {
       headers: {
-        'apikey': env.***REMOVED***,
+        'apikey': env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${token}`
       }
     });
@@ -144,8 +144,8 @@ async function handleResumeUpload(request, env) {
     const uploadResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/resumes/${uniqueFileName}`, {
       method: 'POST',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': file.type,
         'x-upsert': 'true'
       },
@@ -175,8 +175,8 @@ async function handleResumeUpload(request, env) {
     const recordResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/user_files`, {
       method: 'POST',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
         'Prefer': 'return=representation'
       },
@@ -306,8 +306,8 @@ async function handleAvatarUpload(request, env) {
     const uploadResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/avatars/${uniqueFileName}`, {
       method: 'POST',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': file.type,
         'x-upsert': 'true'
       },
@@ -337,8 +337,8 @@ async function handleAvatarUpload(request, env) {
     const updateResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/profiles?user_id=eq.${user.id}`, {
       method: 'PATCH',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -474,8 +474,8 @@ async function handleDeleteFile(request, env, fileName) {
     const deleteResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/${fileName}`, {
       method: 'DELETE',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`
       }
     });
 
@@ -499,8 +499,8 @@ async function handleDeleteFile(request, env, fileName) {
     await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/user_files?file_path=eq.${fileName}&user_id=eq.${user.id}`, {
       method: 'DELETE',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`
       }
     });
 

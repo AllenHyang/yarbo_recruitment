@@ -65,7 +65,7 @@ async function verifyAuth(request, env) {
   try {
     const userResponse = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/user`, {
       headers: {
-        'apikey': env.***REMOVED***,
+        'apikey': env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${token}`
       }
     });
@@ -113,8 +113,8 @@ async function handleGetNotifications(request, env) {
     // 查询通知
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/notifications?${queryParams}`, {
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       }
     });
@@ -202,8 +202,8 @@ async function handleCreateNotification(request, env) {
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/notifications`, {
       method: 'POST',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
         'Prefer': 'return=representation'
       },
@@ -286,8 +286,8 @@ async function handleMarkAsRead(request, env, notificationId) {
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/notifications?id=eq.${notificationId}&user_id=eq.${user.id}`, {
       method: 'PATCH',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -360,8 +360,8 @@ async function handleDeleteNotification(request, env, notificationId) {
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/notifications?id=eq.${notificationId}&user_id=eq.${user.id}`, {
       method: 'DELETE',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`
       }
     });
 
@@ -429,8 +429,8 @@ async function handleMarkAllAsRead(request, env) {
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/notifications?user_id=eq.${user.id}&is_read=eq.false`, {
       method: 'PATCH',
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -502,8 +502,8 @@ async function handleGetUnreadCount(request, env) {
     // 查询未读通知数量
     const response = await fetch(`${env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/notifications?user_id=eq.${user.id}&is_read=eq.false&select=count`, {
       headers: {
-        'apikey': env.***REMOVED***,
-        'Authorization': `Bearer ${env.***REMOVED***}`,
+        'apikey': env.SUPABASE_SERVICE_ROLE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
         'Content-Type': 'application/json',
         'Prefer': 'count=exact'
       }

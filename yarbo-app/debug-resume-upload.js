@@ -3,10 +3,10 @@ const { createClient } = require('@supabase/supabase-js');
 
 // 直接设置Supabase配置
 const supabaseUrl = 'https://eipqxgdqittupttmpiud.supabase.co';
-const supabaseKey = '***REMOVED***';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVpcHF4Z2RxaXR0dXB0dG1waXVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDkzOTE3MzQsImV4cCI6MjA2NDk2NzczNH0.IBbdwA_4XgXA0JZjrQxvdkgLV3jHeDj6l8mmHEQr5bI';
 
 if (!supabaseUrl || !supabaseKey) {
-  console.error('请确保设置了 NEXT_PUBLIC_SUPABASE_URL 和 ***REMOVED*** 环境变量');
+  console.error('请确保设置了 NEXT_PUBLIC_SUPABASE_URL 和 NEXT_PUBLIC_SUPABASE_ANON_KEY 环境变量');
   process.exit(1);
 }
 

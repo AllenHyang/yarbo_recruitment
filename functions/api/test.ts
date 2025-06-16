@@ -8,7 +8,7 @@ export async function onRequestGet(context: any) {
     timestamp: new Date().toISOString(),
     environment: {
       supabaseUrl: env.NEXT_PUBLIC_SUPABASE_URL ? '✅ 已配置' : '❌ 未配置',
-      serviceKey: env.***REMOVED*** ? '✅ 已配置' : '❌ 未配置',
+      serviceKey: env.SUPABASE_SERVICE_ROLE_KEY ? '✅ 已配置' : '❌ 未配置',
       appUrl: env.NEXT_PUBLIC_APP_URL || 'http://localhost:8788'
     },
     cloudflare: {

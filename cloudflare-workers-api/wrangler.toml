@@ -10,4 +10,4 @@ ENVIRONMENT = "development"
 
 # 环境变量将通过 wrangler secret 设置
 # NEXT_PUBLIC_SUPABASE_URL
-# ***REMOVED***
+# SUPABASE_SERVICE_ROLE_KEY

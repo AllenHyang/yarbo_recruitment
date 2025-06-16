@@ -16,7 +16,7 @@ export async function handleTestAPI(request, env, path, method) {
       timestamp: new Date().toISOString(),
       environment: {
         supabaseUrl: env.NEXT_PUBLIC_SUPABASE_URL ? '✅ 已配置' : '❌ 未配置',
-        serviceKey: env.***REMOVED*** ? '✅ 已配置' : '❌ 未配置',
+        serviceKey: env.SUPABASE_SERVICE_ROLE_KEY ? '✅ 已配置' : '❌ 未配置',
         environment: env.ENVIRONMENT || 'development'
       },
       runtime: {
