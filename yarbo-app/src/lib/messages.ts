@@ -106,7 +106,24 @@ export async function getMessages(userId: string, params?: Omit<GetMessagesParam
       searchParams.append('type', params.type);
     }
 
-    const response = await fetch(`/api/messages?${searchParams.toString()}`);
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    // 获取认证令牌
+    const token = typeof window !== 'undefined' ? localStorage.getItem('workers_access_token') : null;
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${workersApiUrl}/api/messages?${searchParams.toString()}`, {
+      headers
+    });
     const result: ApiResponse<MessagesResponse> = await response.json();
 
     if (!response.ok) {
@@ -167,7 +184,12 @@ export async function sendMessage(params: CreateMessageParams): Promise<{
   error?: string;
 }> {
   try {
-    const response = await fetch('/api/messages', {
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/messages`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -226,7 +248,12 @@ export async function getMessage(messageId: string): Promise<{
   error?: string;
 }> {
   try {
-    const response = await fetch(`/api/messages/${messageId}`);
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/messages/${messageId}`);
     const result: ApiResponse<Message> = await response.json();
 
     if (!response.ok) {
@@ -277,7 +304,12 @@ export async function markMessageAsRead(messageId: string): Promise<{
   error?: string;
 }> {
   try {
-    const response = await fetch(`/api/messages/${messageId}`, {
+    // 使用 Cloudflare Workers API
+    const workersApiUrl = process.env.NODE_ENV === 'production'
+      ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+      : 'http://localhost:8787';
+
+    const response = await fetch(`${workersApiUrl}/api/messages/${messageId}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',

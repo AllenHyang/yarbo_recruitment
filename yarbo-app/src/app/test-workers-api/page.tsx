@@ -5,38 +5,38 @@ import { useApiTest, useJobs, useWorkersAuth, useFileUpload, useNotifications } 
 
 export default function TestWorkersApiPage() {
   const [testResults, setTestResults] = useState<any[]>([]);
-  
+
   // API 测试
   const { result: apiTestResult, loading: apiTestLoading, testApi, getApiInfo } = useApiTest();
-  
+
   // 职位测试
   const { jobs, loading: jobsLoading, error: jobsError, fetchJobs } = useJobs();
-  
+
   // 认证测试
-  const { 
-    isAuthenticated, 
-    user, 
-    loading: authLoading, 
-    error: authError, 
-    login, 
-    register, 
-    logout 
+  const {
+    isAuthenticated,
+    user,
+    loading: authLoading,
+    error: authError,
+    login,
+    register,
+    logout
   } = useWorkersAuth();
-  
+
   // 文件上传测试
-  const { 
-    result: uploadResult, 
-    loading: uploadLoading, 
-    error: uploadError, 
-    uploadResume 
+  const {
+    result: uploadResult,
+    loading: uploadLoading,
+    error: uploadError,
+    uploadResume
   } = useFileUpload();
-  
+
   // 通知测试
-  const { 
-    notifications, 
-    unreadCount, 
-    loading: notificationsLoading, 
-    fetchNotifications 
+  const {
+    notifications,
+    unreadCount,
+    loading: notificationsLoading,
+    fetchNotifications
   } = useNotifications();
 
   const addTestResult = (test: string, result: any) => {
@@ -93,7 +93,7 @@ export default function TestWorkersApiPage() {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Cloudflare Workers API 测试</h1>
-      
+
       {/* 认证状态 */}
       <div className="bg-blue-50 p-4 rounded-lg mb-6">
         <h2 className="text-xl font-semibold mb-2">认证状态</h2>
@@ -230,9 +230,8 @@ export default function TestWorkersApiPage() {
               </div>
               <div className="text-sm">
                 <div className="flex items-center mb-1">
-                  <span className={`inline-block w-3 h-3 rounded-full mr-2 ${
-                    result.result.success ? 'bg-green-500' : 'bg-red-500'
-                  }`}></span>
+                  <span className={`inline-block w-3 h-3 rounded-full mr-2 ${result.result.success ? 'bg-green-500' : 'bg-red-500'
+                    }`}></span>
                   <span>{result.result.success ? '成功' : '失败'}</span>
                 </div>
                 {result.result.message && (
@@ -242,7 +241,11 @@ export default function TestWorkersApiPage() {
                   <p className="text-red-600 mb-1">错误: {result.result.error}</p>
                 )}
                 {result.result.runtime && (
-                  <p className="text-gray-600 mb-1">运行时: {result.result.runtime}</p>
+                  <p className="text-gray-600 mb-1">
+                    运行时: {typeof result.result.runtime === 'string'
+                      ? result.result.runtime
+                      : JSON.stringify(result.result.runtime)}
+                  </p>
                 )}
                 {result.result.count !== undefined && (
                   <p className="text-purple-600">数量: {result.result.count}</p>
@@ -251,7 +254,7 @@ export default function TestWorkersApiPage() {
             </div>
           ))}
         </div>
-        
+
         {testResults.length === 0 && (
           <p className="text-gray-500 text-center py-8">
             点击上方按钮开始测试 API 功能

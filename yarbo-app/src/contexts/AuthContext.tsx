@@ -65,16 +65,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           // 解析 JWT token 获取 app_role
           const parts = session.access_token.split('.');
           if (parts.length === 3) {
-            // 添加必要的 padding
-            let payload = parts[1];
-            while (payload.length % 4) {
-              payload += '=';
-            }
-            const decodedPayload = JSON.parse(atob(payload));
-            const jwtRole = decodedPayload.app_role || decodedPayload.user_metadata?.role;
+            try {
+              // 添加必要的 padding 并处理 URL-safe base64
+              let payload = parts[1];
+              // 替换 URL-safe 字符
+              payload = payload.replace(/-/g, '+').replace(/_/g, '/');
+              // 添加 padding
+              while (payload.length % 4) {
+                payload += '=';
+              }
+              const decodedPayload = JSON.parse(atob(payload));
+              const jwtRole = decodedPayload.app_role || decodedPayload.user_metadata?.role;
 
-            if (jwtRole && ['candidate', 'hr', 'admin'].includes(jwtRole)) {
-              role = jwtRole as UserRole;
+              if (jwtRole && ['candidate', 'hr', 'admin'].includes(jwtRole)) {
+                role = jwtRole as UserRole;
+              }
+            } catch (decodeError) {
+              console.warn("JWT payload 解码失败:", decodeError);
             }
           }
         }
@@ -114,16 +121,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (session?.access_token) {
           const parts = session.access_token.split('.');
           if (parts.length === 3) {
-            // 添加必要的 padding
-            let payload = parts[1];
-            while (payload.length % 4) {
-              payload += '=';
-            }
-            const decodedPayload = JSON.parse(atob(payload));
-            const jwtRole = decodedPayload.app_role || decodedPayload.user_metadata?.role;
+            try {
+              // 添加必要的 padding 并处理 URL-safe base64
+              let payload = parts[1];
+              // 替换 URL-safe 字符
+              payload = payload.replace(/-/g, '+').replace(/_/g, '/');
+              // 添加 padding
+              while (payload.length % 4) {
+                payload += '=';
+              }
+              const decodedPayload = JSON.parse(atob(payload));
+              const jwtRole = decodedPayload.app_role || decodedPayload.user_metadata?.role;
 
-            if (jwtRole && ['candidate', 'hr', 'admin'].includes(jwtRole)) {
-              role = jwtRole as UserRole;
+              if (jwtRole && ['candidate', 'hr', 'admin'].includes(jwtRole)) {
+                role = jwtRole as UserRole;
+              }
+            } catch (decodeError) {
+              console.warn("JWT payload 解码失败:", decodeError);
             }
           }
         }

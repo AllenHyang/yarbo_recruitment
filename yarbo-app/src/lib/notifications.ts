@@ -98,7 +98,19 @@ export async function getNotifications(params: GetNotificationsParams): Promise<
       ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
       : 'http://localhost:8787';
 
-    const response = await fetch(`${workersApiUrl}/api/notifications?${searchParams.toString()}`);
+    // 获取认证令牌
+    const token = typeof window !== 'undefined' ? localStorage.getItem('workers_access_token') : null;
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${workersApiUrl}/api/notifications?${searchParams.toString()}`, {
+      headers
+    });
     const result: ApiResponse<NotificationsResponse> = await response.json();
 
     if (!response.ok) {

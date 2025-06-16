@@ -51,7 +51,12 @@ function LoginForm() {
 
     try {
       // 先验证验证码是否仍然有效
-      const captchaResponse = await fetch('/api/captcha/verify', {
+      // 使用 Cloudflare Workers API
+      const workersApiUrl = process.env.NODE_ENV === 'production'
+        ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
+        : 'http://localhost:8787';
+
+      const captchaResponse = await fetch(`${workersApiUrl}/api/captcha/verify`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

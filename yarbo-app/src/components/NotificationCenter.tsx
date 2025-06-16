@@ -40,21 +40,26 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
   const [messageCount, setMessageCount] = useState(0);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // 获取用户通知数据
+  // 获取用户通知数据 (临时禁用)
   const fetchNotifications = async () => {
     if (!user?.id) return;
 
     try {
-      const result = await getNotifications({
-        userId: user.id,
-        page: 1,
-        limit: 20
-      });
+      // 临时禁用通知功能，避免 API 错误
+      // const result = await getNotifications({
+      //   userId: user.id,
+      //   page: 1,
+      //   limit: 20
+      // });
 
-      if (result.success && result.data) {
-        setNotifications(result.data.notifications);
-        setUnreadCount(result.data.unreadCount);
-      }
+      // if (result.success && result.data) {
+      //   setNotifications(result.data.notifications);
+      //   setUnreadCount(result.data.unreadCount);
+      // }
+
+      // 临时设置为空数据
+      setNotifications([]);
+      setUnreadCount(0);
     } catch (error) {
       console.error('获取通知失败:', error);
     }
@@ -66,41 +71,43 @@ export function NotificationCenter({ className }: NotificationCenterProps) {
     fetchNotifications();
   }, [user?.id, userProfile?.role]);
 
-  // 获取未读消息数量
+  // 获取未读消息数量 (临时禁用)
   const fetchUnreadMessageCount = async () => {
     if (!user?.id) return;
     try {
-      const result = await getMessages(user.id, { status: 'unread', limit: 1 });
-      if (result.success && result.data) {
-        setMessageCount(result.data.unreadCount || 0);
-      }
+      // 临时禁用消息功能，避免 API 错误
+      // const result = await getMessages(user.id, { status: 'unread', limit: 1 });
+      // if (result.success && result.data) {
+      //   setMessageCount(result.data.unreadCount || 0);
+      // }
+      setMessageCount(0); // 临时设置为 0
     } catch (error) {
       console.error('获取未读消息数量失败:', error);
     }
   };
 
-  // 设置实时订阅
+  // 设置实时订阅 (临时禁用)
   useEffect(() => {
     if (!user?.id || !userProfile?.role) return;
 
     const unsubscribeFunctions: (() => void)[] = [];
 
-    // 订阅通知
-    const unsubscribeNotifications = realtimeManager.subscribeToNotifications((notification) => {
-      if (notification.userId === user.id) {
-        // 刷新通知列表以获取最新数据
-        fetchNotifications();
+    // 临时禁用通知订阅，避免 API 错误
+    // const unsubscribeNotifications = realtimeManager.subscribeToNotifications((notification) => {
+    //   if (notification.userId === user.id) {
+    //     // 刷新通知列表以获取最新数据
+    //     fetchNotifications();
 
-        // 显示浏览器通知
-        if ('Notification' in window && Notification.permission === 'granted') {
-          new Notification(notification.title, {
-            body: notification.message,
-            icon: '/favicon.ico'
-          });
-        }
-      }
-    });
-    unsubscribeFunctions.push(unsubscribeNotifications);
+    //     // 显示浏览器通知
+    //     if ('Notification' in window && Notification.permission === 'granted') {
+    //       new Notification(notification.title, {
+    //         body: notification.message,
+    //         icon: '/favicon.ico'
+    //       });
+    //     }
+    //   }
+    // });
+    // unsubscribeFunctions.push(unsubscribeNotifications);
 
     // 根据用户角色订阅不同的事件
     if (userProfile.role === 'hr' || userProfile.role === 'admin') {

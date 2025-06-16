@@ -11,6 +11,7 @@ import { handleAuthAPI } from './routes/auth.js';
 import { handleUploadAPI } from './routes/upload.js';
 import { handleNotificationsAPI } from './routes/notifications.js';
 import { handleMessagesAPI } from './routes/messages.js';
+import { handleCaptchaAPI } from './routes/captcha.js';
 
 // CORS 配置
 const corsHeaders = {
@@ -58,6 +59,10 @@ export default {
 
       if (path.startsWith('/api/messages')) {
         return await handleMessagesAPI(request, env, path, method);
+      }
+
+      if (path.startsWith('/api/captcha')) {
+        return await handleCaptchaAPI(request, env, path, method);
       }
 
       if (path.startsWith('/api/test')) {

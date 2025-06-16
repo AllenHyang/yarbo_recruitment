@@ -294,7 +294,7 @@ export function RoleBasedNavigation() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {accessibleItems.map((item) => (
               <div key={item.href}>
                 {item.children ? (
@@ -379,7 +379,7 @@ export function RoleBasedNavigation() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center space-x-2">
                     <User className="w-4 h-4" />
-                    <span className="hidden sm:inline">{user.email}</span>
+                    <span className="hidden md:inline">{user.email}</span>
                     {userRole && (
                       <Badge
                         variant="outline"
@@ -424,7 +424,7 @@ export function RoleBasedNavigation() {
             <Button
               variant="ghost"
               size="sm"
-              className="md:hidden"
+              className="lg:hidden"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               {isMobileMenuOpen ? (
@@ -438,7 +438,7 @@ export function RoleBasedNavigation() {
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200 py-4">
+          <div className="lg:hidden border-t border-gray-200 py-4">
             <div className="space-y-2">
               {accessibleItems.map((item) => (
                 <div key={item.href}>
