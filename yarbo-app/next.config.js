@@ -8,20 +8,17 @@ const nextConfig = {
     // 在构建时忽略TypeScript错误
     ignoreBuildErrors: true,
   },
-  // Cloudflare Pages 优化配置
+  // AWS Amplify 优化配置
   images: {
-    unoptimized: true, // Cloudflare Pages 不支持 Next.js 图片优化
+    unoptimized: true, // AWS Amplify 支持图片优化，但为了兼容性保持关闭
   },
-  // 移除 output 配置，使用默认模式
-  trailingSlash: true,
-  // 禁用构建缓存以避免大文件
+  trailingSlash: false, // AWS Amplify 默认配置
+  // 启用构建缓存以提高性能
   experimental: {
-    webpackBuildWorker: false,
+    webpackBuildWorker: true,
   },
   // Webpack 配置优化
   webpack: (config, { isServer }) => {
-    // 禁用缓存以避免大文件
-    config.cache = false;
     return config;
   },
   turbopack: {

@@ -1,70 +1,57 @@
-// 完全兼容 Edge Runtime 的简化版本
-export const runtime = 'edge';
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@supabase/supabase-js';
 
-export async function GET(request: Request) {
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const fields = searchParams.get('fields') || '*';
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const offset = parseInt(searchParams.get('offset') || '0');
 
-    // 使用环境变量
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-
-    if (!supabaseUrl || !supabaseKey) {
-      return new Response(JSON.stringify({
+    // 验证环境变量
+    if (!supabaseUrl || !supabaseServiceKey) {
+      return NextResponse.json({
         success: false,
-        error: '环境变量配置错误'
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
+        error: '环境变量配置错误',
+        details: 'Supabase 配置缺失'
+      }, { status: 500 });
     }
 
-    // 直接调用 Supabase REST API（兼容边缘环境）
-    const response = await fetch(`${supabaseUrl}/rest/v1/jobs?status=eq.active&select=${fields}`, {
-      headers: {
-        'apikey': supabaseKey,
-        'Authorization': `Bearer ${supabaseKey}`,
-        'Content-Type': 'application/json'
-      }
-    });
+    // 查询职位数据
+    const { data: jobs, error } = await supabase
+      .from('jobs')
+      .select(fields)
+      .eq('status', 'active')
+      .range(offset, offset + limit - 1);
 
-    if (!response.ok) {
-      console.error('查询职位失败:', response.statusText);
-      return new Response(JSON.stringify({
+    if (error) {
+      console.error('Supabase 查询失败:', error);
+      return NextResponse.json({
         success: false,
-        error: '查询职位失败'
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      });
+        error: '查询职位失败',
+        details: error.message
+      }, { status: 500 });
     }
 
-    const jobs = await response.json();
-
-    return new Response(JSON.stringify({
+    return NextResponse.json({
       success: true,
       data: jobs,
-      message: '✅ Cloudflare Pages Functions 工作正常！'
-    }), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Content-Type'
-      }
+      count: jobs?.length || 0,
+      message: '✅ Next.js API Routes 工作正常！',
+      runtime: 'Next.js API Routes'
     });
 
   } catch (error) {
-    console.error('API错误:', error);
-    return new Response(JSON.stringify({
+    console.error('Jobs API 错误:', error);
+    return NextResponse.json({
       success: false,
       error: '服务器内部错误',
-      details: error instanceof Error ? error.message : 'Unknown error'
-    }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' }
-    });
+      details: error instanceof Error ? error.message : '未知错误'
+    }, { status: 500 });
   }
-}
+} 

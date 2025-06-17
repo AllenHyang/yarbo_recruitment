@@ -1,18 +1,18 @@
-// 完全兼容 Edge Runtime 的简化版本
-export const runtime = 'edge';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function GET() {
-  return new Response(JSON.stringify({
+export async function GET(request: NextRequest) {
+  return NextResponse.json({
     success: true,
-    message: '🎉 Cloudflare Pages Functions 测试成功！',
+    message: '🎉 Yarbo Recruitment API',
+    version: '1.0.0',
+    runtime: 'Next.js API Routes',
     timestamp: new Date().toISOString(),
-    runtime: 'Edge Runtime',
-    platform: 'Cloudflare Pages'
-  }), {
-    status: 200,
-    headers: {
-      'Content-Type': 'application/json',
-      'Access-Control-Allow-Origin': '*'
-    }
+    endpoints: [
+      'GET /api/test - 测试端点',
+      'GET /api/jobs - 获取职位列表',
+      'POST /api/applications/submit - 提交申请',
+      'POST /api/auth/login - 用户登录',
+      'POST /api/auth/register - 用户注册'
+    ]
   });
-}
+} 
