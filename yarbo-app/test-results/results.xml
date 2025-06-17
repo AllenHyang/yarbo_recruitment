@@ -1,2 +1,292 @@
-<testsuites id="" name="" tests="0" failures="0" skipped="0" errors="0" time="120.33372299999999">
+<testsuites id="" name="" tests="40" failures="0" skipped="0" errors="0" time="21.386005">
+<testsuite name="02-auth-simple.spec.ts" timestamp="2025-06-17T05:20:50.535Z" hostname="chromium" tests="8" failures="0" skipped="0" time="18.225" errors="0">
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.1 登录页面基本功能测试" classname="02-auth-simple.spec.ts" time="1.977">
+<system-out>
+<![CDATA[✅ 登录页面表单元素正常
+✅ 表单填写功能正常
+✅ 登录页面基本功能测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.2 注册页面基本功能测试" classname="02-auth-simple.spec.ts" time="1.925">
+<system-out>
+<![CDATA[✅ 注册页面功能正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.3 登录流程测试（使用真实账号）" classname="02-auth-simple.spec.ts" time="2.021">
+<system-out>
+<![CDATA[ℹ️ 登录可能需要验证或账号不存在
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.4 权限控制基本测试" classname="02-auth-simple.spec.ts" time="1.879">
+<system-out>
+<![CDATA[✅ 权限控制正常 - 重定向到登录页面
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.5 表单验证测试" classname="02-auth-simple.spec.ts" time="4.047">
+<system-out>
+<![CDATA[✅ 表单验证正常 - 显示错误消息
+✅ 表单验证测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.6 导航和链接测试" classname="02-auth-simple.spec.ts" time="3.031">
+<system-out>
+<![CDATA[✅ 找到注册链接
+✅ 找到忘记密码链接
+✅ 导航和链接测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.7 响应式设计测试" classname="02-auth-simple.spec.ts" time="2.392">
+<system-out>
+<![CDATA[✅ 桌面端 (1920x1080) 显示正常
+✅ 平板端 (768x1024) 显示正常
+✅ 移动端 (375x667) 显示正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.8 页面性能测试" classname="02-auth-simple.spec.ts" time="0.953">
+<system-out>
+<![CDATA[✅ 登录页面加载时间: 0.78s
+✅ 关键元素加载正常
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="02-auth-simple.spec.ts" timestamp="2025-06-17T05:20:50.535Z" hostname="firefox" tests="8" failures="0" skipped="0" time="21.825" errors="0">
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.1 登录页面基本功能测试" classname="02-auth-simple.spec.ts" time="1.913">
+<system-out>
+<![CDATA[✅ 登录页面表单元素正常
+✅ 表单填写功能正常
+✅ 登录页面基本功能测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.2 注册页面基本功能测试" classname="02-auth-simple.spec.ts" time="1.91">
+<system-out>
+<![CDATA[✅ 注册页面功能正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.3 登录流程测试（使用真实账号）" classname="02-auth-simple.spec.ts" time="2.366">
+<system-out>
+<![CDATA[ℹ️ 登录可能需要验证或账号不存在
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.4 权限控制基本测试" classname="02-auth-simple.spec.ts" time="2.268">
+<system-out>
+<![CDATA[✅ 权限控制正常 - 重定向到登录页面
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.5 表单验证测试" classname="02-auth-simple.spec.ts" time="4.367">
+<system-out>
+<![CDATA[✅ 表单验证正常 - 显示错误消息
+✅ 表单验证测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.6 导航和链接测试" classname="02-auth-simple.spec.ts" time="4.2">
+<system-out>
+<![CDATA[✅ 找到注册链接
+✅ 找到忘记密码链接
+✅ 导航和链接测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.7 响应式设计测试" classname="02-auth-simple.spec.ts" time="3.428">
+<system-out>
+<![CDATA[✅ 桌面端 (1920x1080) 显示正常
+✅ 平板端 (768x1024) 显示正常
+✅ 移动端 (375x667) 显示正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.8 页面性能测试" classname="02-auth-simple.spec.ts" time="1.373">
+<system-out>
+<![CDATA[✅ 登录页面加载时间: 0.96s
+✅ 关键元素加载正常
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="02-auth-simple.spec.ts" timestamp="2025-06-17T05:20:50.535Z" hostname="webkit" tests="8" failures="0" skipped="0" time="19.03" errors="0">
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.1 登录页面基本功能测试" classname="02-auth-simple.spec.ts" time="2.088">
+<system-out>
+<![CDATA[✅ 登录页面表单元素正常
+✅ 表单填写功能正常
+✅ 登录页面基本功能测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.2 注册页面基本功能测试" classname="02-auth-simple.spec.ts" time="2.204">
+<system-out>
+<![CDATA[✅ 注册页面功能正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.3 登录流程测试（使用真实账号）" classname="02-auth-simple.spec.ts" time="2.064">
+<system-out>
+<![CDATA[ℹ️ 登录可能需要验证或账号不存在
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.4 权限控制基本测试" classname="02-auth-simple.spec.ts" time="1.376">
+<system-out>
+<![CDATA[✅ 权限控制正常 - 重定向到登录页面
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.5 表单验证测试" classname="02-auth-simple.spec.ts" time="3.354">
+<system-out>
+<![CDATA[✅ 表单验证正常 - 显示错误消息
+✅ 表单验证测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.6 导航和链接测试" classname="02-auth-simple.spec.ts" time="2.99">
+<system-out>
+<![CDATA[✅ 找到注册链接
+✅ 找到忘记密码链接
+✅ 导航和链接测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.7 响应式设计测试" classname="02-auth-simple.spec.ts" time="3.658">
+<system-out>
+<![CDATA[✅ 桌面端 (1920x1080) 显示正常
+✅ 平板端 (768x1024) 显示正常
+✅ 移动端 (375x667) 显示正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.8 页面性能测试" classname="02-auth-simple.spec.ts" time="1.296">
+<system-out>
+<![CDATA[✅ 登录页面加载时间: 0.85s
+✅ 关键元素加载正常
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="02-auth-simple.spec.ts" timestamp="2025-06-17T05:20:50.535Z" hostname="Mobile Chrome" tests="8" failures="0" skipped="0" time="15.947" errors="0">
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.1 登录页面基本功能测试" classname="02-auth-simple.spec.ts" time="1.362">
+<system-out>
+<![CDATA[✅ 登录页面表单元素正常
+✅ 表单填写功能正常
+✅ 登录页面基本功能测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.2 注册页面基本功能测试" classname="02-auth-simple.spec.ts" time="1.255">
+<system-out>
+<![CDATA[✅ 注册页面功能正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.3 登录流程测试（使用真实账号）" classname="02-auth-simple.spec.ts" time="1.435">
+<system-out>
+<![CDATA[ℹ️ 登录可能需要验证或账号不存在
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.4 权限控制基本测试" classname="02-auth-simple.spec.ts" time="1.259">
+<system-out>
+<![CDATA[✅ 权限控制正常 - 重定向到登录页面
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.5 表单验证测试" classname="02-auth-simple.spec.ts" time="3.513">
+<system-out>
+<![CDATA[✅ 表单验证正常 - 显示错误消息
+✅ 表单验证测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.6 导航和链接测试" classname="02-auth-simple.spec.ts" time="2.433">
+<system-out>
+<![CDATA[✅ 找到注册链接
+✅ 找到忘记密码链接
+✅ 导航和链接测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.7 响应式设计测试" classname="02-auth-simple.spec.ts" time="3.573">
+<system-out>
+<![CDATA[✅ 桌面端 (1920x1080) 显示正常
+✅ 平板端 (768x1024) 显示正常
+✅ 移动端 (375x667) 显示正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.8 页面性能测试" classname="02-auth-simple.spec.ts" time="1.117">
+<system-out>
+<![CDATA[✅ 登录页面加载时间: 0.92s
+✅ 关键元素加载正常
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="02-auth-simple.spec.ts" timestamp="2025-06-17T05:20:50.535Z" hostname="Mobile Safari" tests="8" failures="0" skipped="0" time="16.811" errors="0">
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.1 登录页面基本功能测试" classname="02-auth-simple.spec.ts" time="1.483">
+<system-out>
+<![CDATA[✅ 登录页面表单元素正常
+✅ 表单填写功能正常
+✅ 登录页面基本功能测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.2 注册页面基本功能测试" classname="02-auth-simple.spec.ts" time="1.638">
+<system-out>
+<![CDATA[✅ 注册页面功能正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.3 登录流程测试（使用真实账号）" classname="02-auth-simple.spec.ts" time="1.625">
+<system-out>
+<![CDATA[ℹ️ 登录可能需要验证或账号不存在
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.4 权限控制基本测试" classname="02-auth-simple.spec.ts" time="1.842">
+<system-out>
+<![CDATA[✅ 权限控制正常 - 重定向到登录页面
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.5 表单验证测试" classname="02-auth-simple.spec.ts" time="3.396">
+<system-out>
+<![CDATA[✅ 表单验证正常 - 显示错误消息
+✅ 表单验证测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.6 导航和链接测试" classname="02-auth-simple.spec.ts" time="2.487">
+<system-out>
+<![CDATA[✅ 找到注册链接
+✅ 找到忘记密码链接
+✅ 导航和链接测试完成
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.7 响应式设计测试" classname="02-auth-simple.spec.ts" time="3.195">
+<system-out>
+<![CDATA[✅ 桌面端 (1920x1080) 显示正常
+✅ 平板端 (768x1024) 显示正常
+✅ 移动端 (375x667) 显示正常
+]]>
+</system-out>
+</testcase>
+<testcase name="认证系统简化测试 - Authentication Simple Tests › 2.8 页面性能测试" classname="02-auth-simple.spec.ts" time="1.145">
+<system-out>
+<![CDATA[✅ 登录页面加载时间: 0.77s
+✅ 关键元素加载正常
+]]>
+</system-out>
+</testcase>
+</testsuite>
 </testsuites>

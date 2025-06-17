@@ -10,7 +10,9 @@
     "grep": {},
     "grepInvert": null,
     "maxFailures": 0,
-    "metadata": {},
+    "metadata": {
+      "actualWorkers": 6
+    },
     "preserveOutput": "always",
     "reporter": [
       [
@@ -40,7 +42,9 @@
         "outputDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 6
+        },
         "id": "chromium",
         "name": "chromium",
         "testDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/tests",
@@ -54,7 +58,9 @@
         "outputDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 6
+        },
         "id": "firefox",
         "name": "firefox",
         "testDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/tests",
@@ -68,7 +74,9 @@
         "outputDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 6
+        },
         "id": "webkit",
         "name": "webkit",
         "testDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/tests",
@@ -82,7 +90,9 @@
         "outputDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 6
+        },
         "id": "Mobile Chrome",
         "name": "Mobile Chrome",
         "testDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/tests",
@@ -96,7 +106,9 @@
         "outputDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/test-results",
         "repeatEach": 1,
         "retries": 0,
-        "metadata": {},
+        "metadata": {
+          "actualWorkers": 6
+        },
         "id": "Mobile Safari",
         "name": "Mobile Safari",
         "testDir": "/Users/allen/Development/yarbo_招聘/yarbo_recruitment/yarbo-app/tests",
@@ -114,22 +126,1675 @@
     "workers": 6,
     "webServer": {
       "command": "npm run dev",
-      "url": "http://localhost:3002",
+      "url": "http://localhost:3000",
       "reuseExistingServer": true,
       "timeout": 120000
     }
   },
-  "suites": [],
-  "errors": [
+  "suites": [
     {
-      "message": "Error: Timed out waiting 120000ms from config.webServer.",
-      "stack": "Error: Timed out waiting 120000ms from config.webServer."
+      "title": "02-auth-simple.spec.ts",
+      "file": "02-auth-simple.spec.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "认证系统简化测试 - Authentication Simple Tests",
+          "file": "02-auth-simple.spec.ts",
+          "line": 4,
+          "column": 6,
+          "specs": [
+            {
+              "title": "2.1 登录页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1977,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面表单元素正常\n"
+                        },
+                        {
+                          "text": "✅ 表单填写功能正常\n"
+                        },
+                        {
+                          "text": "✅ 登录页面基本功能测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:50.907Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-044363627d13436dc231",
+              "file": "02-auth-simple.spec.ts",
+              "line": 11,
+              "column": 7
+            },
+            {
+              "title": "2.2 注册页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1925,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 注册页面功能正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:50.918Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-96ceadb0be643c5cf67b",
+              "file": "02-auth-simple.spec.ts",
+              "line": 42,
+              "column": 7
+            },
+            {
+              "title": "2.3 登录流程测试（使用真实账号）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 2021,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ 登录可能需要验证或账号不存在\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:50.919Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-fba2960e74c35b3ef05b",
+              "file": "02-auth-simple.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "2.4 权限控制基本测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1879,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 权限控制正常 - 重定向到登录页面\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:50.910Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-0ae7e74c18e68c12f146",
+              "file": "02-auth-simple.spec.ts",
+              "line": 108,
+              "column": 7
+            },
+            {
+              "title": "2.5 表单验证测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4047,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 表单验证正常 - 显示错误消息\n"
+                        },
+                        {
+                          "text": "✅ 表单验证测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:50.917Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-9b8c50fb747f9ca8e656",
+              "file": "02-auth-simple.spec.ts",
+              "line": 127,
+              "column": 7
+            },
+            {
+              "title": "2.6 导航和链接测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 3031,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 找到注册链接\n"
+                        },
+                        {
+                          "text": "✅ 找到忘记密码链接\n"
+                        },
+                        {
+                          "text": "✅ 导航和链接测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:50.905Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-c4540093447495ae9d69",
+              "file": "02-auth-simple.spec.ts",
+              "line": 157,
+              "column": 7
+            },
+            {
+              "title": "2.7 响应式设计测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 2392,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 桌面端 (1920x1080) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 平板端 (768x1024) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 移动端 (375x667) 显示正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:53.011Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-c529c1d5fa107d595538",
+              "file": "02-auth-simple.spec.ts",
+              "line": 205,
+              "column": 7
+            },
+            {
+              "title": "2.8 页面性能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 953,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面加载时间: 0.78s\n"
+                        },
+                        {
+                          "text": "✅ 关键元素加载正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:53.054Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-77c0205a04668cd3d529",
+              "file": "02-auth-simple.spec.ts",
+              "line": 234,
+              "column": 7
+            },
+            {
+              "title": "2.1 登录页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1913,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面表单元素正常\n"
+                        },
+                        {
+                          "text": "✅ 表单填写功能正常\n"
+                        },
+                        {
+                          "text": "✅ 登录页面基本功能测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:53.691Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-aa5f3e889d4aed566855",
+              "file": "02-auth-simple.spec.ts",
+              "line": 11,
+              "column": 7
+            },
+            {
+              "title": "2.2 注册页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1910,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 注册页面功能正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:53.726Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-ce964383b91957c235a3",
+              "file": "02-auth-simple.spec.ts",
+              "line": 42,
+              "column": 7
+            },
+            {
+              "title": "2.3 登录流程测试（使用真实账号）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2366,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ 登录可能需要验证或账号不存在\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:54.413Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-818c244a4b86c7789352",
+              "file": "02-auth-simple.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "2.4 权限控制基本测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2268,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 权限控制正常 - 重定向到登录页面\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:54.562Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-d05cfaf06810604877c6",
+              "file": "02-auth-simple.spec.ts",
+              "line": 108,
+              "column": 7
+            },
+            {
+              "title": "2.5 表单验证测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 4367,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 表单验证正常 - 显示错误消息\n"
+                        },
+                        {
+                          "text": "✅ 表单验证测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:55.800Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-6ecf92100f3f25e941c0",
+              "file": "02-auth-simple.spec.ts",
+              "line": 127,
+              "column": 7
+            },
+            {
+              "title": "2.6 导航和链接测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 4200,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 找到注册链接\n"
+                        },
+                        {
+                          "text": "✅ 找到忘记密码链接\n"
+                        },
+                        {
+                          "text": "✅ 导航和链接测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:56.094Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-79d33862e7727db46768",
+              "file": "02-auth-simple.spec.ts",
+              "line": 157,
+              "column": 7
+            },
+            {
+              "title": "2.7 响应式设计测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 3428,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 桌面端 (1920x1080) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 平板端 (768x1024) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 移动端 (375x667) 显示正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:56.383Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-f99a44916996b3accc90",
+              "file": "02-auth-simple.spec.ts",
+              "line": 205,
+              "column": 7
+            },
+            {
+              "title": "2.8 页面性能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1373,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面加载时间: 0.96s\n"
+                        },
+                        {
+                          "text": "✅ 关键元素加载正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:56.838Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-8fee8dfcaa7b8d8dfcd6",
+              "file": "02-auth-simple.spec.ts",
+              "line": 234,
+              "column": 7
+            },
+            {
+              "title": "2.1 登录页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 2088,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面表单元素正常\n"
+                        },
+                        {
+                          "text": "✅ 表单填写功能正常\n"
+                        },
+                        {
+                          "text": "✅ 登录页面基本功能测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:58.459Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-1963e9bc1b3ab69f7de4",
+              "file": "02-auth-simple.spec.ts",
+              "line": 11,
+              "column": 7
+            },
+            {
+              "title": "2.2 注册页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2204,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 注册页面功能正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:59.050Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-09613d3dbb9e5e8e5c20",
+              "file": "02-auth-simple.spec.ts",
+              "line": 42,
+              "column": 7
+            },
+            {
+              "title": "2.3 登录流程测试（使用真实账号）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2064,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ 登录可能需要验证或账号不存在\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:20:59.238Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-68b49cd40454070ef0d8",
+              "file": "02-auth-simple.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "2.4 权限控制基本测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1376,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 权限控制正常 - 重定向到登录页面\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:01.415Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-e49c9ad2c473f62ff083",
+              "file": "02-auth-simple.spec.ts",
+              "line": 108,
+              "column": 7
+            },
+            {
+              "title": "2.5 表单验证测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 3354,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 表单验证正常 - 显示错误消息\n"
+                        },
+                        {
+                          "text": "✅ 表单验证测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:00.811Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-e421404480531373e871",
+              "file": "02-auth-simple.spec.ts",
+              "line": 127,
+              "column": 7
+            },
+            {
+              "title": "2.6 导航和链接测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 2990,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 找到注册链接\n"
+                        },
+                        {
+                          "text": "✅ 找到忘记密码链接\n"
+                        },
+                        {
+                          "text": "✅ 导航和链接测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:01.984Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-b981f32f786d9deead64",
+              "file": "02-auth-simple.spec.ts",
+              "line": 157,
+              "column": 7
+            },
+            {
+              "title": "2.7 响应式设计测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 3658,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 桌面端 (1920x1080) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 平板端 (768x1024) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 移动端 (375x667) 显示正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:02.351Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-17841fcdd0c0a7e00cab",
+              "file": "02-auth-simple.spec.ts",
+              "line": 205,
+              "column": 7
+            },
+            {
+              "title": "2.8 页面性能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1296,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面加载时间: 0.85s\n"
+                        },
+                        {
+                          "text": "✅ 关键元素加载正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:01.457Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-b27cd2f8ed9735a6ec02",
+              "file": "02-auth-simple.spec.ts",
+              "line": 234,
+              "column": 7
+            },
+            {
+              "title": "2.1 登录页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1362,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面表单元素正常\n"
+                        },
+                        {
+                          "text": "✅ 表单填写功能正常\n"
+                        },
+                        {
+                          "text": "✅ 登录页面基本功能测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:02.351Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-9f996397456eaf193464",
+              "file": "02-auth-simple.spec.ts",
+              "line": 11,
+              "column": 7
+            },
+            {
+              "title": "2.2 注册页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1255,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 注册页面功能正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:03.393Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-dde0a18d8650bc338ba1",
+              "file": "02-auth-simple.spec.ts",
+              "line": 42,
+              "column": 7
+            },
+            {
+              "title": "2.3 登录流程测试（使用真实账号）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 1435,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ 登录可能需要验证或账号不存在\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:03.452Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-5461ac84badafd573f68",
+              "file": "02-auth-simple.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "2.4 权限控制基本测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1259,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 权限控制正常 - 重定向到登录页面\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:03.874Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-b83df553721f50b03986",
+              "file": "02-auth-simple.spec.ts",
+              "line": 108,
+              "column": 7
+            },
+            {
+              "title": "2.5 表单验证测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 3513,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 表单验证正常 - 显示错误消息\n"
+                        },
+                        {
+                          "text": "✅ 表单验证测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:04.869Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-ce4e42cb007a20d7d9af",
+              "file": "02-auth-simple.spec.ts",
+              "line": 127,
+              "column": 7
+            },
+            {
+              "title": "2.6 导航和链接测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2433,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 找到注册链接\n"
+                        },
+                        {
+                          "text": "✅ 找到忘记密码链接\n"
+                        },
+                        {
+                          "text": "✅ 导航和链接测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:04.808Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-66651caa7257bd26fcc5",
+              "file": "02-auth-simple.spec.ts",
+              "line": 157,
+              "column": 7
+            },
+            {
+              "title": "2.7 响应式设计测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 2,
+                      "status": "passed",
+                      "duration": 3573,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 桌面端 (1920x1080) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 平板端 (768x1024) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 移动端 (375x667) 显示正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:05.068Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-7d06bb125f9e69a4deab",
+              "file": "02-auth-simple.spec.ts",
+              "line": 205,
+              "column": 7
+            },
+            {
+              "title": "2.8 页面性能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1117,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面加载时间: 0.92s\n"
+                        },
+                        {
+                          "text": "✅ 关键元素加载正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:05.139Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-1a10d9bec801e0d8346e",
+              "file": "02-auth-simple.spec.ts",
+              "line": 234,
+              "column": 7
+            },
+            {
+              "title": "2.1 登录页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 1483,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面表单元素正常\n"
+                        },
+                        {
+                          "text": "✅ 表单填写功能正常\n"
+                        },
+                        {
+                          "text": "✅ 登录页面基本功能测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:05.765Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-39b2f09029c8ae7b2d8a",
+              "file": "02-auth-simple.spec.ts",
+              "line": 11,
+              "column": 7
+            },
+            {
+              "title": "2.2 注册页面基本功能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 23,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 1638,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 注册页面功能正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:06.769Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-d97fa933fff263fa888b",
+              "file": "02-auth-simple.spec.ts",
+              "line": 42,
+              "column": 7
+            },
+            {
+              "title": "2.3 登录流程测试（使用真实账号）",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 1625,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "ℹ️ 登录可能需要验证或账号不存在\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:06.802Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-36867775bf7fd4b2ecd1",
+              "file": "02-auth-simple.spec.ts",
+              "line": 79,
+              "column": 7
+            },
+            {
+              "title": "2.4 权限控制基本测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 25,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1842,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 权限控制正常 - 重定向到登录页面\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:08.169Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-505ab9e407eca5d3a410",
+              "file": "02-auth-simple.spec.ts",
+              "line": 108,
+              "column": 7
+            },
+            {
+              "title": "2.5 表单验证测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 4,
+                      "status": "passed",
+                      "duration": 3396,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 表单验证正常 - 显示错误消息\n"
+                        },
+                        {
+                          "text": "✅ 表单验证测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:07.429Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-5ef5ce98f931adcee222",
+              "file": "02-auth-simple.spec.ts",
+              "line": 127,
+              "column": 7
+            },
+            {
+              "title": "2.6 导航和链接测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 1,
+                      "status": "passed",
+                      "duration": 2487,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 找到注册链接\n"
+                        },
+                        {
+                          "text": "✅ 找到忘记密码链接\n"
+                        },
+                        {
+                          "text": "✅ 导航和链接测试完成\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:08.586Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-e4b0202cfbdfdcdc3187",
+              "file": "02-auth-simple.spec.ts",
+              "line": 157,
+              "column": 7
+            },
+            {
+              "title": "2.7 响应式设计测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 23,
+                      "parallelIndex": 3,
+                      "status": "passed",
+                      "duration": 3195,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 桌面端 (1920x1080) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 平板端 (768x1024) 显示正常\n"
+                        },
+                        {
+                          "text": "✅ 移动端 (375x667) 显示正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:08.586Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-e112072d669ab3112ccb",
+              "file": "02-auth-simple.spec.ts",
+              "line": 205,
+              "column": 7
+            },
+            {
+              "title": "2.8 页面性能测试",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Safari",
+                  "projectName": "Mobile Safari",
+                  "results": [
+                    {
+                      "workerIndex": 26,
+                      "parallelIndex": 5,
+                      "status": "passed",
+                      "duration": 1145,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "✅ 登录页面加载时间: 0.77s\n"
+                        },
+                        {
+                          "text": "✅ 关键元素加载正常\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-06-17T05:21:09.927Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9082c26d60da224e65e8-dd6112ecf837ed576112",
+              "file": "02-auth-simple.spec.ts",
+              "line": 234,
+              "column": 7
+            }
+          ]
+        }
+      ]
     }
   ],
+  "errors": [],
   "stats": {
-    "startTime": "2025-06-15T01:23:40.966Z",
-    "duration": 120333.723,
-    "expected": 0,
+    "startTime": "2025-06-17T05:20:50.423Z",
+    "duration": 21386.005,
+    "expected": 40,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

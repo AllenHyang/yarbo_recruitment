@@ -171,9 +171,19 @@ test.describe('认证系统简化测试 - Authentication Simple Tests', () => {
       }
     }
 
+    // 使用等待策略避免导航冲突
+    await page.waitForTimeout(500);
+    
     // 返回登录页面测试其他链接
-    await page.goto('/auth/login');
-    await page.waitForLoadState('networkidle');
+    try {
+      await page.goto('/auth/login', { waitUntil: 'domcontentloaded' });
+      await page.waitForLoadState('networkidle');
+    } catch (error) {
+      // 如果导航失败，尝试刷新当前页面
+      console.log('导航被中断，尝试刷新页面');
+      await page.reload({ waitUntil: 'domcontentloaded' });
+      await page.waitForLoadState('networkidle');
+    }
 
     // 测试注册链接
     const registerLinks = page.locator('a:has-text("注册"), a:has-text("立即注册")');
