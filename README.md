@@ -185,4 +185,4 @@ npm run test tests/01-basic-functionality.spec.ts
 
 ---
 
-**注意**: 主要开发工作请在 `yarbo-app/` 目录中进行，不要在项目根目录运行 npm 命令。 
+**注意**: 主要开发工作请在 `yarbo-app/` 目录中进行，不要在项目根目录运行 npm 命令。 # 触发AWS Amplify重新部署 - Tue Jun 17 17:23:36 WITA 2025
