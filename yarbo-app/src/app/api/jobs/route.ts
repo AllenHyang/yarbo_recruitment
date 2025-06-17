@@ -1,17 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
+// 配置为静态路由 - AWS Amplify静态托管必需
+export const dynamic = 'force-static';
+export const revalidate = false;
+
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url);
-    const fields = searchParams.get('fields') || '*';
-    const limit = parseInt(searchParams.get('limit') || '50');
-    const offset = parseInt(searchParams.get('offset') || '0');
+    // 静态配置 - 移除动态查询参数
+    const fields = '*';
+    const limit = 50;
 
     // 验证环境变量
     if (!supabaseUrl || !supabaseServiceKey) {
@@ -22,12 +25,12 @@ export async function GET(request: NextRequest) {
       }, { status: 500 });
     }
 
-    // 查询职位数据
+    // 查询职位数据 - 静态配置
     const { data: jobs, error } = await supabase
       .from('jobs')
       .select(fields)
       .eq('status', 'active')
-      .range(offset, offset + limit - 1);
+      .limit(limit);
 
     if (error) {
       console.error('Supabase 查询失败:', error);

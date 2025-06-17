@@ -1,0 +1,16 @@
+{
+  "name": "Yarbo Recruitment System",
+  "short_name": "Yarbo HR",
+  "description": "雅宝智能招聘管理系统",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16",
+      "type": "image/x-icon"
+    }
+  ]
+} 
