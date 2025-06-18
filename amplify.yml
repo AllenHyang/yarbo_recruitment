@@ -10,17 +10,16 @@ applications:
           commands:
             - npm run build
       artifacts:
-        baseDirectory: .next
+        baseDirectory: out
         files:
           - '**/*'
+        exclude:
+          - node_modules/**/*
       cache:
         paths:
           - node_modules/**/*
-      environment:
-        AMPLIFY_NEXTJS_EXPERIMENTAL: true
-        NODE_ENV: production
-    backend:
-      phases:
-        build:
-          commands:
-            - '# Next.js API routes will be handled by Amplify hosting'
+      customHeaders:
+        - pattern: '/api/**'
+          headers:
+            - key: 'Content-Type'
+              value: 'application/json'
