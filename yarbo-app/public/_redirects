@@ -1,0 +1,8 @@
+# Next.js API路由
+/api/* /api/:splat 200
+
+# 动态路由重定向
+/jobs/* /jobs/:splat 200
+
+# SPA回退规则 - 必须放在最后
+/* /index.html 200 

@@ -10,16 +10,31 @@ applications:
           commands:
             - npm run build
       artifacts:
-        baseDirectory: out
+        baseDirectory: .next
         files:
           - '**/*'
         exclude:
           - node_modules/**/*
+          - .next/cache/**/*
       cache:
         paths:
           - node_modules/**/*
+          - .next/cache/**/*
       customHeaders:
         - pattern: '/api/**'
           headers:
             - key: 'Content-Type'
               value: 'application/json'
+            - key: 'Cache-Control'
+              value: 'no-cache, no-store, must-revalidate'
+        - pattern: '/**'
+          headers:
+            - key: 'X-Frame-Options'
+              value: 'DENY'
+            - key: 'X-Content-Type-Options'
+              value: 'nosniff'
+    backend:
+      phases:
+        build:
+          commands:
+            - '# Next.js API routes will be handled by Amplify hosting'
