@@ -9,16 +9,7 @@ applications:
         build:
           commands:
             - npm run build
-      artifacts:
-        baseDirectory: .next
-        files:
-          - '**/*'
       cache:
         paths:
           - node_modules/**/*
           - .next/cache/**/*
-    backend:
-      phases:
-        build:
-          commands:
-            - echo "No backend build required"
