@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,108 +23,12 @@ import {
   Copy
 } from "lucide-react";
 
-interface JobDetail {
-  id: string;
-  title: string;
-  department: string;
-  location: string;
-  type: string;
-  level: string;
-  salary_display: string;
-  description: string;
-  requirements: string[];
-  benefits: string[];
-  created_at: string;
-  status: string;
-  is_featured: boolean;
+import type { JobWithDepartment } from "@/lib/database.types";
+
+interface JobDetail extends JobWithDepartment {
+  salary_display?: string;
 }
 
-// 模拟职位数据 - 在实际应用中这些会从数据库获取
-const mockJobs: { [key: string]: JobDetail } = {
-  "1": {
-    id: "1",
-    title: "高级前端开发工程师",
-    department: "技术研发部",
-    location: "北京",
-    type: "全职",
-    level: "高级",
-    salary_display: "25K-35K",
-    description: `我们正在寻找一位经验丰富的高级前端开发工程师加入我们的团队。您将负责：
-
-• 负责公司核心产品的前端架构设计和开发
-• 与产品经理、设计师和后端工程师协作，打造优秀的用户体验
-• 参与前端技术选型和最佳实践制定
-• 指导和培养初中级前端工程师
-• 持续优化前端性能和用户体验
-
-加入我们，您将有机会：
-• 参与从0到1的产品建设
-• 使用最新的前端技术栈
-• 在快速发展的团队中获得成长
-• 享受灵活的工作环境和丰厚的薪酬福利`,
-    requirements: [
-      "本科及以上学历，计算机相关专业",
-      "5年以上前端开发经验，有大型项目经验",
-      "精通React/Vue.js等主流前端框架",
-      "熟悉TypeScript、Webpack、Vite等现代前端工具链",
-      "熟悉HTML5、CSS3、ES6+等前端技术",
-      "了解Node.js和后端开发基础",
-      "有良好的代码规范和团队协作能力",
-      "对新技术有敏锐的嗅觉和学习能力"
-    ],
-    benefits: [
-      "具有竞争力的薪酬：25K-35K + 年终奖",
-      "五险一金 + 补充商业保险",
-      "14薪 + 股票期权",
-      "弹性工作时间，支持远程办公",
-      "年假15天起 + 带薪病假",
-      "免费三餐 + 下午茶 + 零食饮料",
-      "年度体检 + 健身房会员",
-      "技术培训津贴 + 技术会议支持",
-      "团队建设活动 + 年度旅游",
-      "MacBook Pro + 4K显示器等顶级设备"
-    ],
-    created_at: "2025-01-15T08:00:00Z",
-    status: "active",
-    is_featured: true
-  },
-  "2": {
-    id: "2",
-    title: "产品经理",
-    department: "产品部",
-    location: "上海",
-    type: "全职",
-    level: "中级",
-    salary_display: "20K-30K",
-    description: `我们正在寻找一位富有激情的产品经理，负责核心产品的规划和迭代。您将：
-
-• 负责产品需求分析和功能设计
-• 与技术团队紧密协作，推动产品开发
-• 进行用户调研和数据分析
-• 制定产品路线图和版本规划
-• 跟踪产品指标，持续优化用户体验
-
-这是一个充满挑战和成长机会的岗位，适合有想法、有执行力的产品人才。`,
-    requirements: [
-      "本科及以上学历，3年以上产品经理经验",
-      "有ToB或ToC产品经验，了解用户需求分析",
-      "熟悉产品设计流程和原型工具",
-      "具备良好的逻辑思维和沟通能力",
-      "有数据分析能力，能够制定并跟踪产品指标",
-      "了解技术实现原理，能与技术团队有效沟通"
-    ],
-    benefits: [
-      "薪酬范围：20K-30K + 绩效奖金",
-      "完善的福利体系",
-      "职业发展通道明确",
-      "优秀的团队氛围",
-      "学习成长机会丰富"
-    ],
-    created_at: "2025-01-10T08:00:00Z",
-    status: "active",
-    is_featured: false
-  }
-};
 
 function JobDetailContent() {
   const searchParams = useSearchParams();
@@ -140,20 +45,54 @@ function JobDetailContent() {
       return;
     }
 
-    // 首先检查真实数据，如果没有则使用模拟数据
+    // 从Supabase获取真实数据
     const fetchJobData = async () => {
       try {
-        // 这里应该从Supabase获取真实数据
-        // const { data, error } = await supabase.from('jobs').select('*').eq('id', jobId).single();
         
-        // 暂时使用模拟数据
-        const jobData = mockJobs[jobId];
-        if (jobData) {
-          setJob(jobData);
+        // 获取职位详情，包含部门信息
+        const { data, error } = await supabase
+          .from('jobs')
+          .select(`
+            *,
+            departments!inner (
+              id,
+              name,
+              color_theme
+            )
+          `)
+          .eq('id', jobId)
+          .single();
+
+        if (error) {
+          console.error('获取职位详情失败:', error);
+          setError('获取职位信息失败');
+          return;
+        }
+
+        if (data) {
+          // 格式化薪资显示
+          const formatSalary = (min?: number | null, max?: number | null) => {
+            if (min && max) {
+              return `${(min / 1000).toFixed(0)}K-${(max / 1000).toFixed(0)}K`;
+            }
+            return '面议';
+          };
+
+          // 转换数据格式
+          const jobDetail: JobDetail = {
+            ...data,
+            department: data.departments?.name || '未知部门',
+            salary_display: formatSalary(data.salary_min, data.salary_max),
+            requirements: data.requirements || [],
+            benefits: data.benefits || []
+          };
+          
+          setJob(jobDetail);
         } else {
           setError('职位不存在或已下线');
         }
       } catch (err) {
+        console.error('获取职位数据异常:', err);
         setError('获取职位信息失败');
       } finally {
         setIsLoading(false);
@@ -241,11 +180,11 @@ function JobDetailContent() {
             </div>
             <div className="flex items-center">
               <Briefcase className="h-4 w-4 mr-2" />
-              {job.type}
+              {job.type || '全职'}
             </div>
             <div className="flex items-center">
               <GraduationCap className="h-4 w-4 mr-2" />
-              {job.level}
+              {job.level || '不限'}
             </div>
           </div>
         </div>
@@ -312,7 +251,7 @@ function JobDetailContent() {
               <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">薪资范围</span>
-                  <span className="font-semibold text-green-600">{job.salary_display}</span>
+                  <span className="font-semibold text-green-600">{job.salary_display || '面议'}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-gray-600">发布时间</span>
