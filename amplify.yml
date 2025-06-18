@@ -10,14 +10,10 @@ applications:
           commands:
             - npm run build
       artifacts:
-        baseDirectory: .next
+        baseDirectory: out
         files:
           - '**/*'
       cache:
         paths:
           - node_modules/**/*
           - .next/cache/**/*
-      environment:
-        variables:
-          AMPLIFY_NEXTJS_EXPERIMENTAL: "true"
-          AMPLIFY_DIFF_DEPLOY: "false"

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -48,67 +49,47 @@ const CACHE_DURATION = 3 * 60 * 1000; // 3分钟缓存
 
 function CampusRecruitmentPage() {
   const { user } = useAuth();
-  const [jobs, setJobs] = useState<CampusJob[]>([]);
+  const [jobs, setJobs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState("all");
   const [selectedLocation, setSelectedLocation] = useState("all");
 
-  // 优化的数据获取函数 - 添加缓存和防抖
-  const fetchCampusJobs = useCallback(async (forceRefresh = false) => {
-    const cacheKey = `campus-${selectedDepartment}-${selectedLocation}-${searchTerm}`;
-    const now = Date.now();
-
-    // 检查缓存
-    if (!forceRefresh) {
-      const cached = campusJobsCache.get(cacheKey);
-      if (cached && (now - cached.timestamp) < CACHE_DURATION) {
-        console.log('使用缓存的校园招聘数据');
-        setJobs(cached.data);
-        setIsLoading(false);
-        return;
-      }
-    }
-
-    if (!jobs.length) setIsLoading(true); // 只在首次加载时显示loading
+  // 直接使用Supabase获取并过滤校园招聘职位
+  const fetchCampusJobs = useCallback(async () => {
+    setIsLoading(true);
 
     try {
-      const params = new URLSearchParams();
-      if (selectedDepartment !== 'all') params.append('department', selectedDepartment);
-      if (selectedLocation !== 'all') params.append('location', selectedLocation);
-      if (searchTerm) params.append('search', searchTerm);
+      const { data: allJobs, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .eq('status', 'active');
 
-      const response = await fetch(`/api/jobs/campus?${params.toString()}`);
-      if (!response.ok) {
-        throw new Error('获取校园招聘职位失败');
+      if (error) {
+        throw new Error(error.message);
       }
 
-      const data = await response.json();
-      if (data.success) {
-        const jobsData = data.jobs || [];
-        setJobs(jobsData);
-        // 更新缓存
-        campusJobsCache.set(cacheKey, { data: jobsData, timestamp: now });
-        console.log(`获取到 ${jobsData.length} 个校园招聘职位`);
-      } else {
-        console.error('获取校园招聘职位失败:', data.error);
-        setJobs([]);
-      }
+      // 客户端过滤校园招聘职位
+      const campusJobs = (allJobs || []).filter((job: any) => {
+        const title = job.title?.toLowerCase() || '';
+        return title.includes('校园') || title.includes('应届') || title.includes('校招') || title.includes('2025届');
+      });
+      
+      setJobs(campusJobs);
+      console.log(`获取到 ${campusJobs.length} 个校园招聘职位`);
     } catch (error) {
-      console.error('获取校园招聘职位失败:', error);
+      console.error('获取职位数据失败:', error);
       setJobs([]);
+      setError('获取数据失败');
     } finally {
       setIsLoading(false);
     }
-  }, [selectedDepartment, selectedLocation, searchTerm, jobs.length]);
+  }, []);
 
-  // 防抖处理
+  // 初始化加载数据
   useEffect(() => {
-    const debounceTimer = setTimeout(() => {
-      fetchCampusJobs();
-    }, searchTerm ? 500 : 0); // 搜索时防抖500ms，其他立即执行
-
-    return () => clearTimeout(debounceTimer);
+    fetchCampusJobs();
   }, [fetchCampusJobs]);
 
   // 优化筛选选项计算 - 使用 useMemo 避免重复计算
@@ -119,8 +100,19 @@ function CampusRecruitmentPage() {
     };
   }, [jobs]);
 
-  // 移除客户端过滤，直接使用API返回的数据
-  const filteredJobs = jobs;
+  // 客户端过滤
+  const filteredJobs = useMemo(() => {
+    return jobs.filter(job => {
+      const matchesSearch = !searchTerm || 
+        job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        job.department.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesDepartment = selectedDepartment === 'all' || job.department === selectedDepartment;
+      const matchesLocation = selectedLocation === 'all' || job.location === selectedLocation;
+      
+      return matchesSearch && matchesDepartment && matchesLocation;
+    });
+  }, [jobs, searchTerm, selectedDepartment, selectedLocation]);
 
   // 骨架屏组件
   const JobCardSkeleton = () => (
