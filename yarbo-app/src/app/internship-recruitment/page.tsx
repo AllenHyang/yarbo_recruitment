@@ -84,24 +84,18 @@ function InternshipRecruitmentPage() {
       if (selectedDuration !== 'all') params.append('duration', selectedDuration);
       if (searchTerm) params.append('search', searchTerm);
 
-      const response = await fetch('/api/jobs');
+      const response = await fetch(`/api/jobs/internship?${params.toString()}`);
       if (!response.ok) {
         throw new Error('获取实习职位失败');
       }
 
       const data = await response.json();
       if (data.success) {
-        // 筛选实习相关职位
-        const allJobs = data.data || [];
-        const internshipJobs = allJobs.filter((job: any) => 
-          job.type === 'internship' || 
-          job.title.includes('实习') || 
-          job.level === 'intern'
-        );
-        setJobs(internshipJobs);
+        const jobsData = data.jobs || [];
+        setJobs(jobsData);
         // 更新缓存
-        internshipJobsCache.set(cacheKey, { data: internshipJobs, timestamp: now });
-        console.log(`获取到 ${internshipJobs.length} 个实习招聘职位`);
+        internshipJobsCache.set(cacheKey, { data: jobsData, timestamp: now });
+        console.log(`获取到 ${jobsData.length} 个实习招聘职位`);
       } else {
         console.error('获取实习职位失败:', data.error);
         setJobs([]);

@@ -78,25 +78,18 @@ function CampusRecruitmentPage() {
       if (selectedLocation !== 'all') params.append('location', selectedLocation);
       if (searchTerm) params.append('search', searchTerm);
 
-      const response = await fetch('/api/jobs');
+      const response = await fetch(`/api/jobs/campus?${params.toString()}`);
       if (!response.ok) {
         throw new Error('获取校园招聘职位失败');
       }
 
       const data = await response.json();
       if (data.success) {
-        // 筛选校园招聘相关职位
-        const allJobs = data.data || [];
-        const campusJobs = allJobs.filter((job: any) => 
-          job.type === 'campus' || 
-          job.title.includes('校园') || 
-          job.title.includes('应届') ||
-          job.level === 'entry'
-        );
-        setJobs(campusJobs);
+        const jobsData = data.jobs || [];
+        setJobs(jobsData);
         // 更新缓存
-        campusJobsCache.set(cacheKey, { data: campusJobs, timestamp: now });
-        console.log(`获取到 ${campusJobs.length} 个校园招聘职位`);
+        campusJobsCache.set(cacheKey, { data: jobsData, timestamp: now });
+        console.log(`获取到 ${jobsData.length} 个校园招聘职位`);
       } else {
         console.error('获取校园招聘职位失败:', data.error);
         setJobs([]);

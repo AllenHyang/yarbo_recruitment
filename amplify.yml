@@ -10,16 +10,14 @@ applications:
           commands:
             - npm run build
       artifacts:
-        baseDirectory: out
+        baseDirectory: .next
         files:
           - '**/*'
-        exclude:
-          - node_modules/**/*
       cache:
         paths:
           - node_modules/**/*
-      customHeaders:
-        - pattern: '/api/**'
-          headers:
-            - key: 'Content-Type'
-              value: 'application/json'
+          - .next/cache/**/*
+      environment:
+        variables:
+          AMPLIFY_NEXTJS_EXPERIMENTAL: "true"
+          AMPLIFY_DIFF_DEPLOY: "false"

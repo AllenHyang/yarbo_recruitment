@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-// 配置为静态路由 - AWS Amplify静态托管必需
-export const dynamic = 'force-static';
-export const revalidate = false;
+// SSR模式 - 支持动态查询参数
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
