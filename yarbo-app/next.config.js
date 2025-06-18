@@ -1,8 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // 静态导出配置 - AWS Amplify静态托管必需
-  output: 'export',
-  distDir: 'out',
+  // 根据环境动态设置导出模式
+  ...(process.env.NODE_ENV === 'production' && process.env.DEPLOY_TARGET === 'static' ? {
+    output: 'export',
+    distDir: 'out',
+  } : {}),
   eslint: {
     // 在开发和构建时忽略ESLint错误
     ignoreDuringBuilds: true,

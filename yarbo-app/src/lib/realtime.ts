@@ -3,6 +3,7 @@ import { RealtimeChannel, RealtimePostgresChangesPayload } from '@supabase/supab
 
 export type RealtimeEventType = 'INSERT' | 'UPDATE' | 'DELETE';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface RealtimeEvent<T = any> {
   eventType: RealtimeEventType;
   new: T | null;
@@ -18,6 +19,7 @@ export interface NotificationData {
   message: string;
   userId: string;
   userRole: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: Record<string, any>;
   createdAt: string;
   read: boolean;
@@ -25,6 +27,7 @@ export interface NotificationData {
   actionType?: 'internal' | 'external';
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RealtimeCallback<T = any> = (event: RealtimeEvent<T>) => void;
 export type NotificationCallback = (notification: NotificationData) => void;
 
@@ -98,10 +101,9 @@ class RealtimeManager {
    * 订阅新申请通知（HR专用）
    */
   subscribeToNewApplications(
-    callback: RealtimeCallback,
-    departmentIds?: string[]
+    callback: RealtimeCallback
   ): () => void {
-    // 如果指定了部门，可以通过jobs表的department_id进行过滤
+    // 可以通过jobs表的department_id进行过滤
     return this.subscribeToTable('applications', (event) => {
       if (event.eventType === 'INSERT') {
         callback(event);

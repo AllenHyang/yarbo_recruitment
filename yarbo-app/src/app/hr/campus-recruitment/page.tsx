@@ -12,6 +12,17 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, GraduationCap, School, Users, Calendar, CheckCircle, UserCheck, BookOpen, MapPin, TrendingUp, Star, Award, Target, Clock, Download, Mail, X, FileText, Edit, Eye } from "lucide-react";
 import { withProtected } from "@/components/withProtected";
 
+interface University {
+  id: number;
+  name: string;
+  applications: number;
+  rating: number;
+  partnership: string;
+  established: string;
+  students: string;
+  majors: string[];
+}
+
 function CampusRecruitmentPage() {
   const [stats, setStats] = useState({
     totalJobs: 12,
@@ -23,9 +34,9 @@ function CampusRecruitmentPage() {
   const [showJobDialog, setShowJobDialog] = useState(false);
   const [showEventDialog, setShowEventDialog] = useState(false);
   const [showDataDialog, setShowDataDialog] = useState(false);
-  const [selectedUniversity, setSelectedUniversity] = useState(null);
+  const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
 
-  const topUniversities = [
+  const topUniversities: University[] = [
     { id: 1, name: "清华大学", applications: 85, rating: 5, partnership: "战略合作", established: "2020年", students: "45000+", majors: ["计算机科学", "电子工程", "工业工程"] },
     { id: 2, name: "北京大学", applications: 72, rating: 5, partnership: "战略合作", established: "2019年", students: "40000+", majors: ["软件工程", "数据科学", "商务分析"] },
     { id: 3, name: "上海交通大学", applications: 68, rating: 4, partnership: "深度合作", established: "2021年", students: "38000+", majors: ["机械工程", "电气工程", "管理科学"] },

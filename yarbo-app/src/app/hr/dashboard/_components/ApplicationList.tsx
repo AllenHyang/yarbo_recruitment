@@ -167,10 +167,10 @@ export function ApplicationList() {
       
       // 发送邮件通知
       const application = applications.find(app => app.id === applicationId);
-      if (application?.applicants) {
-        const candidateName = application.applicants.name || '候选人';
-        const candidateEmail = application.applicants.email;
-        const jobTitle = application.jobs?.title || '职位';
+      if (application?.applicant) {
+        const candidateName = application.applicant.name || '候选人';
+        const candidateEmail = application.applicant.email;
+        const jobTitle = application.job?.title || '职位';
         
         if (candidateEmail) {
           if (newStatus === 'reviewing') {
@@ -298,17 +298,17 @@ export function ApplicationList() {
                         <div className="flex items-center justify-between">
                           <div>
                             <h4 className="text-lg font-semibold text-gray-900">
-                              {application.applicants?.name || '未知申请者'}
+                              {application.applicant?.name || '未知申请者'}
                             </h4>
                             <div className="flex items-center space-x-4 text-sm text-gray-500 mt-1">
                               <div className="flex items-center space-x-1">
                                 <Mail className="h-3 w-3" />
-                                <span>{application.applicants?.email}</span>
+                                <span>{application.applicant?.email}</span>
                               </div>
-                              {application.applicants?.phone && (
+                              {application.applicant?.phone && (
                                 <div className="flex items-center space-x-1">
                                   <Phone className="h-3 w-3" />
-                                  <span>{application.applicants?.phone}</span>
+                                  <span>{application.applicant?.phone}</span>
                                 </div>
                               )}
                             </div>
@@ -324,9 +324,9 @@ export function ApplicationList() {
                         <div className="flex items-center space-x-6 text-sm">
                           <div className="flex items-center space-x-2">
                             <Building2 className="h-4 w-4 text-gray-400" />
-                            <span className="font-medium text-gray-900">{application.jobs?.title}</span>
+                            <span className="font-medium text-gray-900">{application.job?.title}</span>
                             <span className="text-gray-500">·</span>
-                            <span className="text-gray-600">{application.jobs?.location}</span>
+                            <span className="text-gray-600">{application.job?.location}</span>
                           </div>
                           
                           <div className="flex items-center space-x-1 text-gray-500">

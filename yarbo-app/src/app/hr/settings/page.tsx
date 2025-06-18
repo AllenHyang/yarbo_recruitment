@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -69,11 +71,34 @@ interface SystemConfig {
   sessionTimeout: number;
 }
 
-export default function SettingsPage() {
+function SettingsPage() {
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('general');
   const [showAddUser, setShowAddUser] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
+
+  // 权限检查
+  useEffect(() => {
+    if (!isLoading && (!user || user.role !== 'admin')) {
+      router.push('/auth/login');
+    }
+  }, [user, isLoading, router]);
+
+  // 如果正在加载或无权限，显示加载状态
+  if (isLoading || !user || user.role !== 'admin') {
+    return (
+      <div className="container mx-auto px-4 py-12">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">加载中...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // 系统配置
   const [config, setConfig] = useState<SystemConfig>({
@@ -775,4 +800,6 @@ export default function SettingsPage() {
       </div>
     </div>
   );
-} 
+}
+
+export default SettingsPage; 

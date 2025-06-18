@@ -9,6 +9,7 @@ const WORKERS_API_BASE_URL = process.env.NODE_ENV === 'production'
   : 'http://localhost:8787';
 
 // API 响应类型
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface WorkersApiResponse<T = any> {
   success: boolean;
   data?: T;
@@ -36,6 +37,7 @@ interface AuthResponse {
   access_token: string;
   refresh_token: string;
   expires_in: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any;
 }
 
@@ -97,9 +99,9 @@ class WorkersApiClient {
   ): Promise<WorkersApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
     
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      ...options.headers,
+      ...(options.headers as Record<string, string>),
     };
 
     // 添加认证头

@@ -70,8 +70,8 @@ export function ApplyForm({
 
   // 获取用户信息用于自动填充
   const getUserDisplayName = () => {
-    if (userProfile?.user_profiles?.first_name && userProfile?.user_profiles?.last_name) {
-      return `${userProfile.user_profiles.first_name} ${userProfile.user_profiles.last_name}`;
+    if (userProfile?.profile?.first_name && userProfile?.profile?.last_name) {
+      return `${userProfile.profile.first_name} ${userProfile.profile.last_name}`;
     }
     return user?.email?.split('@')[0] || "";
   };
@@ -81,7 +81,7 @@ export function ApplyForm({
     defaultValues: {
       name: getUserDisplayName(),
       email: user?.email || "",
-      phone: userProfile?.user_profiles?.phone || "",
+      phone: userProfile?.profile?.phone || "",
       jobId: jobId || "",
       resumeId: "",
       coverLetter: "",
@@ -100,7 +100,7 @@ export function ApplyForm({
     if (user && userProfile) {
       const displayName = getUserDisplayName();
       const userEmail = user.email || "";
-      const userPhone = userProfile.user_profiles?.phone || "";
+      const userPhone = userProfile.profile?.phone || "";
 
       // 只有当字段为空时才自动填充，避免覆盖用户已输入的内容
       if (!form.getValues('name') && displayName) {

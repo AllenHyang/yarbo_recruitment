@@ -2,18 +2,29 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApplyForm } from "./_components/ApplyForm";
-import { Job } from "@/components/JobCard";
 import { getJobById } from "@/lib/api";
 import { getDepartmentColor } from "@/lib/supabase";
-import type { JobWithDepartment } from "@/lib/database.types";
+import type { Job, JobWithDepartment } from "@/lib/database.types";
 import Link from "next/link";
 import { ArrowLeft, Building2, CheckCircle, FileText, Send, User } from "lucide-react";
 import { withRoleBasedAccess } from "@/components/withProtected";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+// 简化的职位接口用于演示数据
+interface MockJob {
+  id: string;
+  title: string;
+  department: string;
+  location: string;
+  salary: string;
+  description: string;
+  requirements?: string[];
+  responsibilities?: string[];
+}
+
 // 本地mock数据作为后备
-const mockJobs: Job[] = [
+const mockJobs: MockJob[] = [
   {
     id: "1",
     title: "资深全栈工程师",
@@ -37,26 +48,26 @@ const mockJobs: Job[] = [
 ];
 
 // 获取职位显示数据的工具函数
-function getJobDisplayData(job: JobWithDepartment | Job) {
-  if ('departments' in job && 'salary_display' in job) {
+function getJobDisplayData(job: JobWithDepartment | Job | MockJob) {
+  if ('salary_display' in job) {
     // 数据库数据
     return {
       id: job.id,
       title: job.title,
-      department: job.departments?.name || '未知部门',
-      departmentColorTheme: job.departments?.color_theme || 'blue',
+      department: (job as JobWithDepartment).department_info?.name || job.department || '未知部门',
+      departmentColorTheme: (job as JobWithDepartment).department_info?.color_theme || 'blue',
       location: job.location,
       salary: job.salary_display || '面议',
     };
   } else {
-    // 静态数据
+    // 静态数据 (MockJob)
     return {
       id: job.id,
       title: job.title,
       department: job.department,
       departmentColorTheme: 'blue',
       location: job.location,
-      salary: job.salary,
+      salary: (job as MockJob).salary || '面议',
     };
   }
 }
@@ -64,7 +75,7 @@ function getJobDisplayData(job: JobWithDepartment | Job) {
 function ApplyPage() {
   const searchParams = useSearchParams();
   const jobId = searchParams.get('jobId');
-  const [job, setJob] = useState<JobWithDepartment | Job | null>(null);
+  const [job, setJob] = useState<JobWithDepartment | Job | MockJob | null>(null);
   const [isUsingMockData, setIsUsingMockData] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -84,7 +95,7 @@ function ApplyPage() {
         console.error('获取职位信息失败:', error);
 
         // 如果数据库中没有找到，尝试使用静态数据
-        const mockJob = mockJobs.find((j: Job) => j.id === jobId) || null;
+        const mockJob = mockJobs.find((j: MockJob) => j.id === jobId) || null;
         setJob(mockJob);
         setIsUsingMockData(!!mockJob);
       } finally {
@@ -184,7 +195,7 @@ function ApplyPage() {
                   <ApplyForm
                     positionTitle={jobData?.title}
                     positionDepartment={jobData?.department}
-                    jobId={jobId}
+                    jobId={jobId || undefined}
                   />
                 </CardContent>
               </Card>

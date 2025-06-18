@@ -312,7 +312,7 @@ function AnalyticsPage() {
                                                         <div>
                                                             <div className="font-medium">{dept.department}</div>
                                                             <div className="text-sm text-gray-600">
-                                                                {dept.count} 个录用 · {dept.openPositions || 0} 个职位
+                                                                {dept.count} 个录用 · {dept.count > 0 ? '活跃' : '待激活'}
                                                             </div>
                                                         </div>
                                                     </div>

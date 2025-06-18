@@ -1321,3 +1321,111 @@ export const Constants = {
     Enums: {},
   },
 } as const
+
+// 添加组合类型定义
+export type Job = Tables<'jobs'>
+export type Application = Tables<'applications'>
+export type Applicant = Tables<'applicants'>
+export type Department = Tables<'departments'>
+export type OfficeLocation = Tables<'office_locations'>
+export type User = Tables<'users'>
+export type Resume = Tables<'resumes'>
+export type Offer = Tables<'offers'>
+export type Message = Tables<'messages'>
+export type Interview = Tables<'interviews'>
+export type Notification = Tables<'notifications'>
+
+// 组合类型，包含关联信息
+export interface JobWithDepartment extends Job {
+  department_info?: Department
+  location_info?: OfficeLocation
+}
+
+export interface ApplicationWithDetails extends Application {
+  applicant?: Applicant
+  job?: Job
+  resume?: Resume
+}
+
+export interface ApplicationWithAllDetails extends Application {
+  applicant?: Applicant
+  job?: JobWithDepartment
+  resume?: Resume
+  interviews?: Interview[]
+}
+
+export interface OfferWithDetails extends Offer {
+  applicant?: Applicant
+  job?: Job
+  application?: Application
+}
+
+export interface InterviewWithDetails extends Interview {
+  application?: ApplicationWithDetails
+}
+
+export interface UserWithProfile extends User {
+  profile?: Tables<'user_profiles'>
+}
+
+// 常用的状态类型
+export type ApplicationStatus = 'pending' | 'reviewing' | 'interviewing' | 'offered' | 'hired' | 'rejected'
+export type JobStatus = 'draft' | 'active' | 'paused' | 'closed'
+export type UserRole = 'candidate' | 'hr' | 'interviewer' | 'admin'
+export type OfferStatus = 'pending' | 'accepted' | 'rejected' | 'expired'
+export type InterviewStatus = 'scheduled' | 'completed' | 'cancelled' | 'rescheduled'
+
+// 分页响应类型
+export interface PaginatedResponse<T> {
+  data: T[]
+  count: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+// API 响应类型
+export interface ApiResponse<T = unknown> {
+  success: boolean
+  data?: T
+  error?: string
+  message?: string
+}
+
+// 搜索过滤器类型
+export interface JobFilters {
+  department?: string
+  location?: string
+  employmentType?: string
+  experienceLevel?: string
+  isRemote?: boolean
+  salaryMin?: number
+  salaryMax?: number
+  search?: string
+}
+
+export interface ApplicationFilters {
+  status?: ApplicationStatus[]
+  jobId?: string
+  departmentId?: string
+  dateFrom?: string
+  dateTo?: string
+  search?: string
+}
+
+// 统计数据类型
+export interface DashboardStats {
+  totalJobs: number
+  activeJobs: number
+  totalApplications: number
+  pendingApplications: number
+  totalCandidates: number
+  offersExtended: number
+}
+
+export interface DepartmentStats {
+  department: string
+  jobCount: number
+  applicationCount: number
+  hireCounts: number
+}

@@ -91,7 +91,7 @@ function HRDashboardPage() {
       const reportData = {
         title: "HR管理中心数据报告",
         generatedAt: new Date().toLocaleString('zh-CN'),
-        generatedBy: userProfile?.user_profiles?.first_name || user?.email,
+        generatedBy: userProfile?.profile?.first_name || user?.email,
         statistics: dashboardStats ? {
           pendingApplications: dashboardStats.pendingApplications,
           monthlyApplications: dashboardStats.monthlyApplications,
@@ -277,7 +277,7 @@ function HRDashboardPage() {
               </div>
               <div className="text-left">
                 <h1 className="text-3xl md:text-4xl font-bold gradient-text">HR 管理中心</h1>
-                <p className="text-gray-600">欢迎您，{userProfile?.user_profiles?.first_name || user?.email}</p>
+                <p className="text-gray-600">欢迎您，{userProfile?.profile?.first_name || user?.email}</p>
               </div>
             </div>
             <div className="w-24 h-1 bg-blue-600 rounded-full mx-auto"></div>
