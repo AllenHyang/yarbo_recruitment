@@ -47,14 +47,23 @@ function JobDetailContent() {
 
     // 从Supabase获取真实数据
     const fetchJobData = async () => {
+      // 格式化薪资显示
+      const formatSalary = (min?: number | null, max?: number | null) => {
+        if (min && max) {
+          return `${(min / 1000).toFixed(0)}K-${(max / 1000).toFixed(0)}K`;
+        }
+        return '面议';
+      };
+
       try {
+        console.log('正在获取职位详情，ID:', jobId);
         
         // 获取职位详情，包含部门信息
         const { data, error } = await supabase
           .from('jobs')
           .select(`
             *,
-            departments!inner (
+            departments (
               id,
               name,
               color_theme
@@ -65,19 +74,37 @@ function JobDetailContent() {
 
         if (error) {
           console.error('获取职位详情失败:', error);
+          console.error('查询的职位ID:', jobId);
+          
+          // 如果是找不到数据，尝试直接查询职位表
+          if (error.code === 'PGRST116') {
+            console.log('尝试直接查询职位表...');
+            const { data: jobOnly, error: jobError } = await supabase
+              .from('jobs')
+              .select('*')
+              .eq('id', jobId)
+              .single();
+              
+            if (jobOnly) {
+              console.log('找到职位数据（无部门信息）:', jobOnly);
+              const jobDetail: JobDetail = {
+                ...jobOnly,
+                department: '未分配部门',
+                salary_display: formatSalary(jobOnly.salary_min, jobOnly.salary_max),
+                requirements: jobOnly.requirements || [],
+                benefits: jobOnly.benefits || []
+              };
+              setJob(jobDetail);
+              return;
+            }
+          }
+          
           setError('获取职位信息失败');
           return;
         }
 
         if (data) {
-          // 格式化薪资显示
-          const formatSalary = (min?: number | null, max?: number | null) => {
-            if (min && max) {
-              return `${(min / 1000).toFixed(0)}K-${(max / 1000).toFixed(0)}K`;
-            }
-            return '面议';
-          };
-
+          console.log('获取到职位数据:', data);
           // 转换数据格式
           const jobDetail: JobDetail = {
             ...data,
