@@ -1,0 +1,53 @@
+# Page snapshot
+
+```yaml
+- navigation:
+  - link "Y Yarbo 汉阳科技":
+    - /url: /
+  - link "首页":
+    - /url: /
+  - link "职位":
+    - /url: /jobs
+  - link "校园招聘":
+    - /url: /campus-recruitment
+  - link "实习招聘":
+    - /url: /internship-recruitment
+  - link "登录":
+    - /url: /auth/login
+    - button "登录"
+  - link "注册":
+    - /url: /auth/register
+    - button "注册"
+- main:
+  - link "返回首页":
+    - /url: /
+  - text: 登录 Yarbo 招聘 欢迎回来！请输入您的账号信息 邮箱
+  - textbox "邮箱"
+  - text: 密码
+  - textbox "密码"
+  - text: 安全验证
+  - paragraph: 点击获取安全验证码
+  - button "获取验证码"
+  - button "登录"
+  - link "还没有账号？立即注册":
+    - /url: /auth/register
+  - link "忘记密码？":
+    - /url: /auth/forgot-password
+  - heading "演示账号" [level=4]
+  - strong: "管理员:"
+  - text: admin@yarbo.com / password123
+  - strong: "HR:"
+  - text: hr@yarbo.com / password123
+  - strong: "候选人:"
+  - text: test.candidate@gmail.com / password123
+- contentinfo:
+  - paragraph: © 2024 Yarbo 汉阳科技. All rights reserved.
+  - navigation:
+    - link "使用条款":
+      - /url: /terms
+    - link "隐私政策":
+      - /url: /privacy
+- alert
+- button "Open Next.js Dev Tools":
+  - img
+```
