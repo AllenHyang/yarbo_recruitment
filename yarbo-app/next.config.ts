@@ -1,21 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 移除standalone模式，使用默认SSR
-  // output: 'standalone',
+  // 启用静态导出模式
+  output: 'export',
   
-  // 启用图片优化
+  // 静态导出模式下的图片配置
   images: {
-    domains: [], // 根据需要添加外部图片域名
+    unoptimized: true, // 静态导出需要
   },
   
-  // 确保启用SSR
+  // 确保路径正确
   trailingSlash: false,
   
-  // 启用实验性功能（如果需要）
-  experimental: {
-    // serverComponentsExternalPackages: ['@supabase/supabase-js'],
-  },
+  // 禁用不兼容静态导出的功能
+  // experimental: {},
 };
 
 export default nextConfig;
