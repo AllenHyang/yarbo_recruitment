@@ -9,11 +9,8 @@ applications:
         build:
           commands:
             - npm run build
-            - cp -r .amplify-hosting .next/standalone/
-            - cp -r public .next/standalone/
-            - cp -r .next/static .next/standalone/.next/
       artifacts:
-        baseDirectory: .next/standalone
+        baseDirectory: .amplify-hosting
         files:
           - '**/*'
       cache:
