@@ -1,0 +1,11 @@
+{
+  "testTime": "2025-06-19T06:08:20Z",
+  "appId": "d1n8k8368muvch",
+  "branchName": "main",
+  "appUrl": "https://main.d1n8k8368muvch.amplifyapp.com",
+  "latestDeploymentStatus": "FAILED",
+  "apiTestResults": {
+    "captchaGenerate": false,
+    "captchaVerify": false
+  }
+}

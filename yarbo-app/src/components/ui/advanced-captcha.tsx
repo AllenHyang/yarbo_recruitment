@@ -302,12 +302,8 @@ function AntiOCRCaptcha({ onValidationChange, disabled }: { onValidationChange: 
     setError(null);
 
     try {
-      // 使用 Cloudflare Workers API
-      const workersApiUrl = process.env.NODE_ENV === 'production'
-        ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
-        : 'http://localhost:8787';
-
-      const response = await fetch(`${workersApiUrl}/api/captcha/generate`, {
+      // 使用本地 API
+      const response = await fetch('/api/captcha/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -372,12 +368,8 @@ function AntiOCRCaptcha({ onValidationChange, disabled }: { onValidationChange: 
     setError(null);
 
     try {
-      // 使用 Cloudflare Workers API
-      const workersApiUrl = process.env.NODE_ENV === 'production'
-        ? process.env.NEXT_PUBLIC_WORKERS_API_URL || 'https://your-worker.your-subdomain.workers.dev'
-        : 'http://localhost:8787';
-
-      const response = await fetch(`${workersApiUrl}/api/captcha/verify`, {
+      // 使用本地 API
+      const response = await fetch('/api/captcha/verify', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

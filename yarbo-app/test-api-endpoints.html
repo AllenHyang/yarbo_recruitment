@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yarbo API 端点测试工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .config-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 5px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        input, select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .test-section {
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .test-header {
+            background: #f0f0f0;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .test-header:hover {
+            background: #e8e8e8;
+        }
+        .test-body {
+            padding: 15px;
+            display: none;
+        }
+        .test-section.active .test-body {
+            display: block;
+        }
+        button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #2563eb;
+        }
+        button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-success {
+            background: #28a745;
+            color: white;
+        }
+        .status-error {
+            background: #dc3545;
+            color: white;
+        }
+        .status-pending {
+            background: #6c757d;
+            color: white;
+        }
+        .captcha-display {
+            margin: 10px 0;
+            padding: 10px;
+            background: #fffbf0;
+            border: 1px solid #ffd700;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 18px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Yarbo API 端点测试工具</h1>
+        
+        <div class="config-section">
+            <h3>⚙️ 配置</h3>
+            <div class="input-group">
+                <label for="baseUrl">API 基础 URL</label>
+                <input type="text" id="baseUrl" value="http://localhost:3000" placeholder="例如: https://your-app.amplifyapp.com">
+            </div>
+        </div>
+
+        <!-- 验证码测试 -->
+        <div class="test-section" id="captcha-section">
+            <div class="test-header" onclick="toggleSection('captcha-section')">
+                <h3>🔐 验证码 API</h3>
+                <span class="status status-pending" id="captcha-status">未测试</span>
+            </div>
+            <div class="test-body">
+                <h4>1. 生成验证码</h4>
+                <button onclick="generateCaptcha()">生成验证码</button>
+                <div id="captcha-info" style="display:none;">
+                    <div class="captcha-display" id="captcha-code"></div>
+                    <p>Session Token: <code id="session-token"></code></p>
+                </div>
+                <div id="generate-response" class="response"></div>
+                
+                <h4>2. 验证验证码</h4>
+                <div class="input-group">
+                    <label for="verify-code">输入验证码</label>
+                    <input type="text" id="verify-code" placeholder="输入上面显示的验证码">
+                </div>
+                <button onclick="verifyCaptcha(true)">验证正确的验证码</button>
+                <button onclick="verifyCaptcha(false)">测试错误的验证码</button>
+                <div id="verify-response" class="response"></div>
+            </div>
+        </div>
+
+        <!-- 页面访问测试 -->
+        <div class="test-section" id="pages-section">
+            <div class="test-header" onclick="toggleSection('pages-section')">
+                <h3>📄 页面访问测试</h3>
+                <span class="status status-pending" id="pages-status">未测试</span>
+            </div>
+            <div class="test-body">
+                <button onclick="testAllPages()">测试所有页面</button>
+                <div id="pages-response" class="response"></div>
+            </div>
+        </div>
+
+        <!-- 性能测试 -->
+        <div class="test-section" id="performance-section">
+            <div class="test-header" onclick="toggleSection('performance-section')">
+                <h3>⚡ 性能测试</h3>
+                <span class="status status-pending" id="performance-status">未测试</span>
+            </div>
+            <div class="test-body">
+                <button onclick="testPerformance()">运行性能测试</button>
+                <div id="performance-response" class="response"></div>
+            </div>
+        </div>
+
+        <!-- 批量测试 -->
+        <div class="test-section" id="batch-section">
+            <div class="test-header" onclick="toggleSection('batch-section')">
+                <h3>🚀 批量测试</h3>
+                <span class="status status-pending" id="batch-status">未测试</span>
+            </div>
+            <div class="test-body">
+                <button onclick="runAllTests()">运行所有测试</button>
+                <div id="batch-response" class="response"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSessionToken = null;
+        let currentCaptchaCode = null;
+
+        function getBaseUrl() {
+            return document.getElementById('baseUrl').value.replace(/\/$/, '');
+        }
+
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.classList.toggle('active');
+        }
+
+        function updateStatus(sectionId, status, isSuccess) {
+            const statusEl = document.getElementById(`${sectionId}-status`);
+            statusEl.textContent = status;
+            statusEl.className = `status ${isSuccess ? 'status-success' : 'status-error'}`;
+        }
+
+        async function makeRequest(path, options = {}) {
+            const url = `${getBaseUrl()}${path}`;
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+                
+                const contentType = response.headers.get('content-type');
+                let data;
+                
+                if (contentType && contentType.includes('application/json')) {
+                    data = await response.json();
+                } else {
+                    data = await response.text();
+                }
+                
+                return {
+                    ok: response.ok,
+                    status: response.status,
+                    data: data
+                };
+            } catch (error) {
+                return {
+                    ok: false,
+                    status: 0,
+                    data: { error: error.message }
+                };
+            }
+        }
+
+        async function generateCaptcha() {
+            const responseEl = document.getElementById('generate-response');
+            responseEl.textContent = '正在生成验证码...';
+            responseEl.className = 'response';
+            
+            const result = await makeRequest('/api/captcha/generate', {
+                method: 'POST'
+            });
+            
+            if (result.ok) {
+                currentSessionToken = result.data.sessionToken;
+                currentCaptchaCode = result.data.captchaCode;
+                
+                document.getElementById('captcha-info').style.display = 'block';
+                document.getElementById('captcha-code').textContent = currentCaptchaCode;
+                document.getElementById('session-token').textContent = currentSessionToken;
+                
+                responseEl.textContent = JSON.stringify(result.data, null, 2);
+                responseEl.className = 'response success';
+                updateStatus('captcha', '生成成功', true);
+            } else {
+                responseEl.textContent = `错误 ${result.status}: ${JSON.stringify(result.data, null, 2)}`;
+                responseEl.className = 'response error';
+                updateStatus('captcha', '生成失败', false);
+            }
+        }
+
+        async function verifyCaptcha(useCorrectCode) {
+            const responseEl = document.getElementById('verify-response');
+            
+            if (!currentSessionToken) {
+                responseEl.textContent = '请先生成验证码';
+                responseEl.className = 'response error';
+                return;
+            }
+            
+            const code = useCorrectCode ? 
+                document.getElementById('verify-code').value || currentCaptchaCode : 
+                'WRONG';
+            
+            responseEl.textContent = '正在验证...';
+            responseEl.className = 'response';
+            
+            const result = await makeRequest('/api/captcha/verify', {
+                method: 'POST',
+                body: JSON.stringify({
+                    sessionToken: currentSessionToken,
+                    captchaCode: code
+                })
+            });
+            
+            if (result.ok) {
+                responseEl.textContent = JSON.stringify(result.data, null, 2);
+                responseEl.className = 'response success';
+                updateStatus('captcha', '验证成功', true);
+            } else {
+                responseEl.textContent = `错误 ${result.status}: ${JSON.stringify(result.data, null, 2)}`;
+                responseEl.className = 'response error';
+                if (useCorrectCode) {
+                    updateStatus('captcha', '验证失败', false);
+                }
+            }
+        }
+
+        async function testAllPages() {
+            const responseEl = document.getElementById('pages-response');
+            responseEl.textContent = '正在测试页面访问...';
+            responseEl.className = 'response';
+            
+            const pages = [
+                { path: '/', name: '首页' },
+                { path: '/jobs', name: '职位列表' },
+                { path: '/auth/login', name: '登录页' },
+                { path: '/auth/register', name: '注册页' },
+                { path: '/privacy', name: '隐私政策' },
+                { path: '/terms', name: '服务条款' }
+            ];
+            
+            let results = [];
+            let allSuccess = true;
+            
+            for (const page of pages) {
+                const result = await makeRequest(page.path);
+                const success = result.ok && result.status === 200;
+                if (!success) allSuccess = false;
+                
+                results.push({
+                    ...page,
+                    status: result.status,
+                    success: success,
+                    size: result.data.length
+                });
+            }
+            
+            responseEl.textContent = results.map(r => 
+                `${r.success ? '✅' : '❌'} ${r.name}: ${r.status} (${r.size} bytes)`
+            ).join('\n');
+            
+            responseEl.className = `response ${allSuccess ? 'success' : 'error'}`;
+            updateStatus('pages', allSuccess ? '全部通过' : '部分失败', allSuccess);
+        }
+
+        async function testPerformance() {
+            const responseEl = document.getElementById('performance-response');
+            responseEl.textContent = '正在进行性能测试...';
+            responseEl.className = 'response';
+            
+            const tests = [];
+            
+            // 测试首页响应时间
+            const startTime = Date.now();
+            await makeRequest('/');
+            const homePageTime = Date.now() - startTime;
+            tests.push(`首页加载时间: ${homePageTime}ms`);
+            
+            // 测试 API 响应时间
+            const apiStart = Date.now();
+            await makeRequest('/api/captcha/generate', { method: 'POST' });
+            const apiTime = Date.now() - apiStart;
+            tests.push(`API 响应时间: ${apiTime}ms`);
+            
+            // 测试并发请求
+            const concurrentStart = Date.now();
+            await Promise.all([
+                makeRequest('/'),
+                makeRequest('/jobs'),
+                makeRequest('/auth/login')
+            ]);
+            const concurrentTime = Date.now() - concurrentStart;
+            tests.push(`并发请求时间 (3个): ${concurrentTime}ms`);
+            
+            const isGood = homePageTime < 3000 && apiTime < 1000;
+            
+            responseEl.textContent = tests.join('\n') + '\n\n' + 
+                (isGood ? '✅ 性能良好' : '⚠️ 性能需要优化');
+            responseEl.className = `response ${isGood ? 'success' : 'error'}`;
+            updateStatus('performance', isGood ? '性能良好' : '需要优化', isGood);
+        }
+
+        async function runAllTests() {
+            const responseEl = document.getElementById('batch-response');
+            responseEl.textContent = '正在运行所有测试...\n';
+            responseEl.className = 'response';
+            
+            const results = [];
+            
+            // 1. 测试验证码
+            responseEl.textContent += '\n[1/3] 测试验证码 API...\n';
+            await generateCaptcha();
+            await new Promise(r => setTimeout(r, 500));
+            await verifyCaptcha(true);
+            results.push('验证码测试: ' + (currentSessionToken ? '✅ 通过' : '❌ 失败'));
+            
+            // 2. 测试页面访问
+            responseEl.textContent += '\n[2/3] 测试页面访问...\n';
+            await testAllPages();
+            results.push('页面访问测试: 完成');
+            
+            // 3. 测试性能
+            responseEl.textContent += '\n[3/3] 测试性能...\n';
+            await testPerformance();
+            results.push('性能测试: 完成');
+            
+            responseEl.textContent = '=== 测试完成 ===\n\n' + results.join('\n');
+            updateStatus('batch', '测试完成', true);
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查是否在本地开发环境
+            if (window.location.hostname === 'localhost') {
+                document.getElementById('baseUrl').value = 'http://localhost:3000';
+            } else {
+                // 在生产环境，使用当前域名
+                document.getElementById('baseUrl').value = window.location.origin;
+            }
+        });
+    </script>
+</body>
+</html>

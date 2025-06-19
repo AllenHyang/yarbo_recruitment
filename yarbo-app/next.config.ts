@@ -1,19 +1,26 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // 启用静态导出模式
-  output: 'export',
-  
-  // 静态导出模式下的图片配置
+  // 图片优化配置
   images: {
-    unoptimized: true, // 静态导出需要
+    domains: ['eipqxgdqittupttmpiud.supabase.co'], // Supabase 存储域名
+    formats: ['image/avif', 'image/webp'],
   },
   
   // 确保路径正确
   trailingSlash: false,
   
-  // 禁用不兼容静态导出的功能
-  // experimental: {},
+  // 启用严格模式
+  reactStrictMode: true,
+  
+  // 生产环境优化
+  poweredByHeader: false,
+  
+  // 实验性功能
+  experimental: {
+    // 优化包大小
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+  },
 };
 
 export default nextConfig;
