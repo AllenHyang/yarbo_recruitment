@@ -17,7 +17,7 @@ applications:
           - '.next/**/*'
           - 'public/**/*'
           - 'package.json'
-          - 'next.config.ts'
+          - 'next.config.mjs'
       cache:
         paths:
           - 'node_modules/**/*'

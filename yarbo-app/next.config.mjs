@@ -1,6 +1,5 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   // 图片优化配置
   images: {
     domains: ['eipqxgdqittupttmpiud.supabase.co'], // Supabase 存储域名
