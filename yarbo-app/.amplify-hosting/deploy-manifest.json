@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "routes": [
+    {
+      "path": "/_next/static/*",
+      "target": {
+        "kind": "Static"
+      }
+    },
+    {
+      "path": "/*.*",
+      "target": {
+        "kind": "Static"
+      },
+      "excludedPaths": [
+        "/*.json",
+        "/_next/static/*"
+      ]
+    },
+    {
+      "path": "/*",
+      "target": {
+        "kind": "Server"
+      }
+    }
+  ],
+  "computeResources": [
+    {
+      "name": "default",
+      "runtime": "nodejs20.x",
+      "entrypoint": "node_modules/@aws-amplify/adapter-nextjs/lib/start.js"
+    }
+  ],
+  "imageSettings": {
+    "format": ["webp", "avif"],
+    "sizes": [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    "domains": ["eipqxgdqittupttmpiud.supabase.co"],
+    "minimumCacheTTL": 60
+  },
+  "buildSettings": {
+    "preBuild": "npm ci",
+    "build": "npm run build"
+  }
+}
