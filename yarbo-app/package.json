@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
-    "build:amplify": "next build && node node_modules/@aws-amplify/adapter-nextjs/build.js",
+    "build:amplify": "next build && npx @aws-amplify/adapter-nextjs@1 build",
     "start": "next start",
     "lint": "next lint",
     "test:e2e": "playwright test",
