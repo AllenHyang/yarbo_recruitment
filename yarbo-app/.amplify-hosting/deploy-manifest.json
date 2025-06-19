@@ -28,7 +28,7 @@
     {
       "name": "default",
       "runtime": "nodejs20.x",
-      "entrypoint": "node_modules/@aws-amplify/adapter-nextjs/lib/start.js"
+      "entrypoint": "server.js"
     }
   ],
   "imageSettings": {

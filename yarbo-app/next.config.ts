@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 启用 standalone 模式以支持 SSR
+  output: 'standalone',
+  
   // 图片优化配置
   images: {
     domains: ['eipqxgdqittupttmpiud.supabase.co'], // Supabase 存储域名
