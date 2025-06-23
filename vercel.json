@@ -1,6 +1,6 @@
 {
   "buildCommand": "cd yarbo-app && npm run build",
   "outputDirectory": "yarbo-app/.next",
-  "installCommand": "cd yarbo-app && npm install",
+  "installCommand": "cd yarbo-app && npm install --force",
   "devCommand": "cd yarbo-app && npm run dev"
 }
