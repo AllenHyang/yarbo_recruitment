@@ -1,0 +1,27 @@
+{
+  "buildCommand": "cd yarbo-app && npm run build",
+  "outputDirectory": "yarbo-app/.next",
+  "installCommand": "cd yarbo-app && npm install",
+  "devCommand": "cd yarbo-app && npm run dev",
+  "framework": "nextjs",
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/yarbo-app/$1"
+    }
+  ],
+  "functions": {
+    "yarbo-app/src/pages/api/**/*.ts": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "env": {
+    "NODE_VERSION": "18"
+  },
+  "regions": ["hkg1"],
+  "github": {
+    "autoJobCancelation": true
+  }
+}

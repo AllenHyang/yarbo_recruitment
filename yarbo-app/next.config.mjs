@@ -29,11 +29,11 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
   
-  // 为 AWS Amplify 设置静态导出模式
-  output: 'export',
+  // Vercel 部署配置 - 支持 SSR 和 API 路由
+  // output: 'export', // 注释掉静态导出，因为需要支持 API 路由
   
-  // 静态导出所需配置
-  distDir: 'build',
+  // 移除自定义 distDir，使用默认的 .next
+  // distDir: 'build',
 };
 
 export default nextConfig;
