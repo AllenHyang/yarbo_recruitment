@@ -9,7 +9,8 @@ applications:
             - npm ci --force
         build:
           commands:
-            - npm run build:amplify
+            - npm run build
+            - npx @aws-amplify/adapter-nextjs@1 build
       artifacts:
         baseDirectory: .amplify-hosting
         files:
