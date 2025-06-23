@@ -29,8 +29,11 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
   
-  // 为 AWS Amplify SSR 设置输出模式
-  output: 'standalone',
+  // 为 AWS Amplify 设置静态导出模式
+  output: 'export',
+  
+  // 静态导出所需配置
+  distDir: 'build',
 };
 
 export default nextConfig;
