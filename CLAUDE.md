@@ -7,9 +7,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### 开发服务器
 ```bash
 cd yarbo-app
-npm run dev         # 启动开发服务器 (使用 Turbopack，端口 3002)
+npm run dev         # 启动开发服务器 (端口 3002)
 npm run build       # 构建生产版本
-npm run build:amplify  # AWS Amplify 专用构建命令
 npm run start       # 启动生产服务器
 ```
 
@@ -40,7 +39,7 @@ npm run test:report        # 显示测试报告
 - **认证**: Supabase Auth
 - **实时数据**: Supabase Realtime
 - **图表**: Chart.js + Recharts
-- **部署**: AWS Amplify (配置在根目录 `amplify.yml`)
+- **部署**: Vercel
 - **测试**: Playwright
 
 ### 核心组件架构
@@ -114,18 +113,26 @@ HR专员: hr@yarbo.com / password123
 
 ## 📋 部署配置
 
-### AWS Amplify
-- 构建配置: 根目录的 `amplify.yml`
+### Vercel
+- 构建配置: 根目录的 `vercel.json` 和 `yarbo-app/vercel.json`
 - 应用根目录: `yarbo-app`
-- 输出目录: `.amplify-hosting`
-- 使用 AWS Amplify 适配器支持 SSR
-- 缓存: `.next/cache` 和 `node_modules`
+- 输出目录: `yarbo-app/.next`
+- 安装命令: `npm install --force`
+- 区域: 香港 (hkg1)
+
+### 环境变量配置
+必须在Vercel仪表板配置以下环境变量：
+- `NEXT_PUBLIC_SUPABASE_URL`: Supabase项目URL
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Supabase匿名密钥
+- `SUPABASE_SERVICE_ROLE_KEY`: Supabase服务密钥
+- `NEXT_PUBLIC_APP_URL`: 生产环境域名
+
+**重要**: 确保环境变量值为单行，无换行符或额外字符，避免Header设置错误。
 
 ### 构建注意事项
 - 使用 `npm install --force` 解决依赖冲突
-- 构建命令: `npm run build:amplify`
 - 当前配置忽略构建时的 ESLint 和 TypeScript 错误
-- **重要**: 项目配置为 SSR 模式 (`output: 'standalone'`)，支持动态路由和 API 路由
+- **重要**: 项目配置为 SSR 模式，支持动态路由和 API 路由
 - 构建环境使用 Node.js 20
 
 ## 🧪 功能测试
@@ -142,7 +149,8 @@ HR专员: hr@yarbo.com / password123
 ### 配置文件
 - `yarbo-app/next.config.mjs` - Next.js 配置
 - `yarbo-app/playwright.config.ts` - Playwright 测试配置
-- `amplify.yml` - AWS Amplify 部署配置
+- `vercel.json` - Vercel 部署配置 (根目录)
+- `yarbo-app/vercel.json` - Vercel 应用配置
 
 ### 文档资源
 - `yarbo-app/测试指南.md` - 功能测试指南

@@ -32,56 +32,27 @@ function AntiOCRCaptcha({ onValidationChange, disabled }: { onValidationChange: 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isInitialized, setIsInitialized] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
   const lastFetchTime = useRef<number>(0);
   const minFetchInterval = 3000; // 增加到3秒间隔
 
-  // 缓存管理函数
-  const saveCaptchaSession = useCallback((session: CaptchaSession) => {
-    try {
-      localStorage.setItem(CAPTCHA_CACHE_KEY, JSON.stringify(session));
-    } catch (error) {
-      console.warn('无法保存验证码会话到本地存储:', error);
-    }
-  }, []);
-
-  const loadCaptchaSession = useCallback((): CaptchaSession | null => {
-    try {
-      const cached = localStorage.getItem(CAPTCHA_CACHE_KEY);
-      if (!cached) return null;
-
-      const session: CaptchaSession = JSON.parse(cached);
-      const now = new Date();
-      const expiresAt = new Date(session.expiresAt);
-
-      // 检查是否过期（提前30秒过期以确保安全）
-      if (expiresAt.getTime() - 30000 < now.getTime()) {
-        localStorage.removeItem(CAPTCHA_CACHE_KEY);
-        return null;
-      }
-
-      return session;
-    } catch (error) {
-      console.warn('无法加载验证码会话:', error);
-      localStorage.removeItem(CAPTCHA_CACHE_KEY);
-      return null;
-    }
-  }, []);
-
-  const clearCaptchaSession = useCallback(() => {
-    try {
-      localStorage.removeItem(CAPTCHA_CACHE_KEY);
-    } catch (error) {
-      console.warn('无法清除验证码会话:', error);
-    }
-  }, []);
 
   // 绘制高级抗OCR验证码
   const drawAntiOCRCaptcha = useCallback((code: string) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas) {
+      console.warn('❌ Canvas 元素不存在，延迟重试');
+      setTimeout(() => drawAntiOCRCaptcha(code), 100);
+      return;
+    }
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    if (!ctx) {
+      console.warn('❌ 无法获取 Canvas 2D 上下文');
+      return;
+    }
+
+    console.log(`🎨 开始绘制验证码: ${code}`);
 
     canvas.width = 200;
     canvas.height = 80;
@@ -272,34 +243,60 @@ function AntiOCRCaptcha({ onValidationChange, disabled }: { onValidationChange: 
     }
     ctx.globalAlpha = 1;
 
+    console.log(`✅ 验证码绘制完成: ${code}`);
   }, []);
 
   // 从后端获取验证码
   const fetchCaptcha = useCallback(async (forceRefresh = false) => {
+    console.log(`🎯 fetchCaptcha 被调用，forceRefresh: ${forceRefresh}`);
+    
     // 如果不是强制刷新，先尝试从缓存加载
     if (!forceRefresh) {
-      const cachedSession = loadCaptchaSession();
-      if (cachedSession) {
-        setSessionToken(cachedSession.sessionToken);
-        setCaptchaCode(cachedSession.captchaCode);
-        drawAntiOCRCaptcha(cachedSession.captchaCode);
-        setUserInput("");
-        setIsInitialized(true);
-        onValidationChange(false);
-        return;
+      try {
+        const cached = localStorage.getItem(CAPTCHA_CACHE_KEY);
+        if (cached) {
+          console.log('🔄 fetchCaptcha 中找到缓存');
+          const session: CaptchaSession = JSON.parse(cached);
+          const now = new Date();
+          const expiresAt = new Date(session.expiresAt);
+
+          // 检查是否过期（提前30秒过期以确保安全）
+          if (expiresAt.getTime() - 30000 >= now.getTime()) {
+            console.log('♻️ fetchCaptcha 使用缓存的验证码');
+            setSessionToken(session.sessionToken);
+            setCaptchaCode(session.captchaCode);
+            drawAntiOCRCaptcha(session.captchaCode);
+            setUserInput("");
+            setIsInitialized(true);
+            setIsInitialLoading(false);
+            onValidationChange(false);
+            return;
+          } else {
+            console.log('🗑️ fetchCaptcha 清除过期缓存');
+            localStorage.removeItem(CAPTCHA_CACHE_KEY);
+          }
+        }
+      } catch (error) {
+        console.warn('读取验证码缓存失败:', error);
+        localStorage.removeItem(CAPTCHA_CACHE_KEY);
       }
     }
 
-    // 客户端速率限制检查
-    const now = Date.now();
-    if (now - lastFetchTime.current < minFetchInterval) {
-      setError(`请等待 ${Math.ceil((minFetchInterval - (now - lastFetchTime.current)) / 1000)} 秒后再试`);
-      return;
+    // 客户端速率限制检查 - 但是在强制刷新或初始化时跳过
+    if (!forceRefresh) {
+      const now = Date.now();
+      // 只有在不是初始化（lastFetchTime.current > 0）且时间间隔不够时才限制
+      if (lastFetchTime.current > 0 && now - lastFetchTime.current < minFetchInterval) {
+        setError(`请等待 ${Math.ceil((minFetchInterval - (now - lastFetchTime.current)) / 1000)} 秒后再试`);
+        setIsInitialLoading(false);
+        return;
+      }
+      lastFetchTime.current = now;
     }
-    lastFetchTime.current = now;
 
     setIsLoading(true);
     setError(null);
+    console.log('📡 开始请求验证码API');
 
     try {
       // 使用本地 API
@@ -310,12 +307,16 @@ function AntiOCRCaptcha({ onValidationChange, disabled }: { onValidationChange: 
         },
       });
 
+      console.log('📋 API响应状态:', response.status);
+
       if (!response.ok) {
         const errorData = await response.json();
+        console.error('❌ API请求失败:', errorData);
         throw new Error(errorData.error || '获取验证码失败');
       }
 
       const data = await response.json();
+      console.log('✅ API请求成功，获得验证码数据:', data);
 
       // 保存到缓存
       const session: CaptchaSession = {
@@ -324,28 +325,40 @@ function AntiOCRCaptcha({ onValidationChange, disabled }: { onValidationChange: 
         expiresAt: data.expiresAt,
         timestamp: Date.now()
       };
-      saveCaptchaSession(session);
+      try {
+        localStorage.setItem(CAPTCHA_CACHE_KEY, JSON.stringify(session));
+      } catch (error) {
+        console.warn('无法保存验证码会话到本地存储:', error);
+      }
 
+      console.log('🎨 设置验证码状态并绘制验证码');
       setSessionToken(data.sessionToken);
       setCaptchaCode(data.captchaCode);
       drawAntiOCRCaptcha(data.captchaCode);
       setUserInput("");
       setIsInitialized(true);
+      setIsInitialLoading(false);
       onValidationChange(false);
+      console.log('🎉 验证码初始化完成');
 
     } catch (error) {
       console.error('获取验证码失败:', error);
       setError(error instanceof Error ? error.message : '获取验证码失败');
+      setIsInitialLoading(false);
     } finally {
       setIsLoading(false);
     }
-  }, [drawAntiOCRCaptcha, onValidationChange, loadCaptchaSession, saveCaptchaSession]);
+  }, [drawAntiOCRCaptcha, onValidationChange]);
 
   // 刷新验证码
   const refreshCaptcha = useCallback(() => {
-    clearCaptchaSession();
+    try {
+      localStorage.removeItem(CAPTCHA_CACHE_KEY);
+    } catch (error) {
+      console.warn('无法清除验证码会话:', error);
+    }
     fetchCaptcha(true); // 强制刷新
-  }, [fetchCaptcha, clearCaptchaSession]);
+  }, [fetchCaptcha]);
 
   // 验证输入
   const handleInputChange = (value: string) => {
@@ -421,21 +434,62 @@ function AntiOCRCaptcha({ onValidationChange, disabled }: { onValidationChange: 
     }
   };
 
-  // 初始化时尝试从缓存加载，但不自动请求新验证码
+  // 初始化时尝试从缓存加载，如果没有缓存则自动获取新验证码
   useEffect(() => {
-    const cachedSession = loadCaptchaSession();
-    if (cachedSession) {
-      setSessionToken(cachedSession.sessionToken);
-      setCaptchaCode(cachedSession.captchaCode);
-      drawAntiOCRCaptcha(cachedSession.captchaCode);
-      setIsInitialized(true);
-    }
-  }, [loadCaptchaSession, drawAntiOCRCaptcha]);
+    const initializeCaptcha = async () => {
+      console.log('🔍 验证码组件初始化开始');
+      
+      // 尝试从缓存加载
+      try {
+        const cached = localStorage.getItem(CAPTCHA_CACHE_KEY);
+        if (cached) {
+          console.log('📦 找到缓存的验证码会话');
+          const session: CaptchaSession = JSON.parse(cached);
+          const now = new Date();
+          const expiresAt = new Date(session.expiresAt);
+
+          // 检查是否过期（提前30秒过期以确保安全）
+          if (expiresAt.getTime() - 30000 >= now.getTime()) {
+            console.log('✅ 缓存的验证码仍然有效，使用缓存');
+            setSessionToken(session.sessionToken);
+            setCaptchaCode(session.captchaCode);
+            drawAntiOCRCaptcha(session.captchaCode);
+            setIsInitialized(true);
+            setIsInitialLoading(false);
+            onValidationChange(false);
+            return;
+          } else {
+            console.log('⏰ 缓存的验证码已过期，清除缓存');
+            localStorage.removeItem(CAPTCHA_CACHE_KEY);
+          }
+        } else {
+          console.log('📭 没有找到缓存的验证码会话');
+        }
+      } catch (error) {
+        console.warn('❌ 读取验证码缓存失败:', error);
+        localStorage.removeItem(CAPTCHA_CACHE_KEY);
+      }
+
+      // 如果没有缓存或缓存过期，自动获取新验证码
+      console.log('🚀 开始获取新的验证码');
+      await fetchCaptcha(false);
+    };
+
+    initializeCaptcha();
+  }, []); // 空依赖数组，只在组件挂载时执行一次
 
   return (
     <div className="space-y-3">
-      {!isInitialized ? (
-        // 未初始化状态 - 显示获取验证码按钮
+      {isInitialLoading ? (
+        // 初始加载状态
+        <div className="flex items-center justify-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
+          <div className="text-center space-y-3">
+            <RefreshCw className="h-8 w-8 text-gray-400 mx-auto animate-spin" />
+            <p className="text-sm text-gray-600">正在加载验证码...</p>
+          </div>
+        </div>
+      ) : !isInitialized ? (
+        // 未初始化状态 - 显示获取验证码按钮（仅在加载失败时显示）
         <div className="flex items-center justify-center p-8 border-2 border-dashed border-gray-300 rounded-lg">
           <div className="text-center space-y-3">
             <Shield className="h-8 w-8 text-gray-400 mx-auto" />
