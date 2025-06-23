@@ -5,6 +5,7 @@ applications:
       phases:
         preBuild:
           commands:
+            - nvm use 20
             - npm ci --force
         build:
           commands:
@@ -16,3 +17,4 @@ applications:
       cache:
         paths:
           - 'node_modules/**/*'
+          - '.next/cache/**/*'

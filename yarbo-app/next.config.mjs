@@ -28,6 +28,9 @@ const nextConfig = {
     // 优化包大小
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
   },
+  
+  // 为 AWS Amplify SSR 设置输出模式
+  output: 'standalone',
 };
 
 export default nextConfig;
