@@ -81,7 +81,7 @@ export function ApplyForm({
     defaultValues: {
       name: getUserDisplayName(),
       email: user?.email || "",
-      phone: userProfile?.profile?.phone || "",
+      phone: userProfile?.user_profiles?.phone || "",
       jobId: jobId || "",
       resumeId: "",
       coverLetter: "",
@@ -100,7 +100,7 @@ export function ApplyForm({
     if (user && userProfile) {
       const displayName = getUserDisplayName();
       const userEmail = user.email || "";
-      const userPhone = userProfile.profile?.phone || "";
+      const userPhone = userProfile.user_profiles?.phone || "";
 
       // 只有当字段为空时才自动填充，避免覆盖用户已输入的内容
       if (!form.getValues('name') && displayName) {
@@ -424,7 +424,7 @@ export function ApplyForm({
                   />
                 </FormControl>
                 <FormMessage />
-                {user && !userProfile?.profile?.phone && field.value && (
+                {user && !userProfile?.user_profiles?.phone && field.value && (
                   <p className="text-sm text-blue-600 mt-1">
                     提示：您可以在 <a href="/profile" className="underline hover:text-blue-800">个人设置</a> 中保存此电话号码
                   </p>
