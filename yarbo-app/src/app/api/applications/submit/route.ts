@@ -22,16 +22,20 @@ export async function POST(request: Request) {
       );
     }
 
-    const supabase = createRouteHandlerClient({ cookies });
+    const cookieStore = cookies();
+    const supabase = createRouteHandlerClient({ cookies: () => cookieStore });
 
-    // 获取当前用户
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    // 获取当前会话
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError || !session || !session.user) {
+      console.error('认证错误:', sessionError);
       return NextResponse.json(
         { error: '未登录或登录已过期' },
         { status: 401 }
       );
     }
+
+    const user = session.user;
 
     // 检查是否已经申请过这个职位
     const { data: existingApplication, error: checkError } = await supabase
