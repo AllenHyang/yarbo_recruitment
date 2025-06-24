@@ -411,20 +411,22 @@ export function ApplyForm({
                 <FormLabel className="flex items-center space-x-2 text-gray-700 font-medium">
                   <Phone className="h-4 w-4" />
                   <span>电话</span>
-                  {user && <span className="text-xs text-gray-500">(已自动填充)</span>}
+                  {user && field.value && <span className="text-xs text-gray-500">(已自动填充)</span>}
                 </FormLabel>
                 <FormControl>
                   <Input
-                    placeholder={user ? (field.value || "请在个人设置中完善电话信息") : "请输入您的手机号码"}
-                    className="h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500 bg-gray-50"
-                    readOnly={!!user}
+                    placeholder="请输入您的手机号码"
+                    className={`h-11 border-gray-200 focus:border-blue-500 focus:ring-blue-500 ${
+                      user && field.value ? 'bg-gray-50' : ''
+                    }`}
+                    readOnly={!!(user && field.value)}
                     {...field}
                   />
                 </FormControl>
                 <FormMessage />
-                {user && !field.value && (
-                  <p className="text-sm text-amber-600 mt-1">
-                    请前往 <a href="/profile" className="underline text-blue-600 hover:text-blue-800">个人设置</a> 完善您的电话信息
+                {user && !userProfile?.profile?.phone && field.value && (
+                  <p className="text-sm text-blue-600 mt-1">
+                    提示：您可以在 <a href="/profile" className="underline hover:text-blue-800">个人设置</a> 中保存此电话号码
                   </p>
                 )}
               </FormItem>
