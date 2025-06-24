@@ -45,6 +45,14 @@ export async function POST(request: Request) {
     // 增加尝试次数
     session.attempts++;
     
+    // 特殊处理：只验证会话是否有效
+    if (captchaCode === 'VERIFY_ONLY') {
+      return NextResponse.json({
+        success: true,
+        message: '会话有效'
+      });
+    }
+    
     // 验证验证码（不区分大小写）
     if (session.captchaCode.toUpperCase() !== captchaCode.toUpperCase()) {
       return NextResponse.json(
@@ -53,8 +61,8 @@ export async function POST(request: Request) {
       );
     }
     
-    // 验证成功，删除会话
-    captchaStore.delete(sessionToken);
+    // 验证成功，标记会话为已验证（不删除，以便后续登录使用）
+    session.verified = true;
     
     return NextResponse.json({
       success: true,

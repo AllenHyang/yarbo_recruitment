@@ -3,6 +3,7 @@ interface CaptchaSession {
   captchaCode: string;
   expiresAt: Date;
   attempts: number;
+  verified?: boolean;
 }
 
 // 内存存储验证码会话（生产环境应使用 Redis 或数据库）
